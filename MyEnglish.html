@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="MyEnglish"/>
+<title>MyEnglish</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f5f3;
+    --bg3: #eeede9;
+    --text: #1a1a1a;
+    --text2: #6b6b6b;
+    --text3: #a0a0a0;
+    --border: rgba(0,0,0,0.1);
+    --border2: rgba(0,0,0,0.18);
+    --radius: 14px;
+    --radius-sm: 9px;
+    --green: #1D9E75;
+    --green-bg: #E1F5EE;
+    --green-text: #0F6E56;
+    --blue-bg: #E6F1FB;
+    --blue-text: #042C53;
+    --red: #A32D2D;
+    --red-bg: #FCEBEB;
+    --amber-bg: #FAC775;
+    --amber-text: #412402;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --bg2: #252525;
+      --bg3: #2e2e2e;
+      --text: #f0f0f0;
+      --text2: #a0a0a0;
+      --text3: #6b6b6b;
+      --border: rgba(255,255,255,0.1);
+      --border2: rgba(255,255,255,0.2);
+      --green-bg: #0a3326;
+      --green-text: #5DCAA5;
+      --blue-bg: #0a1e33;
+      --blue-text: #85B7EB;
+      --red-bg: #2d1010;
+      --amber-bg: #3d2a05;
+      --amber-text: #FAC775;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; }
+
+  /* Layout */
+  .app { display: flex; flex-direction: column; height: 100%; padding-top: var(--safe-top); }
+  .content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 1.25rem 1rem 1rem; }
+  .nav { display: flex; border-top: 0.5px solid var(--border); background: var(--bg); padding-bottom: var(--safe-bottom); }
+  .nav-btn { flex: 1; background: none; border: none; padding: 10px 0 8px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; color: var(--text3); font-size: 10px; }
+  .nav-btn.active { color: var(--text); }
+  .nav-icon { font-size: 22px; line-height: 1; }
+  .screen { display: none; } .screen.active { display: block; }
+
+  /* Typography */
+  .section-label { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+
+  /* Deck grid */
+  .deck-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+  .deck-card { background: var(--bg2); border-radius: var(--radius); padding: 14px; cursor: pointer; border: 1.5px solid transparent; transition: border-color .15s; }
+  .deck-card:active { opacity: .8; }
+  .deck-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .deck-meta { font-size: 12px; color: var(--text3); line-height: 1.7; }
+  .due-badge { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 99px; background: var(--red-bg); color: var(--red); margin-top: 5px; }
+  .ok-badge { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 99px; background: var(--green-bg); color: var(--green-text); margin-top: 5px; }
+  .dir-pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; margin-top: 6px; }
+  .dir-en { background: var(--green-bg); color: var(--green-text); }
+  .dir-fr { background: var(--blue-bg); color: var(--blue-text); }
+  .add-deck-card { background: none; border: 1.5px dashed var(--border2); border-radius: var(--radius); padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text3); min-height: 90px; }
+
+  /* Form */
+  .form-box { background: var(--bg2); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; }
+  .form-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; }
+  .form-row { margin-bottom: 12px; }
+  .form-row label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px; }
+  .form-row input, .form-row select {
+    width: 100%; font-size: 16px; padding: 10px 12px;
+    background: var(--bg); border: 1px solid var(--border2);
+    border-radius: var(--radius-sm); color: var(--text); outline: none;
+    -webkit-appearance: none; appearance: none;
+  }
+  .form-row input:focus, .form-row select:focus { border-color: var(--text2); }
+  .form-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .btn { border: none; border-radius: var(--radius-sm); padding: 10px 18px; font-size: 15px; font-weight: 500; cursor: pointer; }
+  .btn-primary { background: var(--text); color: var(--bg); }
+  .btn-primary:active { opacity: .8; }
+  .btn-ghost { background: var(--bg3); color: var(--text2); }
+
+  /* Card list */
+  .card-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.25rem; }
+  .card-item { background: var(--bg2); border-radius: var(--radius-sm); padding: 12px 14px; display: flex; align-items: center; gap: 10px; }
+  .card-texts { flex: 1; min-width: 0; }
+  .card-a { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-b { font-size: 13px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+  .card-right { text-align: right; white-space: nowrap; flex-shrink: 0; }
+  .card-stars { font-size: 11px; color: var(--text3); }
+  .card-due { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .type-pill { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 99px; margin-top: 4px; }
+  .tp-phrase { background: var(--blue-bg); color: var(--blue-text); }
+  .tp-mot { background: var(--amber-bg); color: var(--amber-text); }
+  .del-btn { background: none; border: none; font-size: 16px; color: var(--text3); padding: 4px; cursor: pointer; flex-shrink: 0; }
+
+  /* Deck pills */
+  .pill-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 1rem; overflow-x: auto; padding-bottom: 2px; }
+  .pill { background: var(--bg2); border: none; border-radius: 99px; padding: 6px 14px; font-size: 13px; color: var(--text2); cursor: pointer; white-space: nowrap; }
+  .pill.active { background: var(--text); color: var(--bg); }
+
+  /* Empty */
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 14px; }
+
+  /* Quiz */
+  .quiz-stats { display: flex; gap: 8px; margin-bottom: 12px; }
+  .stat-box { background: var(--bg2); border-radius: var(--radius-sm); padding: 10px; flex: 1; text-align: center; }
+  .stat-n { font-size: 20px; font-weight: 600; }
+  .stat-l { font-size: 11px; color: var(--text3); }
+  .prog-track { background: var(--bg3); border-radius: 99px; height: 4px; margin-bottom: 1rem; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--text); border-radius: 99px; transition: width .3s; }
+  .quiz-card {
+    background: var(--bg2); border-radius: var(--radius); padding: 2rem 1.25rem;
+    text-align: center; min-height: 200px; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; gap: 12px; margin-bottom: 1rem;
+  }
+  .quiz-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; }
+  .quiz-q { font-size: 22px; font-weight: 600; line-height: 1.4; }
+  .quiz-ans { font-size: 19px; font-weight: 500; color: var(--green); margin-top: 6px; }
+  .audio-btn { background: none; border: 1px solid var(--border2); border-radius: 99px; padding: 6px 14px; font-size: 13px; color: var(--text2); cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .audio-btn:active { background: var(--bg3); }
+  .score-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; margin-top: .5rem; }
+  .score-btn { border-radius: var(--radius-sm); padding: 10px 4px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .score-btn:active { opacity: .75; }
+  .score-sub { font-size: 10px; font-weight: 400; opacity: .75; }
+  .s1 { background: #FCEBEB; color: #A32D2D; }
+  .s2 { background: #FAECE7; color: #993C1D; }
+  .s3 { background: #FAEEDA; color: #854F0B; }
+  .s4 { background: var(--green-bg); color: var(--green-text); }
+  .s5 { background: #9FE1CB; color: #04342C; }
+  .reveal-wrap { text-align: center; }
+  .result-wrap { text-align: center; padding: 2.5rem 1rem; }
+  .result-score { font-size: 56px; font-weight: 700; }
+  .result-sub { font-size: 15px; color: var(--text2); margin: 8px 0 1.5rem; }
+  .score-hint { font-size: 13px; color: var(--text2); margin-bottom: 10px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="content">
+    <div id="screen-decks" class="screen active"></div>
+    <div id="screen-cards" class="screen"></div>
+    <div id="screen-quiz" class="screen"></div>
+  </div>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showTab('decks')" id="nav-decks">
+      <span class="nav-icon">📚</span><span>Decks</span>
+    </button>
+    <button class="nav-btn" onclick="showTab('cards')" id="nav-cards">
+      <span class="nav-icon">🗂</span><span>Cartes</span>
+    </button>
+    <button class="nav-btn" onclick="showTab('quiz')" id="nav-quiz">
+      <span class="nav-icon">⚡</span><span>Quiz</span>
+    </button>
+  </nav>
+</div>
+
+<script>
+const SK = 'myenglish_v1';
+
+const INTERVALS = {
+  1: 60 * 60 * 1000,
+  2: 4 * 60 * 60 * 1000,
+  3: 24 * 60 * 60 * 1000,
+  4: 2 * 24 * 60 * 60 * 1000,
+  5: 4 * 24 * 60 * 60 * 1000
+};
+const INT_LABELS = { 1:'1h', 2:'4h', 3:'24h', 4:'2j', 5:'4j' };
+
+function defaultData() {
+  return {
+    decks: [
+      { id:1, name:'Yellowstone', dir:'en-fr', type:'phrase' },
+      { id:2, name:'Quotidien', dir:'fr-en', type:'mixed' },
+      { id:3, name:'Vocabulaire', dir:'en-fr', type:'mot' }
+    ],
+    cards: [
+      { id:1, deckId:1, a:"You're gonna regret that.", b:"Tu vas le regretter.", type:'phrase', score:0, mult:1, due:0 },
+      { id:2, deckId:1, a:"I'm not built for this.", b:"Je ne suis pas fait pour ça.", type:'phrase', score:0, mult:1, due:0 },
+      { id:3, deckId:2, a:"Je ne suis pas sûr de ça.", b:"I'm not sure about that.", type:'phrase', score:0, mult:1, due:0 },
+      { id:4, deckId:3, a:"Tricky", b:"Compliqué / Délicat", type:'mot', score:0, mult:1, due:0 },
+      { id:5, deckId:3, a:"Overwhelming", b:"Écrasant / Trop intense", type:'mot', score:0, mult:1, due:0 }
+    ],
+    nextDeckId: 4,
+    nextCardId: 6
+  };
+}
+
+let data;
+try { data = JSON.parse(localStorage.getItem(SK)) || defaultData(); }
+catch(e) { data = defaultData(); }
+
+let activeDeckId = data.decks[0]?.id;
+let quizDeckId = data.decks[0]?.id;
+let quizDeck = [], quizIndex = 0, sessionScores = [];
+let currentTab = 'decks';
+let showNewDeckForm = false;
+
+function save() { try { localStorage.setItem(SK, JSON.stringify(data)); } catch(e){} }
+function now() { return Date.now(); }
+
+function formatDue(due) {
+  const diff = due - now();
+  if (diff <= 0) return '<span style="color:var(--red)">à revoir</span>';
+  const m = Math.floor(diff / 60000);
+  const h = Math.floor(diff / 3600000);
+  const d = Math.floor(diff / 86400000);
+  if (d >= 1) return 'dans ' + d + 'j';
+  if (h >= 1) return 'dans ' + h + 'h';
+  if (m >= 1) return 'dans ' + m + 'min';
+  return 'dans &lt;1min';
+}
+
+function showTab(tab) {
+  currentTab = tab;
+  ['decks','cards','quiz'].forEach(t => {
+    document.getElementById('screen-'+t).classList.toggle('active', t===tab);
+    document.getElementById('nav-'+t).classList.toggle('active', t===tab);
+  });
+  if(tab==='decks') renderDecks();
+  if(tab==='cards') renderCards();
+  if(tab==='quiz') renderQuizTab();
+}
+
+/* ── DECKS ── */
+function renderDecks() {
+  const el = document.getElementById('screen-decks');
+  const decksHTML = data.decks.map(d => {
+    const total = data.cards.filter(c => c.deckId===d.id).length;
+    const due = data.cards.filter(c => c.deckId===d.id && c.due<=now()).length;
+    const dirLabel = d.dir==='en-fr' ? 'EN → FR' : 'FR → EN';
+    const dirClass = d.dir==='en-fr' ? 'dir-en' : 'dir-fr';
+    const duePart = due > 0
+      ? `<span class="due-badge">${due} à revoir</span>`
+      : `<span class="ok-badge">À jour ✓</span>`;
+    return `<div class="deck-card" onclick="goToDeck(${d.id})">
+      <div class="deck-name">${d.name}</div>
+      <div class="deck-meta">${total} carte${total!==1?'s':''}</div>
+      ${duePart}
+      <br><span class="dir-pill ${dirClass}">${dirLabel}</span>
+    </div>`;
+  }).join('');
+
+  const formHTML = showNewDeckForm ? `
+    <div class="form-box">
+      <div class="form-title">Nouveau deck</div>
+      <div class="form-row"><label>Nom</label><input type="text" id="deck-name-inp" placeholder="ex. Peaky Blinders, Mon livre…"/></div>
+      <div class="form-row"><label>Direction</label>
+        <select id="deck-dir-inp">
+          <option value="en-fr">Anglais → Français</option>
+          <option value="fr-en">Français → Anglais</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Type de cartes</label>
+        <select id="deck-type-inp">
+          <option value="phrase">Phrases</option>
+          <option value="mot">Vocabulaire (mots)</option>
+          <option value="mixed">Les deux</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" onclick="toggleForm(false)">Annuler</button>
+        <button class="btn btn-primary" onclick="createDeck()">Créer</button>
+      </div>
+    </div>` : '';
+
+  el.innerHTML = `
+    <div class="section-label">Mes decks</div>
+    <div class="deck-grid">
+      ${decksHTML}
+      <div class="add-deck-card" onclick="toggleForm(true)">+ Nouveau deck</div>
+    </div>
+    ${formHTML}`;
+
+  if(showNewDeckForm) setTimeout(()=>document.getElementById('deck-name-inp')?.focus(),80);
+}
+
+function toggleForm(v) { showNewDeckForm = v; renderDecks(); }
+
+function createDeck() {
+  const name = document.getElementById('deck-name-inp')?.value.trim();
+  if(!name) return;
+  const dir = document.getElementById('deck-dir-inp').value;
+  const type = document.getElementById('deck-type-inp').value;
+  data.decks.push({ id: data.nextDeckId++, name, dir, type });
+  save(); showNewDeckForm = false; renderDecks();
+}
+
+function goToDeck(id) { activeDeckId = id; quizDeckId = id; showTab('cards'); }
+
+/* ── CARDS ── */
+function pills(selected, fn) {
+  return data.decks.map(d =>
+    `<button class="pill ${d.id===selected?'active':''}" onclick="${fn}(${d.id})">${d.name}</button>`
+  ).join('');
+}
+
+function renderCards() {
+  const el = document.getElementById('screen-cards');
+  if(!data.decks.length) { el.innerHTML='<div class="empty">Crée un deck d\'abord.</div>'; return; }
+  if(!activeDeckId || !data.decks.find(d=>d.id===activeDeckId)) activeDeckId = data.decks[0].id;
+  const deck = data.decks.find(d=>d.id===activeDeckId);
+  const isEnFr = deck.dir==='en-fr';
+  const cards = data.cards.filter(c=>c.deckId===activeDeckId);
+
+  const typeOpts = deck.type==='mot'
+    ? '<option value="mot">Mot</option>'
+    : deck.type==='phrase'
+    ? '<option value="phrase">Phrase</option>'
+    : '<option value="phrase">Phrase</option><option value="mot">Mot</option>';
+
+  const cardRows = cards.length ? cards.map(c => `
+    <div class="card-item">
+      <div class="card-texts">
+        <div class="card-a">${c.a}</div>
+        <div class="card-b">${c.b}</div>
+        <span class="type-pill ${c.type==='mot'?'tp-mot':'tp-phrase'}">${c.type}</span>
+      </div>
+      <div class="card-right">
+        <div class="card-stars">${'★'.repeat(c.score)}${'☆'.repeat(5-c.score)}</div>
+        <div class="card-due">${formatDue(c.due)}</div>
+      </div>
+      <button class="del-btn" onclick="deleteCard(${c.id})">✕</button>
+    </div>`).join('') : '<div class="empty">Aucune carte dans ce deck.</div>';
+
+  el.innerHTML = `
+    <div class="pill-row">${pills(activeDeckId,'setActiveDeck')}</div>
+    <div class="card-list">${cardRows}</div>
+    <div class="form-box">
+      <div class="form-title">Ajouter une carte</div>
+      <div class="form-row">
+        <label>${isEnFr?'Anglais (question)':'Français (question)'}</label>
+        <input type="text" id="inp-a" placeholder="${isEnFr?"ex. You're gonna regret that.":"ex. Je rentre tard ce soir."}"/>
+      </div>
+      <div class="form-row">
+        <label>${isEnFr?'Français (réponse)':'Anglais (réponse)'}</label>
+        <input type="text" id="inp-b" placeholder="${isEnFr?"ex. Tu vas le regretter.":"ex. I'm coming home late."}"/>
+      </div>
+      <div class="form-row"><label>Type</label><select id="inp-type">${typeOpts}</select></div>
+      <div class="form-actions"><button class="btn btn-primary" onclick="addCard()">Ajouter</button></div>
+    </div>`;
+}
+
+function setActiveDeck(id) { activeDeckId=id; renderCards(); }
+
+function addCard() {
+  const a = document.getElementById('inp-a')?.value.trim();
+  const b = document.getElementById('inp-b')?.value.trim();
+  const type = document.getElementById('inp-type')?.value || 'phrase';
+  if(!a||!b) return;
+  data.cards.push({ id:data.nextCardId++, deckId:activeDeckId, a, b, type, score:0, mult:1, due:0 });
+  save(); renderCards();
+}
+
+function deleteCard(id) {
+  if(!confirm('Supprimer cette carte ?')) return;
+  data.cards = data.cards.filter(c=>c.id!==id);
+  save(); renderCards();
+}
+
+/* ── QUIZ ── */
+function renderQuizTab() {
+  const el = document.getElementById('screen-quiz');
+  if(!data.decks.length) { el.innerHTML='<div class="empty">Crée un deck d\'abord.</div>'; return; }
+  if(!quizDeckId || !data.decks.find(d=>d.id===quizDeckId)) quizDeckId = data.decks[0].id;
+  el.innerHTML = `<div class="pill-row">${pills(quizDeckId,'setQuizDeck')}</div><div id="quiz-area"></div>`;
+  startQuiz();
+}
+
+function setQuizDeck(id) { quizDeckId=id; renderQuizTab(); }
+
+function startQuiz() {
+  const all = data.cards.filter(c=>c.deckId===quizDeckId);
+  if(!all.length) { document.getElementById('quiz-area').innerHTML='<div class="empty">Aucune carte dans ce deck.</div>'; return; }
+  const due = all.filter(c=>c.due<=now()).sort(()=>Math.random()-.5);
+  const notDue = all.filter(c=>c.due>now()).sort((a,b)=>a.score-b.score);
+  quizDeck = [...due, ...notDue.slice(0, Math.max(3, 10-due.length))];
+  quizIndex=0; sessionScores=[];
+  renderQuizCard();
+}
+
+function getEnText(card) {
+  const deck = data.decks.find(d=>d.id===card.deckId);
+  return deck?.dir==='en-fr' ? card.a : card.b;
+}
+
+function speak(text) {
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'en-US';
+  utt.rate = 0.9;
+  window.speechSynthesis.speak(utt);
+}
+
+function renderQuizCard() {
+  const area = document.getElementById('quiz-area');
+  if(!area) return;
+  if(quizIndex >= quizDeck.length) {
+    const avg = sessionScores.length
+      ? (sessionScores.reduce((a,b)=>a+b,0)/sessionScores.length).toFixed(1)
+      : '—';
+    area.innerHTML = `<div class="result-wrap">
+      <div class="result-score">${avg}<span style="font-size:28px">/5</span></div>
+      <div class="result-sub">${sessionScores.length} carte${sessionScores.length!==1?'s':''} révisée${sessionScores.length!==1?'s':''}</div>
+      <button class="btn btn-primary" onclick="startQuiz()">Recommencer</button>
+    </div>`;
+    return;
+  }
+  const card = quizDeck[quizIndex];
+  const deck = data.decks.find(d=>d.id===card.deckId);
+  const pct = Math.round((quizIndex/quizDeck.length)*100);
+  const dueCount = quizDeck.filter(c=>c.due<=now()).length;
+  const dirLbl = deck?.dir==='en-fr' ? 'Traduire en français' : 'Traduire en anglais';
+  const typeBadge = `<span class="type-pill ${card.type==='mot'?'tp-mot':'tp-phrase'}" style="font-size:11px">${card.type}</span>`;
+  const enText = getEnText(card);
+
+  area.innerHTML = `
+    <div class="quiz-stats">
+      <div class="stat-box"><div class="stat-n">${quizIndex}</div><div class="stat-l">vues</div></div>
+      <div class="stat-box"><div class="stat-n">${quizDeck.length-quizIndex}</div><div class="stat-l">restantes</div></div>
+      <div class="stat-box"><div class="stat-n" style="color:${dueCount>0?'var(--red)':'var(--green)'}">${dueCount}</div><div class="stat-l">dues</div></div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>
+    <div class="quiz-card">
+      <div class="quiz-lbl">${dirLbl} · ${typeBadge}</div>
+      <div class="quiz-q">${card.a}</div>
+      <button class="audio-btn" onclick="speak('${enText.replace(/'/g,"\\'")}')">🔊 Écouter</button>
+      <div id="ans-zone"></div>
+    </div>
+    <div id="quiz-btns" class="reveal-wrap">
+      <button class="btn btn-primary" onclick="reveal()">Voir la réponse</button>
+    </div>`;
+}
+
+function reveal() {
+  const card = quizDeck[quizIndex];
+  document.getElementById('ans-zone').innerHTML = `<div class="quiz-ans">${card.b}</div>`;
+  document.getElementById('quiz-btns').innerHTML = `
+    <p class="score-hint">C'est acquis à quel niveau ?</p>
+    <div class="score-grid">
+      <button class="score-btn s1" onclick="rate(1)"><span>1</span><span class="score-sub">${INT_LABELS[1]}</span></button>
+      <button class="score-btn s2" onclick="rate(2)"><span>2</span><span class="score-sub">${INT_LABELS[2]}</span></button>
+      <button class="score-btn s3" onclick="rate(3)"><span>3</span><span class="score-sub">${INT_LABELS[3]}</span></button>
+      <button class="score-btn s4" onclick="rate(4)"><span>4</span><span class="score-sub">${INT_LABELS[4]}</span></button>
+      <button class="score-btn s5" onclick="rate(5)"><span>5</span><span class="score-sub">${INT_LABELS[5]}</span></button>
+    </div>`;
+}
+
+function rate(s) {
+  const card = quizDeck[quizIndex];
+  const real = data.cards.find(c=>c.id===card.id);
+  if(real) {
+    real.score = s;
+    const base = INTERVALS[s];
+    const mult = s >= 4 ? (real.mult || 1) : 1;
+    real.due = now() + base * mult;
+    real.mult = s >= 4 ? Math.min((real.mult||1) * 1.5, 8) : 1;
+  }
+  sessionScores.push(s);
+  save();
+  quizIndex++;
+  renderQuizCard();
+}
+</script>
+</body>
+</html>
