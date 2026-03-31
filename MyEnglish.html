@@ -9,162 +9,223 @@
 <title>MyEnglish</title>
 <style>
 :root{
-  --accent:#1a5c38;--accent2:#2a7a4e;--accent-light:#e8f5ee;--accent-text:#0d3d24;
-  --bg:#ffffff;--bg2:#f7f7f5;--bg3:#eeede9;
-  --text:#111111;--text2:#555555;--text3:#999999;
-  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.15);
-  --r:12px;--rsm:8px;
-  --red:#c0392b;--redbg:#fdf0ef;--orange:#d4660a;--orangebg:#fef3e8;
-  --glite:#27ae60;--glitebg:#eafaf1;--gvif:#1a7a3c;--gvifbg:#d5f0e0;
+  --accent:#1a5c38;--accent2:#2a7a4e;--accent-light:#e6f2eb;--accent-text:#0d3d24;
+  --bg:#faf9f7;--bg2:#f2f1ee;--bg3:#e8e6e1;
+  --text:#111111;--text2:#4a4a4a;--text3:#8a8a8a;
+  --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.13);
+  --r:11px;--rsm:7px;
+  --red:#c0392b;--redbg:#fdf0ef;
+  --orange:#c45c0a;--orangebg:#fef3e8;
+  --gl:#27ae60;--glbg:#eafaf1;
+  --gv:#0f7a30;--gvbg:#d4f0de;
   --blue:#1a4a7a;--bluebg:#eaf0f8;
-  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
 }
 @media(prefers-color-scheme:dark){:root{
-  --bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#242424;
-  --text:#f0f0f0;--text2:#999;--text3:#555;
-  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
-  --accent:#2a7a4e;--accent2:#3a9a62;--accent-light:#0d2b1a;--accent-text:#7de0a8;
-  --redbg:#2a0f0d;--orangebg:#2a1800;--glitebg:#0d2b1a;--gvifbg:#0a2016;--bluebg:#0d1e33;
+  --bg:#0e0e0c;--bg2:#181816;--bg3:#222220;
+  --text:#f2f0ec;--text2:#9a9890;--text3:#555450;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
+  --accent:#2a7a4e;--accent-light:#0a2018;--accent-text:#6dd49a;
+  --redbg:#2a0f0d;--orangebg:#2a1400;--glbg:#0a2018;--gvbg:#082010;--bluebg:#0a1828;
 }}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;font-size:15px}
 .app{display:flex;flex-direction:column;height:100%;padding-top:var(--safe-top)}
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:1.5rem 1rem 0.5rem}
-/* NAV */
-.nav{display:flex;border-top:0.5px solid var(--border);background:var(--bg);padding-bottom:var(--safe-bottom)}
-.nb{flex:1;background:none;border:none;padding:10px 0 8px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:var(--text3);font-size:9px;letter-spacing:.02em;text-transform:uppercase}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:1.25rem 1rem 0.5rem}
+.nav{display:flex;border-top:0.5px solid var(--border2);background:var(--bg);padding-bottom:var(--safe-bottom);position:relative}
+.nb{flex:1;background:none;border:none;padding:10px 0 8px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:var(--text3);font-size:9px;letter-spacing:.03em;text-transform:uppercase;font-weight:500;position:relative}
 .nb.active{color:var(--accent)}
-.nb svg{width:22px;height:22px;stroke-width:1.5;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+.nb svg{width:21px;height:21px;stroke-width:1.6;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+.nb-badge{position:absolute;top:6px;right:calc(50% - 18px);background:var(--red);color:#fff;border-radius:99px;font-size:9px;font-weight:700;padding:1px 5px;min-width:16px;text-align:center;pointer-events:none}
 .screen{display:none}.screen.active{display:block}
-/* TYPOGRAPHY */
-.page-title{font-size:13px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
-h1{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1.2}
+.page-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+h1{font-size:24px;font-weight:700;letter-spacing:-.4px;line-height:1.2}
+
 /* HOME */
-.home-hero{padding:1rem 0 1.5rem}
-.home-greeting{font-size:13px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
-.home-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:1.25rem 0}
-.stat{background:var(--bg2);border-radius:var(--r);padding:14px 10px;text-align:center;border:0.5px solid var(--border)}
-.stat-n{font-size:24px;font-weight:700;line-height:1}
-.stat-l{font-size:11px;color:var(--text3);margin-top:4px}
-.streak{display:flex;align-items:center;gap:10px;background:var(--accent-light);border-radius:var(--r);padding:12px 16px;margin-bottom:1.25rem;border:0.5px solid rgba(26,92,56,.15)}
-.streak-n{font-size:22px;font-weight:700;color:var(--accent)}
-.streak-l{font-size:13px;color:var(--accent-text)}
-.daily-limit{background:var(--bg2);border-radius:var(--r);padding:10px 14px;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;border:0.5px solid var(--border)}
-.dl-label{font-size:13px;color:var(--text2)}
-.dl-bar-wrap{flex:1;margin:0 12px;background:var(--bg3);border-radius:99px;height:5px;overflow:hidden}
-.dl-bar{height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
-.dl-count{font-size:12px;color:var(--text3);white-space:nowrap}
-/* BUTTONS */
-.btn-main{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:15px;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:10px;letter-spacing:.01em}
+.home-hero{padding:.5rem 0 1rem;display:flex;align-items:center;justify-content:space-between}
+.home-hero-text{}
+.home-greeting{font-size:11px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.home-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+.stat{background:var(--bg2);border-radius:var(--r);padding:12px 8px;text-align:center;border:0.5px solid var(--border);cursor:default}
+.stat.clickable{cursor:pointer;transition:border-color .15s}
+.stat.clickable:active{opacity:.8}
+.stat-n{font-size:22px;font-weight:700;line-height:1}
+.stat-l{font-size:10px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.04em}
+
+/* STREAK CARD */
+.streak-card{background:var(--accent-light);border-radius:var(--r);padding:14px 16px;margin-bottom:1rem;border:0.5px solid rgba(26,92,56,.12);display:flex;align-items:center;gap:14px}
+.streak-fire{font-size:32px;line-height:1}
+.streak-info{flex:1}
+.streak-n{font-size:26px;font-weight:700;color:var(--accent);line-height:1}
+.streak-l{font-size:12px;color:var(--accent-text);margin-top:2px}
+.streak-days{display:flex;gap:5px;margin-top:10px}
+.streak-dot{width:26px;height:6px;border-radius:99px;background:var(--bg3)}
+.streak-dot.done{background:var(--accent)}
+.streak-dot.today{background:var(--accent2);box-shadow:0 0 6px rgba(26,92,56,.4)}
+
+/* DAILY GOAL */
+.daily-goal{background:var(--bg2);border-radius:var(--r);padding:12px 14px;margin-bottom:1rem;border:0.5px solid var(--border)}
+.daily-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.daily-label{font-size:13px;color:var(--text);font-weight:500}
+.daily-count{font-size:13px;color:var(--accent);font-weight:600}
+.dbar{background:var(--bg3);border-radius:99px;height:6px;overflow:hidden;position:relative}
+.dbar-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .4s ease}
+.dbar-glow{position:absolute;top:0;right:0;width:20px;height:100%;background:linear-gradient(90deg,transparent,rgba(26,92,56,.3));border-radius:99px;display:none}
+
+/* GLOBAL PROGRESS */
+.global-prog{background:var(--bg2);border-radius:var(--r);padding:12px 14px;margin-bottom:1rem;border:0.5px solid var(--border)}
+.gp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.gp-label{font-size:13px;color:var(--text);font-weight:500}
+.gp-pct{font-size:13px;color:var(--text3)}
+.gp-bar{background:var(--bg3);border-radius:99px;height:4px;overflow:hidden;margin-bottom:6px}
+.gp-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width .4s}
+.gp-sub{font-size:11px;color:var(--text3)}
+
+/* NOTIFICATION BANNER */
+.notif-banner{background:var(--bluebg);border:0.5px solid var(--blue);border-radius:var(--r);padding:12px 14px;margin-bottom:1rem;display:flex;align-items:center;gap:12px}
+.notif-banner-text{flex:1;font-size:13px;color:var(--blue)}
+.notif-banner-btn{background:var(--blue);color:#fff;border:none;border-radius:var(--rsm);padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+
+.btn-main{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:14px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:9px}
 .btn-main:active{opacity:.85}
-.btn-secondary{width:100%;background:var(--bg2);color:var(--text);border:0.5px solid var(--border2);border-radius:var(--r);padding:13px;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:8px}
-.btn-secondary:active{opacity:.8}
-.btn{border:none;border-radius:var(--rsm);padding:9px 16px;font-size:14px;font-weight:500;cursor:pointer}
+.btn-sec{width:100%;background:var(--bg2);color:var(--text);border:0.5px solid var(--border2);border-radius:var(--r);padding:12px;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:7px}
+.btn-sec:active{opacity:.8}
+.btn{border:none;border-radius:var(--rsm);padding:9px 15px;font-size:14px;font-weight:500;cursor:pointer}
 .btn-p{background:var(--accent);color:#fff}.btn-p:active{opacity:.85}
 .btn-g{background:var(--bg3);color:var(--text2)}
-/* DECK GRID */
-.deck-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1.25rem}
-.deck-card{background:var(--bg2);border-radius:var(--r);padding:14px;cursor:pointer;border:0.5px solid var(--border);transition:border-color .15s}
-.deck-card:active{opacity:.8}
-.deck-name{font-size:14px;font-weight:600;margin-bottom:4px}
-.deck-meta{font-size:12px;color:var(--text3);line-height:1.7}
-.due-pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;background:var(--redbg);color:var(--red);margin-top:6px}
-.ok-pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;background:var(--glitebg);color:var(--gvif);margin-top:6px}
-.dir-tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:99px;margin-top:6px;background:var(--bg3);color:var(--text3);margin-left:4px}
-.add-deck{background:none;border:1px dashed var(--border2);border-radius:var(--r);padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text3);min-height:88px}
+.btn-sm{border:none;border-radius:var(--rsm);padding:6px 12px;font-size:13px;font-weight:500;cursor:pointer;background:var(--bg3);color:var(--text2)}
+
+/* MASTERED DETAIL */
+.mastered-detail{background:var(--bg2);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
+.mastered-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.mastered-row:last-child{border-bottom:none}
+.mastered-cat{font-size:13px;color:var(--text2)}
+.mastered-val{font-size:14px;font-weight:600;color:var(--accent)}
+
+/* THEMES - list view */
+.theme-list{display:flex;flex-direction:column;gap:7px;margin-bottom:1.25rem}
+.theme-item{background:var(--bg2);border-radius:var(--r);padding:13px 15px;cursor:pointer;border:0.5px solid var(--border);display:flex;align-items:center;gap:12px}
+.theme-item:active{opacity:.8}
+.theme-item-icon{width:36px;height:36px;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:var(--bg3)}
+.theme-item-info{flex:1;min-width:0}
+.theme-item-name{font-size:14px;font-weight:600}
+.theme-item-meta{font-size:12px;color:var(--text3);margin-top:2px}
+.theme-item-right{text-align:right;flex-shrink:0}
+.due-pill{display:inline-block;font-size:10px;padding:2px 7px;border-radius:99px;background:var(--redbg);color:var(--red);font-weight:600}
+.ok-pill{display:inline-block;font-size:10px;padding:2px 7px;border-radius:99px;background:var(--glbg);color:var(--gv);font-weight:600}
+.dir-tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:99px;background:var(--bg3);color:var(--text3);margin-top:4px}
+.add-theme-btn{background:none;border:1px dashed var(--border2);border-radius:var(--r);padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text3);width:100%}
+
 /* FORMS */
-.form-box{background:var(--bg2);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem;border:0.5px solid var(--border)}
-.form-title{font-size:14px;font-weight:600;margin-bottom:14px;color:var(--text)}
-.form-row{margin-bottom:11px}
-.form-row label{display:block;font-size:12px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
-.form-row input,.form-row select,.form-row textarea{width:100%;font-size:15px;padding:10px 12px;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--rsm);color:var(--text);outline:none;-webkit-appearance:none;appearance:none}
-.form-row textarea{height:56px;resize:none;font-family:inherit}
+.form-box{background:var(--bg2);border-radius:var(--r);padding:1.2rem;margin-bottom:1rem;border:0.5px solid var(--border)}
+.form-title{font-size:13px;font-weight:700;margin-bottom:13px;color:var(--text);text-transform:uppercase;letter-spacing:.05em}
+.form-row{margin-bottom:10px}
+.form-row label{display:block;font-size:11px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.form-row input,.form-row select,.form-row textarea{width:100%;font-size:15px;padding:10px 11px;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--rsm);color:var(--text);outline:none;-webkit-appearance:none;appearance:none;font-family:inherit}
+.form-row textarea{height:52px;resize:none}
 .form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:var(--accent)}
-.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
-/* PILL ROW */
+.form-actions{display:flex;gap:7px;justify-content:flex-end;margin-top:6px}
+
+/* PILLS */
 .pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
-.pill{background:var(--bg2);border:0.5px solid var(--border);border-radius:99px;padding:6px 14px;font-size:13px;color:var(--text2);cursor:pointer;white-space:nowrap}
+.pill{background:var(--bg2);border:0.5px solid var(--border);border-radius:99px;padding:6px 13px;font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap;font-weight:500}
 .pill.active{background:var(--accent);color:#fff;border-color:transparent}
+
 /* CARD LIST */
-.card-list{display:flex;flex-direction:column;gap:7px;margin-bottom:1.25rem}
-.card-item{background:var(--bg2);border-radius:var(--rsm);padding:12px 14px;display:flex;align-items:center;gap:10px;border:0.5px solid var(--border)}
+.section-header{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.section-header-line{flex:1;height:0.5px;background:var(--border2)}
+.card-list{display:flex;flex-direction:column;gap:6px;margin-bottom:1rem}
+.card-item{background:var(--bg2);border-radius:var(--rsm);padding:11px 13px;display:flex;align-items:center;gap:9px;border:0.5px solid var(--border)}
 .card-texts{flex:1;min-width:0}
 .card-a{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-b{font-size:13px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.card-b{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
 .card-ctx{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-style:italic}
 .card-right{text-align:right;white-space:nowrap;flex-shrink:0}
-.card-due{font-size:11px;color:var(--text3);margin-top:2px}
-.del-btn{background:none;border:none;font-size:15px;color:var(--text3);padding:4px 6px;cursor:pointer;flex-shrink:0}
-/* STARS */
-.stars{font-size:12px;letter-spacing:1px}
-.s0{color:var(--text3)}
-.sr{color:var(--red)}
-.so{color:var(--orange)}
-.sgl{color:var(--glite)}
-.sgv{color:var(--gvif)}
-/* TYPE PILLS */
-.tp{display:inline-block;font-size:10px;padding:1px 7px;border-radius:99px;margin-top:3px}
+.card-due{font-size:10px;color:var(--text3);margin-top:3px}
+.del-btn{background:none;border:none;font-size:14px;color:var(--text3);padding:4px 5px;cursor:pointer;flex-shrink:0}
+.tp{display:inline-block;font-size:9px;padding:1px 6px;border-radius:99px;margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
 .tp-p{background:var(--bluebg);color:var(--blue)}.tp-m{background:var(--orangebg);color:var(--orange)}.tp-b{background:var(--accent-light);color:var(--accent-text)}
-/* EMPTY */
-.empty{text-align:center;padding:3rem 1rem;color:var(--text3);font-size:14px}
+.search-box{width:100%;font-size:14px;padding:9px 12px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);color:var(--text);outline:none;font-family:inherit;margin-bottom:10px}
+.search-box:focus{border-color:var(--accent)}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--text3);font-size:14px}
+
 /* QUIZ */
-.quiz-stats{display:flex;gap:8px;margin-bottom:12px}
-.qs{background:var(--bg2);border-radius:var(--rsm);padding:10px;flex:1;text-align:center;border:0.5px solid var(--border)}
-.qs-n{font-size:20px;font-weight:700}
-.qs-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
-.prog{background:var(--bg3);border-radius:99px;height:3px;margin-bottom:1.25rem;overflow:hidden}
+.quiz-selector{margin-bottom:1rem}
+.quiz-sel-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.quiz-sel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
+.qsel-btn{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:10px 6px;text-align:center;cursor:pointer;font-size:12px;font-weight:500;color:var(--text2);transition:all .15s}
+.qsel-btn.active{background:var(--accent);color:#fff;border-color:transparent}
+.qsel-btn:active{opacity:.8}
+.qsel-icon{font-size:18px;margin-bottom:4px}
+.quiz-stats{display:flex;gap:7px;margin-bottom:11px}
+.qs{background:var(--bg2);border-radius:var(--rsm);padding:9px;flex:1;text-align:center;border:0.5px solid var(--border)}
+.qs-n{font-size:19px;font-weight:700}
+.qs-l{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.prog{background:var(--bg3);border-radius:99px;height:3px;margin-bottom:1.2rem;overflow:hidden}
 .prog-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
-.quiz-card{background:var(--bg2);border-radius:var(--r);padding:2rem 1.25rem;text-align:center;min-height:210px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;margin-bottom:1rem;border:0.5px solid var(--border)}
-.quiz-dir{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
-.quiz-q{font-size:22px;font-weight:600;line-height:1.4;color:var(--text)}
-.quiz-ans{font-size:19px;font-weight:500;color:var(--accent);margin-top:6px;line-height:1.4}
-.quiz-ctx{font-size:13px;color:var(--text2);font-style:italic;margin-top:4px;padding:0 1rem}
-.audio-btn{background:none;border:0.5px solid var(--border2);border-radius:99px;padding:7px 16px;font-size:13px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:6px}
+.quiz-card{background:var(--bg2);border-radius:var(--r);padding:1.75rem 1.25rem;text-align:center;min-height:200px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:11px;margin-bottom:1rem;border:0.5px solid var(--border)}
+.quiz-dir{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+.quiz-q{font-size:21px;font-weight:600;line-height:1.4}
+.quiz-ans{font-size:18px;font-weight:500;color:var(--accent);margin-top:5px;line-height:1.4}
+.quiz-ctx{font-size:12px;color:var(--text2);font-style:italic;margin-top:4px;padding:0 .75rem;line-height:1.5}
+.discovery-badge{background:#fff3cd;color:#856404;border-radius:99px;font-size:10px;font-weight:700;padding:2px 8px;text-transform:uppercase;letter-spacing:.04em}
+.audio-btn{background:none;border:0.5px solid var(--border2);border-radius:99px;padding:6px 14px;font-size:12px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:5px}
 .audio-btn:active{background:var(--bg3)}
-.score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:.5rem}
-.score-btn{border-radius:var(--rsm);padding:11px 4px;font-size:14px;font-weight:700;cursor:pointer;border:none;display:flex;flex-direction:column;align-items:center;gap:3px}
+.write-input{width:100%;font-size:16px;padding:12px;background:var(--bg);border:1.5px solid var(--border2);border-radius:var(--rsm);color:var(--text);outline:none;font-family:inherit;text-align:center;margin-top:4px}
+.write-input:focus{border-color:var(--accent)}
+.write-compare{background:var(--bg3);border-radius:var(--rsm);padding:10px 14px;margin-top:8px;width:100%;text-align:left}
+.write-yours{font-size:13px;color:var(--text2);margin-bottom:4px}
+.write-correct{font-size:13px;color:var(--accent);font-weight:500}
+.score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:.5rem}
+.score-btn{border-radius:var(--rsm);padding:10px 3px;font-size:14px;font-weight:700;cursor:pointer;border:none;display:flex;flex-direction:column;align-items:center;gap:3px}
 .score-btn:active{opacity:.75}
-.score-sub{font-size:9px;font-weight:500;opacity:.8;letter-spacing:.02em}
-.sc1{background:var(--redbg);color:var(--red)}
-.sc2{background:#fef0e8;color:#b94a00}
-.sc3{background:var(--orangebg);color:var(--orange)}
-.sc4{background:var(--glitebg);color:var(--glite)}
-.sc5{background:var(--gvifbg);color:var(--gvif)}
-.score-hint{font-size:13px;color:var(--text2);margin-bottom:10px;text-align:center}
+.score-sub{font-size:9px;font-weight:500;opacity:.8}
+.sc1{background:var(--redbg);color:var(--red)}.sc2{background:#fef0e8;color:#b94a00}.sc3{background:var(--orangebg);color:var(--orange)}.sc4{background:var(--glbg);color:var(--gl)}.sc5{background:var(--gvbg);color:var(--gv)}
+.score-hint{font-size:12px;color:var(--text2);margin-bottom:9px;text-align:center}
 .reveal-wrap{text-align:center}
 .result{text-align:center;padding:2.5rem 1rem}
-.result-score{font-size:60px;font-weight:700;color:var(--accent)}
-.result-sub{font-size:15px;color:var(--text2);margin:8px 0 1.5rem}
+.result-score{font-size:58px;font-weight:700;color:var(--accent)}
+.result-sub{font-size:14px;color:var(--text2);margin:7px 0 1.5rem}
+
 /* EXPLORE */
-.explore-header{margin-bottom:1.25rem}
-.explore-desc{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.5}
-.cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1.25rem}
-.cat-card{border-radius:var(--r);padding:16px;cursor:pointer;border:none;text-align:left;position:relative;overflow:hidden}
+.explore-intro{font-size:13px;color:var(--text2);margin-bottom:1.25rem;line-height:1.6;padding:12px 14px;background:var(--accent-light);border-radius:var(--r);border:0.5px solid rgba(26,92,56,.1)}
+.cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:1.25rem}
+.cat-card{border-radius:var(--r);padding:14px;cursor:pointer;border:none;text-align:left}
 .cat-card:active{opacity:.85}
-.cat-icon{font-size:22px;margin-bottom:8px}
+.cat-icon{font-size:20px;margin-bottom:7px}
 .cat-name{font-size:13px;font-weight:600;line-height:1.3}
-.cat-progress{font-size:11px;opacity:.75;margin-top:4px}
-.cat-locked{opacity:.5;cursor:default}
-.lock-icon{position:absolute;top:12px;right:12px;font-size:14px;opacity:.6}
-.level-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em}
+.cat-sub{font-size:11px;opacity:.7;margin-top:3px}
+.level-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:99px;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em}
 .lv1{background:#e8f4fd;color:#1a5276}.lv2{background:#fef9e7;color:#7d6608}.lv3{background:#fdf2f8;color:#76448a}
-.bank-item{background:var(--bg2);border-radius:var(--rsm);padding:13px 14px;margin-bottom:8px;border:0.5px solid var(--border);position:relative}
-.bank-en{font-size:15px;font-weight:500;padding-right:80px}
-.bank-fr{font-size:13px;color:var(--text2);margin-top:3px}
+.bank-item{background:var(--bg2);border-radius:var(--rsm);padding:12px 13px;margin-bottom:7px;border:0.5px solid var(--border);position:relative}
+.bank-en{font-size:14px;font-weight:500;padding-right:52px;line-height:1.4}
+.bank-fr{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.4}
 .bank-note{font-size:11px;color:var(--text3);margin-top:5px;font-style:italic;line-height:1.4}
-.bank-level-dot{position:absolute;top:13px;right:44px;font-size:10px;font-weight:600;color:var(--text3)}
-.add-btn{position:absolute;top:11px;right:10px;background:var(--accent);color:#fff;border:none;border-radius:99px;padding:4px 11px;font-size:12px;font-weight:500;cursor:pointer}
+.add-btn{position:absolute;top:11px;right:10px;background:var(--accent);color:#fff;border:none;border-radius:99px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer}
 .add-btn.done{background:var(--bg3);color:var(--text3);cursor:default}
-.back-btn{background:none;border:none;font-size:14px;color:var(--text2);cursor:pointer;margin-bottom:1rem;padding:0;display:flex;align-items:center;gap:5px}
-.locked-msg{text-align:center;padding:2rem 1rem;color:var(--text3);font-size:13px}
+.locked-item{filter:blur(3px);pointer-events:none;user-select:none;opacity:.6}
+.locked-section{text-align:center;padding:14px;background:var(--bg2);border-radius:var(--r);border:0.5px dashed var(--border2);margin-top:8px;font-size:13px;color:var(--text3)}
+.back-btn{background:none;border:none;font-size:13px;color:var(--text2);cursor:pointer;margin-bottom:1rem;padding:0;display:flex;align-items:center;gap:5px;font-weight:500}
+
+/* +1 ANIMATION */
+.plus-one{position:fixed;font-size:18px;font-weight:700;color:var(--accent);pointer-events:none;z-index:9999;animation:floatUp .8s ease forwards}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(1.3)}}
+
+/* SETTINGS */
+.settings-section{margin-bottom:1.5rem}
+.settings-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.settings-row{background:var(--bg2);border-radius:var(--rsm);padding:12px 14px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;border:0.5px solid var(--border)}
+.settings-label{font-size:14px;font-weight:500}
+.settings-sub{font-size:12px;color:var(--text3);margin-top:2px}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="content">
     <div id="s-home" class="screen active"></div>
-    <div id="s-decks" class="screen"></div>
-    <div id="s-cards" class="screen"></div>
+    <div id="s-themes" class="screen"></div>
+    <div id="s-fiches" class="screen"></div>
     <div id="s-quiz" class="screen"></div>
     <div id="s-explore" class="screen"></div>
   </div>
@@ -173,13 +234,13 @@ h1{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1.2}
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span>Accueil</span>
     </button>
-    <button class="nb" onclick="T('decks')" id="n-decks">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      <span>Decks</span>
+    <button class="nb" onclick="T('themes')" id="n-themes">
+      <svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/></svg>
+      <span>Thèmes</span>
     </button>
-    <button class="nb" onclick="T('cards')" id="n-cards">
-      <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-      <span>Cartes</span>
+    <button class="nb" onclick="T('fiches')" id="n-fiches">
+      <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><rect x="6" y="3" width="12" height="5" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg>
+      <span>Fiches</span>
     </button>
     <button class="nb" onclick="T('quiz')" id="n-quiz">
       <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -191,369 +252,532 @@ h1{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1.2}
     </button>
   </nav>
 </div>
+
 <script>
 const SK='myenglish_v4';
+const DAILY_GOAL=10;
+const MAX_NEW=15;
+const DISCOVERY_THRESHOLD=30;
+
+// Discovery mode intervals (shorter)
+const IV_DISC={1:600000,2:1800000,3:7200000,4:21600000,5:43200000};
+// Normal intervals
 const IV={1:3600000,2:10800000,3:28800000,4:86400000,5:172800000};
 const IL={1:'1h',2:'3h',3:'8h',4:'1j',5:'2j'};
-const MAX_NEW_PER_DAY=15;
+const IL_DISC={1:'10min',2:'30min',3:'2h',4:'6h',5:'12h'};
 
-// ─── EXPLORE BANK ───────────────────────────────────────────────────────────
 const BANK={
-pro:{
-  label:'Vocabulaire pro',icon:'💼',color:'#EAF2FF',tc:'#1a3a5c',
-  cards:[
-    // NIVEAU 1
-    {en:'The shipment has been delayed.',fr:'L\'expédition a été retardée.',ctx:'Due to bad weather / customs issues.',lv:1},
-    {en:'Can you action this by end of day?',fr:'Tu peux t\'en occuper d\'ici fin de journée ?',ctx:'Très courant dans les emails pro.',lv:1},
-    {en:'We need to align on the deliverables.',fr:'Nous devons nous aligner sur les livrables.',ctx:'Avant une réunion de lancement.',lv:1},
-    {en:'Let\'s circle back on this next week.',fr:'Revenons là-dessus la semaine prochaine.',ctx:'Pour reporter sans refuser.',lv:1},
-    {en:'I\'ll follow up with the client.',fr:'Je relance le client.',ctx:'Follow up = relancer, pas seulement suivre.',lv:1},
-    {en:'The invoice is pending approval.',fr:'La facture est en attente de validation.',ctx:'Finance courante.',lv:1},
-    {en:'We\'re running behind schedule.',fr:'Nous avons du retard sur le planning.',ctx:'Behind schedule = en retard sur le calendrier.',lv:1},
-    {en:'Can we get a status update?',fr:'Peut-on avoir un point de situation ?',ctx:'Pour demander un état d\'avancement.',lv:1},
-    {en:'We need to escalate this to management.',fr:'Il faut remonter ça à la direction.',ctx:'Escalate = remonter dans la hiérarchie.',lv:1},
-    {en:'Let\'s take this offline after the call.',fr:'Parlons-en en dehors de la réunion.',ctx:'Offline = en aparté, hors réunion.',lv:1},
-    {en:'The warehouse is at full capacity.',fr:'L\'entrepôt est à pleine capacité.',ctx:'Logistique.',lv:1},
-    {en:'The lead time is six weeks.',fr:'Le délai d\'approvisionnement est de six semaines.',ctx:'Lead time = délai entre commande et livraison.',lv:1},
-    {en:'Stakeholder',fr:'Partie prenante',ctx:'Personne impactée par ou impliquée dans un projet.',lv:1},
-    {en:'Milestone',fr:'Jalon / Étape clé',ctx:'Milestone = point de contrôle dans un projet.',lv:1},
-    {en:'Deliverable',fr:'Livrable',ctx:'Ce qu\'on s\'engage à remettre.',lv:1},
-    {en:'Bandwidth',fr:'Disponibilité (d\'une personne)',ctx:'"Do you have bandwidth for this?" = as-tu du temps ?',lv:1},
-    {en:'Bottleneck',fr:'Goulot d\'étranglement',ctx:'Point de blocage qui ralentit tout.',lv:1},
-    {en:'Turnaround time',fr:'Délai d\'exécution',ctx:'Temps entre réception d\'une demande et livraison.',lv:1},
-    {en:'Headcount',fr:'Effectif',ctx:'Nombre de personnes dans une équipe.',lv:1},
-    {en:'Overhead costs',fr:'Frais généraux',ctx:'Coûts non directement liés à la production.',lv:1},
-    // NIVEAU 2
-    {en:'We need to streamline the approval process.',fr:'Il faut simplifier le processus de validation.',ctx:'Streamline = rendre plus fluide, éliminer les étapes inutiles.',lv:2},
-    {en:'The procurement team is renegotiating the terms.',fr:'L\'équipe achats renégocie les conditions.',ctx:'Procurement = achats / approvisionnement.',lv:2},
-    {en:'We\'re looking at a tight margin on this contract.',fr:'On est sur une marge serrée pour ce contrat.',ctx:'Tight margin = peu de marge de manœuvre financière.',lv:2},
-    {en:'The audit flagged several discrepancies.',fr:'L\'audit a relevé plusieurs écarts.',ctx:'Flag = signaler / relever un problème.',lv:2},
-    {en:'We\'re onboarding a new carrier next quarter.',fr:'Nous intégrons un nouveau transporteur au prochain trimestre.',ctx:'Onboarding = intégration d\'un nouveau partenaire ou employé.',lv:2},
-    {en:'The cash flow forecast looks tight this month.',fr:'Les prévisions de trésorerie sont serrées ce mois-ci.',ctx:'Cash flow = flux de trésorerie.',lv:2},
-    {en:'The SLA was breached on three occasions.',fr:'Le SLA a été enfreint à trois reprises.',ctx:'SLA = Service Level Agreement = engagement de niveau de service.',lv:2},
-    {en:'We need to hedge against currency fluctuations.',fr:'Il faut se couvrir contre les fluctuations de devises.',ctx:'Hedge = se couvrir (terme financier).',lv:2},
-    {en:'The freight cost has gone up by 15%.',fr:'Le coût du fret a augmenté de 15%.',ctx:'Freight = fret / transport de marchandises.',lv:2},
-    {en:'We\'re overstocked on this SKU.',fr:'Nous sommes en surstock sur cette référence.',ctx:'SKU = Stock Keeping Unit = référence produit.',lv:2},
-    {en:'I\'ll send over the breakdown after the meeting.',fr:'Je t\'envoie la ventilation après la réunion.',ctx:'Breakdown = décomposition détaillée des chiffres.',lv:2},
-    {en:'The tender was awarded to a competitor.',fr:'L\'appel d\'offres a été remporté par un concurrent.',ctx:'Tender = appel d\'offres.',lv:2},
-    {en:'Net margin',fr:'Marge nette',ctx:'Profit après déduction de tous les coûts.',lv:2},
-    {en:'Working capital',fr:'Besoin en fonds de roulement (BFR)',ctx:'Argent nécessaire au fonctionnement quotidien.',lv:2},
-    {en:'Asset allocation',fr:'Allocation d\'actifs',ctx:'Répartition d\'un portefeuille d\'investissement.',lv:2},
-    {en:'Churn rate',fr:'Taux d\'attrition',ctx:'Pourcentage de clients perdus sur une période.',lv:2},
-    {en:'Pipeline',fr:'Portefeuille de prospects / projets',ctx:'"What\'s in your pipeline?" = quels projets as-tu en cours ?',lv:2},
-    {en:'Pain point',fr:'Point de friction / problème récurrent',ctx:'Ce qui gêne le client ou bloque un processus.',lv:2},
-    {en:'Leverage',fr:'Levier (avantage stratégique)',ctx:'"We have leverage in this negotiation" = nous avons un avantage.',lv:2},
-    {en:'Outstanding invoice',fr:'Facture impayée',ctx:'Outstanding = en souffrance / non réglé.',lv:2},
-    // NIVEAU 3
-    {en:'We need to backfill this position urgently.',fr:'Il faut pourvoir ce poste de toute urgence.',ctx:'Backfill = remplacer quelqu\'un qui part.',lv:3},
-    {en:'The project is within scope and on budget.',fr:'Le projet est dans le périmètre et dans le budget.',ctx:'Within scope = dans le périmètre défini.',lv:3},
-    {en:'The quarterly earnings beat expectations.',fr:'Les résultats trimestriels ont dépassé les attentes.',ctx:'Beat expectations = dépasser les prévisions des analystes.',lv:3},
-    {en:'We\'re scaling up operations in the region.',fr:'Nous développons les opérations dans la région.',ctx:'Scale up = monter en puissance.',lv:3},
-    {en:'We need to de-risk the supply chain.',fr:'Il faut réduire les risques dans la chaîne d\'approvisionnement.',ctx:'De-risk = atténuer les risques.',lv:3},
-    {en:'The KPIs are trending in the right direction.',fr:'Les indicateurs évoluent dans le bon sens.',ctx:'Trending = montrant une tendance.',lv:3},
-    {en:'We\'re looking to consolidate our vendor base.',fr:'Nous cherchons à rationaliser notre base de fournisseurs.',ctx:'Consolidate = regrouper / réduire le nombre.',lv:3},
-    {en:'Runway',fr:'Durée de vie de la trésorerie',ctx:'"6 months of runway" = argent disponible pour 6 mois.',lv:3},
-    {en:'Yield',fr:'Rendement (financier)',ctx:'Return generated on an investment.',lv:3},
-    {en:'We need to align incentives across teams.',fr:'Nous devons aligner les incitations entre les équipes.',ctx:'Align incentives = faire en sorte que les intérêts convergent.',lv:3},
-    {en:'The deal fell through at the last minute.',fr:'La transaction a échoué à la dernière minute.',ctx:'Fall through = échouer / ne pas aboutir.',lv:3},
-    {en:'We\'re exposed to significant counterparty risk.',fr:'Nous sommes exposés à un risque de contrepartie significatif.',ctx:'Counterparty risk = risque lié à l\'autre partie dans un contrat.',lv:3},
-    {en:'Benchmark',fr:'Référence comparative / étalon',ctx:'Used to compare performance against industry standards.',lv:3},
-    {en:'To sanity-check the figures',fr:'Vérifier rapidement que les chiffres ont du sens',ctx:'"Can you sanity-check this?" = est-ce que ça tient la route ?',lv:3},
-    {en:'The margin compression is a concern.',fr:'La compression des marges est préoccupante.',ctx:'Margin compression = réduction des marges sous pression des coûts.',lv:3},
-  ]
-},
-idioms:{
-  label:'Expressions idiomatiques',icon:'🗣️',color:'#FEF9E7',tc:'#7d6608',
-  cards:[
-    // NIVEAU 1
-    {en:'To get the ball rolling',fr:'Lancer les choses / démarrer',ctx:'"Let\'s get the ball rolling on this project."',lv:1},
-    {en:'To be on the same page',fr:'Être sur la même longueur d\'onde',ctx:'"Are we on the same page about the deadline?"',lv:1},
-    {en:'To call it a day',fr:'S\'arrêter pour aujourd\'hui',ctx:'"It\'s late, let\'s call it a day."',lv:1},
-    {en:'To miss the boat',fr:'Rater le coche',ctx:'"We missed the boat on that opportunity."',lv:1},
-    {en:'To bite the bullet',fr:'Prendre son courage à deux mains',ctx:'"We\'ll just have to bite the bullet and do it."',lv:1},
-    {en:'To cut corners',fr:'Faire les choses à moitié / bâcler',ctx:'"Don\'t cut corners on safety."',lv:1},
-    {en:'To go back to square one',fr:'Repartir de zéro',ctx:'"The plan failed, so we\'re back to square one."',lv:1},
-    {en:'To read between the lines',fr:'Lire entre les lignes',ctx:'"Read between the lines — he\'s not happy."',lv:1},
-    {en:'To be in the loop',fr:'Être dans la boucle / au courant',ctx:'"Keep me in the loop on this."',lv:1},
-    {en:'To pull someone\'s leg',fr:'Faire marcher quelqu\'un',ctx:'"Are you serious? Or are you pulling my leg?"',lv:1},
-    {en:'To hit the ground running',fr:'Démarrer sur les chapeaux de roues',ctx:'Très courant pour décrire quelqu\'un d\'opérationnel rapidement.',lv:1},
-    {en:'To go the extra mile',fr:'Faire un effort supplémentaire',ctx:'"She always goes the extra mile for clients."',lv:1},
-    {en:'To touch base',fr:'Faire un point rapide / reprendre contact',ctx:'"Let\'s touch base on Friday."',lv:1},
-    {en:'To burn bridges',fr:'Couper les ponts définitivement',ctx:'"Don\'t burn bridges when you resign."',lv:1},
-    {en:'Under the weather',fr:'Pas dans son assiette / légèrement malade',ctx:'"I\'m feeling a bit under the weather today."',lv:1},
-    // NIVEAU 2
-    {en:'To bite off more than you can chew',fr:'Voir trop grand / s\'embarquer dans trop de choses',ctx:'"We bit off more than we could chew with this project."',lv:2},
-    {en:'To sit on the fence',fr:'Ne pas prendre position / être dans le flou',ctx:'"Stop sitting on the fence — which option do you prefer?"',lv:2},
-    {en:'To keep a low profile',fr:'Se faire discret',ctx:'"Keep a low profile until the situation calms down."',lv:2},
-    {en:'To push the envelope',fr:'Repousser les limites',ctx:'"This design really pushes the envelope."',lv:2},
-    {en:'To play hardball',fr:'Jouer dur / ne faire aucune concession',ctx:'"They\'re playing hardball in this negotiation."',lv:2},
-    {en:'To pick someone\'s brain',fr:'Profiter de l\'expertise de quelqu\'un',ctx:'"Can I pick your brain about this for 10 minutes?"',lv:2},
-    {en:'To face the music',fr:'Faire face aux conséquences',ctx:'"Time to face the music and admit the mistake."',lv:2},
-    {en:'To pass the buck',fr:'Renvoyer la responsabilité à quelqu\'un d\'autre',ctx:'"Stop passing the buck — take ownership."',lv:2},
-    {en:'To throw someone under the bus',fr:'Faire porter le chapeau à quelqu\'un',ctx:'"He threw his colleague under the bus in the meeting."',lv:2},
-    {en:'To move the needle',fr:'Faire avancer les choses de façon significative',ctx:'"What will actually move the needle on our growth?"',lv:2},
-    {en:'To have skin in the game',fr:'Avoir des intérêts personnels en jeu',ctx:'"Investors with skin in the game make better decisions."',lv:2},
-    {en:'To drop the ball',fr:'Laisser tomber / manquer à sa mission',ctx:'"We really dropped the ball on this delivery."',lv:2},
-    {en:'To be ahead of the curve',fr:'Avoir de l\'avance / être visionnaire',ctx:'"They were ahead of the curve on electric vehicles."',lv:2},
-    {en:'To burn the midnight oil',fr:'Travailler tard dans la nuit',ctx:'"We\'ve been burning the midnight oil to meet the deadline."',lv:2},
-    {en:'At the drop of a hat',fr:'Sans hésiter / immédiatement',ctx:'"She\'d fly to New York at the drop of a hat."',lv:2},
-    // NIVEAU 3
-    {en:'To cut to the chase',fr:'Aller droit au but',ctx:'"Let\'s cut to the chase — what\'s the real issue?"',lv:3},
-    {en:'To steal the show',fr:'Voler la vedette',ctx:'"The intern stole the show during the presentation."',lv:3},
-    {en:'To get the hang of something',fr:'Prendre le coup de main pour quelque chose',ctx:'"It takes time but you\'ll get the hang of it."',lv:3},
-    {en:'To hit the nail on the head',fr:'Mettre le doigt dessus / toucher juste',ctx:'"You hit the nail on the head with that analysis."',lv:3},
-    {en:'To be on thin ice',fr:'Être sur un terrain glissant',ctx:'"He\'s on thin ice after missing the third deadline."',lv:3},
-    {en:'Once in a blue moon',fr:'Très rarement / une fois tous les trente-six du mois',ctx:'"We only see him once in a blue moon."',lv:3},
-    {en:'To give the benefit of the doubt',fr:'Accorder le bénéfice du doute',ctx:'"Give her the benefit of the doubt — it\'s her first mistake."',lv:3},
-    {en:'To think outside the box',fr:'Sortir des sentiers battus',ctx:'Overused in business, but you\'ll hear it constantly.',lv:3},
-    {en:'To stay in one\'s lane',fr:'Rester dans son domaine / ne pas empiéter',ctx:'"This is a legal matter — stay in your lane."',lv:3},
-    {en:'To push back',fr:'Résister / exprimer un désaccord',ctx:'"I\'m going to push back on that assumption."',lv:3},
-    {en:'To get a foot in the door',fr:'Mettre le pied dans la porte / obtenir une première opportunité',ctx:'"This internship will help you get a foot in the door."',lv:3},
-    {en:'To take something with a grain of salt',fr:'Prendre quelque chose avec des pincettes',ctx:'"Take his estimates with a grain of salt."',lv:3},
-    {en:'To read the room',fr:'Sentir l\'atmosphère / s\'adapter au contexte',ctx:'"You need to read the room before making that joke."',lv:3},
-    {en:'To run something up the flagpole',fr:'Tester une idée / la soumettre pour validation',ctx:'"Let\'s run this idea up the flagpole and see what management thinks."',lv:3},
-    {en:'To open a can of worms',fr:'Ouvrir la boîte de Pandore',ctx:'"Bringing up budget at this stage opens a can of worms."',lv:3},
-  ]
-},
-tenses:{
-  label:'Temps & auxiliaires',icon:'⏱️',color:'#EAFAF1',tc:'#1a6b3a',
-  cards:[
-    // NIVEAU 1
-    {en:'I sent the report yesterday.',fr:'J\'ai envoyé le rapport hier.',ctx:'Simple past — moment précis dans le passé. Jamais avec "yesterday" + present perfect.',lv:1},
-    {en:'I\'ve already sent the report.',fr:'J\'ai déjà envoyé le rapport.',ctx:'Present perfect — résultat présent, pas de moment précis.',lv:1},
-    {en:'They might be stuck in traffic.',fr:'Ils sont peut-être bloqués dans les embouteillages.',ctx:'Might = possibilité présente (incertitude).',lv:1},
-    {en:'You should call him back.',fr:'Tu devrais le rappeler.',ctx:'Should = conseil ou obligation morale légère.',lv:1},
-    {en:'I used to commute two hours a day.',fr:'Je faisais deux heures de trajet par jour (autrefois).',ctx:'Used to = habitude passée révolue, n\'existe plus.',lv:1},
-    {en:'He must be in a meeting.',fr:'Il doit être en réunion.',ctx:'Must = déduction logique au présent.',lv:1},
-    {en:'Can I leave early today?',fr:'Est-ce que je peux partir tôt aujourd\'hui ?',ctx:'Can = capacité ou permission informelle.',lv:1},
-    {en:'Could you send me the file?',fr:'Pourriez-vous m\'envoyer le fichier ?',ctx:'Could = plus poli que can pour une demande.',lv:1},
-    {en:'I will call you tomorrow.',fr:'Je t\'appellerai demain.',ctx:'Will = promesse / décision spontanée.',lv:1},
-    {en:'I\'m going to call him later.',fr:'Je vais l\'appeler plus tard.',ctx:'Going to = intention préalable / plan.',lv:1},
-    // NIVEAU 2
-    {en:'I\'ve been working on this for two hours.',fr:'Je travaille là-dessus depuis deux heures.',ctx:'Present perfect continuous — action qui a commencé dans le passé et continue.',lv:2},
-    {en:'She had already left when I arrived.',fr:'Elle était déjà partie quand je suis arrivé.',ctx:'Past perfect — antériorité dans le passé.',lv:2},
-    {en:'If I were you, I\'d wait a bit longer.',fr:'À ta place, j\'attendrais encore un peu.',ctx:'Conditionnel 2 — conseil hypothétique. "Were" pour toutes les personnes.',lv:2},
-    {en:'You should have told me sooner.',fr:'Tu aurais dû me le dire plus tôt.',ctx:'Should have + pp = reproche ou regret sur le passé.',lv:2},
-    {en:'He must have missed his flight.',fr:'Il a dû rater son vol.',ctx:'Must have + pp = déduction sur le passé.',lv:2},
-    {en:'She could have handled it better.',fr:'Elle aurait pu mieux gérer ça.',ctx:'Could have + pp = possibilité non réalisée dans le passé.',lv:2},
-    {en:'I was about to call you.',fr:'J\'allais justement t\'appeler.',ctx:'Was about to = sur le point de faire quelque chose.',lv:2},
-    {en:'I\'d rather you didn\'t mention it.',fr:'Je préférerais que tu n\'en parles pas.',ctx:'Would rather + sujet + past simple.',lv:2},
-    {en:'It\'s high time we made a decision.',fr:'Il est grand temps qu\'on prenne une décision.',ctx:'It\'s high time + past simple — urgence.',lv:2},
-    {en:'He tends to overcomplicate things.',fr:'Il a tendance à trop compliquer les choses.',ctx:'Tend to = avoir tendance à (habitude neutre).',lv:2},
-    {en:'I wish I had more time.',fr:'J\'aimerais avoir plus de temps.',ctx:'Wish + past simple = souhait présent irréel.',lv:2},
-    {en:'I wish I had studied more.',fr:'J\'aurais aimé étudier davantage.',ctx:'Wish + past perfect = regret sur le passé.',lv:2},
-    // NIVEAU 3
-    {en:'I would have called you if I\'d known.',fr:'Je t\'aurais appelé si j\'avais su.',ctx:'Conditionnel 3 — irréel du passé. If + past perfect / would have + pp.',lv:3},
-    {en:'By the end of the year, we\'ll have launched three products.',fr:'D\'ici la fin d\'année, nous aurons lancé trois produits.',ctx:'Future perfect — action achevée avant un moment futur.',lv:3},
-    {en:'I\'m having the document reviewed.',fr:'Je fais relire le document.',ctx:'Have something done = faire faire par quelqu\'un d\'autre.',lv:3},
-    {en:'We\'ve been trying to reach them all morning.',fr:'On essaie de les joindre depuis ce matin.',ctx:'Present perfect continuous — durée + résultat non atteint.',lv:3},
-    {en:'He\'s bound to make mistakes at first.',fr:'Il va forcément faire des erreurs au début.',ctx:'Be bound to = certitude / inévitabilité.',lv:3},
-    {en:'We\'re due to meet next Thursday.',fr:'Nous sommes censés nous réunir jeudi prochain.',ctx:'Be due to = prévu officiellement.',lv:3},
-    {en:'Suppose he doesn\'t show up — what then?',fr:'Et s\'il ne vient pas — qu\'est-ce qu\'on fait ?',ctx:'Suppose / supposing = envisager une hypothèse.',lv:3},
-    {en:'Get it done by Friday.',fr:'Fais en sorte que ce soit fait pour vendredi.',ctx:'Get something done = impératif de résultat.',lv:3},
-    {en:'Unless I\'m mistaken, the deadline is Friday.',fr:'Sauf erreur de ma part, la date limite est vendredi.',ctx:'Unless = sauf si / à moins que.',lv:3},
-    {en:'I can\'t help feeling that something is wrong.',fr:'Je ne peux pas m\'empêcher de sentir que quelque chose ne va pas.',ctx:'Can\'t help + gerund = ne pas pouvoir s\'empêcher de.',lv:3},
-    {en:'I\'d sooner resign than do that.',fr:'Je préférerais démissionner plutôt que de faire ça.',ctx:'Would sooner = préférence forte (registre soutenu).',lv:3},
-    {en:'What with the delays and the budget cuts, it\'s been a tough quarter.',fr:'Entre les retards et les coupes budgétaires, ce trimestre a été difficile.',ctx:'What with = étant donné / vu (liste de causes).',lv:3},
-  ]
-},
-faux:{
-  label:'Faux amis & pièges',icon:'⚠️',color:'#FDF0EF',tc:'#8b2020',
-  cards:[
-    // NIVEAU 1
-    {en:'Actually',fr:'En fait / En réalité',ctx:'≠ Actuellement → currently / nowadays. "Actually, I disagree."',lv:1},
-    {en:'Eventually',fr:'Finalement / À terme',ctx:'≠ Éventuellement → possibly / if need be. "Eventually he agreed."',lv:1},
-    {en:'Currently',fr:'Actuellement / En ce moment',ctx:'≠ Couramment → fluently. "We\'re currently reviewing the contract."',lv:1},
-    {en:'Library',fr:'Bibliothèque',ctx:'≠ Librairie → bookshop / bookstore.',lv:1},
-    {en:'Attend',fr:'Assister à / Être présent',ctx:'≠ Attendre → to wait. "I attended the conference."',lv:1},
-    {en:'Demand',fr:'Exiger (avec insistance)',ctx:'≠ Demander (poliment) → to ask. Très direct en anglais.',lv:1},
-    {en:'Pretend',fr:'Faire semblant',ctx:'≠ Prétendre → to claim / to argue. "He pretended to be asleep."',lv:1},
-    {en:'Sensible',fr:'Raisonnable / Judicieux',ctx:'≠ Sensible → sensitive. "That\'s a sensible decision."',lv:1},
-    {en:'Comprehensive',fr:'Complet / Exhaustif',ctx:'≠ Compréhensible → understandable. "A comprehensive report."',lv:1},
-    {en:'Assist',fr:'Aider / Assister',ctx:'≠ Assister à → to attend. "Can you assist me with this?"',lv:1},
-    // NIVEAU 2
-    {en:'Sympathetic',fr:'Compatissant / Compréhensif',ctx:'≠ Sympathique → nice / likeable. "She was very sympathetic."',lv:2},
-    {en:'Issue',fr:'Problème / Point à traiter',ctx:'Issue (fr) = outcome en anglais. "We have an issue with the delivery."',lv:2},
-    {en:'Consistent',fr:'Cohérent / Régulier',ctx:'≠ Consistant → substantial / thick. "Consistent results."',lv:2},
-    {en:'Proper',fr:'Approprié / Véritable',ctx:'≠ Propre → clean. "A proper solution." / "Properly done."',lv:2},
-    {en:'Efficient',fr:'Efficace (pour un système)',ctx:'Efficace (pour une personne) → effective. "An efficient process."',lv:2},
-    {en:'Voyage',fr:'Périple en mer ou voyage long (registre soutenu)',ctx:'Voyage (fr) → trip / journey. "A voyage across the Atlantic."',lv:2},
-    {en:'Phrase',fr:'Expression / Tournure',ctx:'Phrase (fr) → sentence. "A common phrase."',lv:2},
-    {en:'College',fr:'Université / Établissement d\'enseignement supérieur',ctx:'Collège (fr) → middle school. "He\'s at college" = il est à la fac.',lv:2},
-    {en:'Formidable',fr:'Redoutable / Impressionnant (pas forcément positif)',ctx:'En français = excellent. En anglais = qui inspire la crainte.',lv:2},
-    {en:'Gentle',fr:'Doux / Délicat',ctx:'≠ Gentil → kind / nice. "A gentle reminder."',lv:2},
-    // NIVEAU 3
-    {en:'Brave',fr:'Courageux',ctx:'≠ Brave (fr) = good/kind → "a brave decision."',lv:3},
-    {en:'Inconvenient',fr:'Peu pratique / Mal tombé',ctx:'≠ Inconvénient → drawback / downside. "Is this an inconvenient time?"',lv:3},
-    {en:'Résumé',fr:'CV',ctx:'≠ Résumé (fr) → summary. "Send me your résumé."',lv:3},
-    {en:'Deception',fr:'Tromperie / Mensonge',ctx:'≠ Déception → disappointment. "His deception shocked everyone."',lv:3},
-    {en:'Misery',fr:'Souffrance / Détresse',ctx:'≠ Misère → poverty. "She was in misery after the loss."',lv:3},
-    {en:'Sensibility',fr:'Sensibilité artistique / discernement',ctx:'≠ Sensibilité (émotionnelle) → sensitivity.',lv:3},
-    {en:'Chance',fr:'Hasard / Occasion',ctx:'"By chance" = par hasard. La chance (bonne fortune) → luck.',lv:3},
-    {en:'Sympathize',fr:'Comprendre / Compatir',ctx:'≠ Sympathiser → to get along with. "I sympathize with your situation."',lv:3},
-    {en:'Particular',fr:'Spécifique / Précis',ctx:'Particulier (bizarre) → peculiar. "Any particular reason?"',lv:3},
-    {en:'Lecture',fr:'Cours magistral / Conférence',ctx:'≠ Lecture (fr) → reading. "I attended a lecture on logistics."',lv:3},
-  ]
-},
-travel:{
-  label:'Voyage & quotidien',icon:'✈️',color:'#F0EAF8',tc:'#4a1a7a',
-  cards:[
-    // NIVEAU 1
-    {en:'Is this seat taken?',fr:'Cette place est-elle prise ?',ctx:'Dans un train, avion, café.',lv:1},
-    {en:'Can I get the bill, please?',fr:'L\'addition, s\'il vous plaît.',ctx:'Restaurant. "Check, please" aux États-Unis.',lv:1},
-    {en:'I\'d like to check in, please.',fr:'Je voudrais m\'enregistrer, s\'il vous plaît.',ctx:'Aéroport / hôtel.',lv:1},
-    {en:'I\'m just browsing, thank you.',fr:'Je regarde juste, merci.',ctx:'Pour éviter un vendeur trop insistant.',lv:1},
-    {en:'Do you accept card payments?',fr:'Acceptez-vous les paiements par carte ?',ctx:'Partout dans le monde.',lv:1},
-    {en:'How long is the wait?',fr:'Combien de temps faut-il attendre ?',ctx:'Restaurant, administration.',lv:1},
-    {en:'Could you call me a cab, please?',fr:'Pourriez-vous m\'appeler un taxi ?',ctx:'Hôtel.',lv:1},
-    {en:'I\'m here on a business trip.',fr:'Je suis là pour un voyage d\'affaires.',ctx:'À l\'aéroport, à la douane.',lv:1},
-    {en:'Carry-on luggage',fr:'Bagage à main / bagage cabine',ctx:'≠ Checked luggage = bagage en soute.',lv:1},
-    {en:'Round trip',fr:'Aller-retour',ctx:'≠ One-way = aller simple.',lv:1},
-    // NIVEAU 2
-    {en:'My luggage didn\'t make it.',fr:'Mes bagages ne sont pas arrivés.',ctx:'Après un vol. "Make it" = arriver à destination.',lv:2},
-    {en:'I have a connecting flight in two hours.',fr:'J\'ai une correspondance dans deux heures.',ctx:'Connecting flight = vol avec escale.',lv:2},
-    {en:'Is the tip included?',fr:'Le pourboire est-il inclus ?',ctx:'Essentiel aux États-Unis où le service n\'est pas inclus.',lv:2},
-    {en:'I think there\'s a mistake on the bill.',fr:'Je crois qu\'il y a une erreur sur l\'addition.',ctx:'Poliment mais clairement.',lv:2},
-    {en:'I\'d like a window seat if possible.',fr:'Je voudrais un siège côté hublot si possible.',ctx:'Window seat ≠ aisle seat (côté couloir).',lv:2},
-    {en:'Could I have a wake-up call at 6am?',fr:'Pouvez-vous me réveiller à 6h ?',ctx:'Hôtel.',lv:2},
-    {en:'I\'d like to extend my stay by one night.',fr:'Je voudrais prolonger mon séjour d\'une nuit.',ctx:'Hôtel.',lv:2},
-    {en:'The exchange rate is not great right now.',fr:'Le taux de change n\'est pas terrible en ce moment.',ctx:'Utile pour négocier ou expliquer.',lv:2},
-    {en:'Overbooked',fr:'Surbooké',ctx:'"The flight is overbooked" = il y a plus de passagers que de sièges.',lv:2},
-    {en:'Layover',fr:'Escale (avec attente)',ctx:'A 3-hour layover in Dubai.',lv:2},
-    // NIVEAU 3
-    {en:'I\'ll have whatever you recommend.',fr:'Je prendrai ce que vous recommandez.',ctx:'Excellent pour montrer de la confiance et de l\'ouverture.',lv:3},
-    {en:'Could you put it in a bag, please?',fr:'Pouvez-vous le mettre dans un sac ?',ctx:'Shopping.',lv:3},
-    {en:'Is there a connection issue or is the flight direct?',fr:'Y a-t-il une correspondance ou le vol est-il direct ?',ctx:'"Direct flight" ≠ "non-stop" aux USA.',lv:3},
-    {en:'I\'d like to flag an issue with my room.',fr:'Je voudrais signaler un problème avec ma chambre.',ctx:'Flag = signaler formellement. Plus poli que "there\'s a problem".',lv:3},
-    {en:'Could you point me in the direction of…?',fr:'Pourriez-vous m\'indiquer la direction de… ?',ctx:'Plus naturel que "where is".',lv:3},
-    {en:'I\'m afraid I won\'t be able to make the reservation.',fr:'Je crains de ne pas pouvoir honorer la réservation.',ctx:'Pour annuler poliment.',lv:3},
-    {en:'Is there any chance of an upgrade?',fr:'Y aurait-il une possibilité de surclassement ?',ctx:'Hôtel / avion. Formulé comme une question ouverte.',lv:3},
-    {en:'I\'m a frequent flyer with your airline.',fr:'Je suis membre du programme fidélité de votre compagnie.',ctx:'Fréquent flyer = voyageur régulier.',lv:3},
-    {en:'The Wi-Fi in my room isn\'t working.',fr:'Le Wi-Fi dans ma chambre ne fonctionne pas.',ctx:'Hôtel.',lv:3},
-    {en:'I\'d rather not be seated next to the galley.',fr:'Je préférerais ne pas être assis près de la cuisine.',ctx:'Galley = cuisine dans un avion.',lv:3},
-  ]
-},
-natural:{
-  label:'Tournures naturelles',icon:'✨',color:'#F0F0EE',tc:'#2a2a2a',
-  cards:[
-    // NIVEAU 1
-    {en:'That works for me.',fr:'Ça me va.',ctx:'≠ "It\'s okay" trop hésitant. Confirme clairement.',lv:1},
-    {en:'I\'ll keep you posted.',fr:'Je te tiens au courant.',ctx:'Keep someone posted = les informer au fur et à mesure.',lv:1},
-    {en:'It slipped my mind.',fr:'Ça m\'était sorti de la tête.',ctx:'≠ "I forgot" trop direct.',lv:1},
-    {en:'I\'m swamped at the moment.',fr:'Je suis débordé en ce moment.',ctx:'Swamped = submergé de travail.',lv:1},
-    {en:'How does that sound?',fr:'Qu\'est-ce que tu en penses ? / Ça te va ?',ctx:'Pour clore une proposition et demander validation.',lv:1},
-    {en:'Don\'t hesitate to reach out.',fr:'N\'hésite pas à me contacter.',ctx:'Reach out = contacter (email, phone). Formule de clôture.',lv:1},
-    {en:'Something came up on my end.',fr:'Il s\'est passé quelque chose de mon côté.',ctx:'Pour expliquer un retard sans entrer dans les détails.',lv:1},
-    {en:'Let me get back to you on that.',fr:'Je reviens vers toi là-dessus.',ctx:'≠ "I will think about it" trop vague.',lv:1},
-    {en:'I appreciate you letting me know.',fr:'Merci de m\'avoir prévenu.',ctx:'≠ "Thank you for the information" trop froid.',lv:1},
-    {en:'To be fair…',fr:'Pour être juste… / Soyons honnêtes…',ctx:'Pour nuancer une critique ou défendre quelqu\'un.',lv:1},
-    // NIVEAU 2
-    {en:'I\'m not sure I follow — could you elaborate?',fr:'Je ne suis pas sûr de suivre — tu peux développer ?',ctx:'≠ "I don\'t understand" trop abrupt.',lv:2},
-    {en:'I was wondering if you\'d had a chance to look at this.',fr:'Je me demandais si tu avais eu l\'occasion de regarder ça.',ctx:'Relance polie. ≠ "Did you see my email?" trop direct.',lv:2},
-    {en:'Just to make sure we\'re on the same page…',fr:'Juste pour qu\'on soit bien alignés…',ctx:'Pour reformuler et confirmer la compréhension.',lv:2},
-    {en:'I\'d push back on that a little.',fr:'Je nuancerais ça légèrement / je ne suis pas totalement d\'accord.',ctx:'Désaccord poli. Push back = résister / questionner.',lv:2},
-    {en:'It\'s a bit of a grey area.',fr:'C\'est un peu flou / dans une zone grise.',ctx:'Pour indiquer qu\'il n\'y a pas de réponse claire.',lv:2},
-    {en:'I\'m not in a position to commit to that right now.',fr:'Je ne suis pas en mesure de m\'engager là-dessus pour l\'instant.',ctx:'Refus professionnel poli et sans fermer la porte.',lv:2},
-    {en:'That\'s not really my call to make.',fr:'Ce n\'est pas vraiment à moi de décider ça.',ctx:'Pour renvoyer une décision à qui de droit.',lv:2},
-    {en:'Can we take a step back?',fr:'Peut-on prendre un peu de recul ?',ctx:'Pour recadrer une discussion qui dérive.',lv:2},
-    {en:'That\'s a fair point.',fr:'C\'est un point valable / tu as raison là-dessus.',ctx:'Pour concéder sans tout abandonner.',lv:2},
-    {en:'I\'ll take your word for it.',fr:'Je te crois sur parole.',ctx:'Accord sans vérification.',lv:2},
-    {en:'It\'s not that I don\'t want to — I just can\'t right now.',fr:'Ce n\'est pas que je ne veux pas — je ne peux simplement pas là.',ctx:'Pour refuser sans vexer.',lv:2},
-    {en:'We\'ll have to play it by ear.',fr:'On verra au fur et à mesure.',ctx:'Play it by ear = improviser selon la situation.',lv:2},
-    // NIVEAU 3
-    {en:'I might be wrong, but…',fr:'Je me trompe peut-être, mais…',ctx:'Introduire une opinion avec précaution (très anglais).',lv:3},
-    {en:'All things considered…',fr:'Tout bien réfléchi / Dans l\'ensemble…',ctx:'Pour conclure en tenant compte de tout.',lv:3},
-    {en:'At the end of the day…',fr:'En fin de compte…',ctx:'Très courant à l\'oral pour conclure.',lv:3},
-    {en:'Could you shed some light on that?',fr:'Pourriez-vous éclaircir ça ?',ctx:'Shed light on = apporter des éclaircissements.',lv:3},
-    {en:'I\'m not particularly thrilled about it.',fr:'Je n\'en suis pas particulièrement ravi.',ctx:'≠ "I don\'t like it" trop direct. Sous-entendu clair.',lv:3},
-    {en:'It\'s a long shot, but…',fr:'C\'est peu probable mais…',ctx:'Long shot = tentative risquée avec peu de chances.',lv:3},
-    {en:'I\'ll leave it up to you.',fr:'Je te laisse décider.',ctx:'Pour déléguer une décision sans pression.',lv:3},
-    {en:'That\'s easier said than done.',fr:'C\'est plus facile à dire qu\'à faire.',ctx:'Pour tempérer un conseil ou une suggestion.',lv:3},
-    {en:'I\'d be remiss not to mention…',fr:'Je manquerais à mon devoir si je ne mentionnais pas…',ctx:'Formule élégante pour soulever un point important.',lv:3},
-    {en:'With all due respect…',fr:'Avec tout le respect que je vous dois…',ctx:'Précède souvent un désaccord fort. Signe de friction.',lv:3},
-    {en:'I\'m going to have to level with you.',fr:'Je vais devoir être honnête avec toi.',ctx:'Level with someone = parler franchement.',lv:3},
-    {en:'Let\'s not beat around the bush.',fr:'Ne tournons pas autour du pot.',ctx:'Beat around the bush = éviter le sujet principal.',lv:3},
-  ]
-},
-collocations:{
-  label:'Collocations clés',icon:'🔗',color:'#EAF8FF',tc:'#0d3d5c',
-  cards:[
-    // NIVEAU 1
-    {en:'Make a decision',fr:'Prendre une décision',ctx:'≠ Take a decision (moins courant en anglais américain).',lv:1},
-    {en:'Make progress',fr:'Faire des progrès / avancer',ctx:'"We\'re making good progress on the project."',lv:1},
-    {en:'Take responsibility',fr:'Prendre ses responsabilités',ctx:'"He took full responsibility for the mistake."',lv:1},
-    {en:'Pay attention',fr:'Faire attention / être attentif',ctx:'"Pay attention to the details."',lv:1},
-    {en:'Do your best',fr:'Faire de son mieux',ctx:'"Just do your best."',lv:1},
-    {en:'Keep in touch',fr:'Rester en contact',ctx:'"Let\'s keep in touch after the project."',lv:1},
-    {en:'Meet a deadline',fr:'Respecter une deadline',ctx:'"We need to meet the Friday deadline."',lv:1},
-    {en:'Raise a concern',fr:'Soulever une préoccupation',ctx:'"I\'d like to raise a concern about the timeline."',lv:1},
-    {en:'Run a meeting',fr:'Animer / diriger une réunion',ctx:'"She runs the weekly team meeting."',lv:1},
-    {en:'Set a goal',fr:'Fixer un objectif',ctx:'"Let\'s set clear goals for Q3."',lv:1},
-    // NIVEAU 2
-    {en:'Draw a conclusion',fr:'Tirer une conclusion',ctx:'"It\'s too early to draw any conclusions."',lv:2},
-    {en:'Reach an agreement',fr:'Parvenir à un accord',ctx:'"Both parties reached an agreement."',lv:2},
-    {en:'Handle a situation',fr:'Gérer une situation',ctx:'"How do you plan to handle this situation?"',lv:2},
-    {en:'Strike a balance',fr:'Trouver un équilibre',ctx:'"We need to strike a balance between quality and speed."',lv:2},
-    {en:'Bridge a gap',fr:'Combler un écart / une lacune',ctx:'"This training will help bridge the skills gap."',lv:2},
-    {en:'Bear the cost',fr:'Supporter le coût',ctx:'"Who will bear the cost of the delay?"',lv:2},
-    {en:'Drive results',fr:'Produire des résultats',ctx:'"He\'s known for driving results under pressure."',lv:2},
-    {en:'Gain traction',fr:'Prendre de l\'élan / de l\'importance',ctx:'"The new product is gaining traction in the market."',lv:2},
-    {en:'Lay the groundwork',fr:'Poser les bases / préparer le terrain',ctx:'"We spent months laying the groundwork for this launch."',lv:2},
-    {en:'Break even',fr:'Atteindre le seuil de rentabilité',ctx:'"We expect to break even by Q2."',lv:2},
-    // NIVEAU 3
-    {en:'Mitigate risk',fr:'Atténuer / limiter un risque',ctx:'"We need to mitigate the operational risk."',lv:3},
-    {en:'Foster collaboration',fr:'Favoriser la collaboration',ctx:'"Leadership should foster collaboration across teams."',lv:3},
-    {en:'Yield results',fr:'Donner des résultats / porter ses fruits',ctx:'"The strategy is starting to yield results."',lv:3},
-    {en:'Unlock value',fr:'Créer / libérer de la valeur',ctx:'"The merger is expected to unlock significant value."',lv:3},
-    {en:'Navigate uncertainty',fr:'Naviguer dans l\'incertitude',ctx:'"Companies must learn to navigate uncertainty."',lv:3},
-    {en:'Exercise caution',fr:'Faire preuve de prudence',ctx:'"I would exercise caution before signing."',lv:3},
-    {en:'Sustain growth',fr:'Maintenir une croissance durable',ctx:'"How do we sustain this growth long-term?"',lv:3},
-    {en:'Articulate a vision',fr:'Formuler / exprimer une vision',ctx:'"A good leader can articulate a clear vision."',lv:3},
-    {en:'Calibrate expectations',fr:'Ajuster / cadrer les attentes',ctx:'"Let\'s calibrate expectations before the client call."',lv:3},
-    {en:'Demonstrate value',fr:'Démontrer sa valeur / montrer son utilité',ctx:'"This project is our chance to demonstrate value."',lv:3},
-  ]
-},
-advanced:{
-  label:'Anglais avancé',icon:'🎯',color:'#F9EAFB',tc:'#4a1a6a',
-  cards:[
-    // NIVEAU 1
-    {en:'To be fair',fr:'Pour être juste / en toute honnêteté',ctx:'Concéder un point tout en maintenant sa position.',lv:1},
-    {en:'Having said that…',fr:'Cela dit…',ctx:'Pour introduire une nuance ou un retournement.',lv:1},
-    {en:'As it stands',fr:'En l\'état actuel des choses',ctx:'"As it stands, we can\'t meet the deadline."',lv:1},
-    {en:'For what it\'s worth',fr:'Pour ce que ça vaut',ctx:'Donner un avis avec une certaine humilité.',lv:1},
-    {en:'If anything',fr:'Si quoi que ce soit / si c\'est le cas',ctx:'"If anything, this makes it more complex."',lv:1},
-    {en:'More often than not',fr:'Plus souvent qu\'autrement / la plupart du temps',ctx:'"More often than not, clients underestimate costs."',lv:1},
-    {en:'By and large',fr:'Dans l\'ensemble / en règle générale',ctx:'"By and large, the project went well."',lv:1},
-    {en:'In hindsight',fr:'Avec le recul',ctx:'"In hindsight, we should have started earlier."',lv:1},
-    {en:'On the face of it',fr:'À première vue / en apparence',ctx:'"On the face of it, the proposal looks solid."',lv:1},
-    {en:'In the pipeline',fr:'En préparation / dans les tuyaux',ctx:'"We have three new products in the pipeline."',lv:1},
-    // NIVEAU 2
-    {en:'To hedge one\'s bets',fr:'Ne pas mettre tous ses œufs dans le même panier',ctx:'Hedging = se couvrir en diversifiant ses options.',lv:2},
-    {en:'To put something on the back burner',fr:'Mettre quelque chose en attente / en suspend',ctx:'"Let\'s put this on the back burner for now."',lv:2},
-    {en:'To get the green light',fr:'Obtenir le feu vert',ctx:'"We got the green light from management."',lv:2},
-    {en:'To set the record straight',fr:'Rétablir les faits / mettre les choses au clair',ctx:'"Let me set the record straight on what happened."',lv:2},
-    {en:'To draw the line',fr:'Poser une limite / refuser d\'aller plus loin',ctx:'"I draw the line at working weekends."',lv:2},
-    {en:'To be in over one\'s head',fr:'Être dépassé par les événements',ctx:'"He took on too much and is in over his head."',lv:2},
-    {en:'To cut one\'s losses',fr:'Limiter les dégâts / arrêter les frais',ctx:'"Sometimes it\'s better to cut your losses."',lv:2},
-    {en:'To talk someone through something',fr:'Guider quelqu\'un pas à pas',ctx:'"Let me talk you through the process."',lv:2},
-    {en:'To take something at face value',fr:'Prendre quelque chose pour argent comptant',ctx:'"Don\'t take his promises at face value."',lv:2},
-    {en:'To give someone the benefit of the doubt',fr:'Accorder le bénéfice du doute',ctx:'Faire confiance malgré un doute.',lv:2},
-    // NIVEAU 3
-    {en:'To underscore a point',fr:'Souligner / mettre en avant un point',ctx:'"I want to underscore the importance of this deadline."',lv:3},
-    {en:'To connect the dots',fr:'Faire le lien entre les éléments',ctx:'"Let me help you connect the dots."',lv:3},
-    {en:'To get ahead of something',fr:'Anticiper / prendre les devants',ctx:'"We need to get ahead of this before it escalates."',lv:3},
-    {en:'To have a vested interest',fr:'Avoir un intérêt direct dans la chose',ctx:'"He has a vested interest in keeping the contract."',lv:3},
-    {en:'To split the difference',fr:'Couper la poire en deux',ctx:'"Why don\'t we split the difference at 45?"',lv:3},
-    {en:'To be on the cusp of something',fr:'Être sur le point de / à l\'orée de',ctx:'"We\'re on the cusp of a major breakthrough."',lv:3},
-    {en:'To cast doubt on',fr:'Jeter le doute sur',ctx:'"His findings cast doubt on the entire methodology."',lv:3},
-    {en:'To take the path of least resistance',fr:'Choisir la solution de facilité',ctx:'"Don\'t just take the path of least resistance."',lv:3},
-    {en:'Notwithstanding',fr:'Nonobstant / malgré cela',ctx:'"Notwithstanding the delays, we delivered on time."',lv:3},
-    {en:'To make a compelling case',fr:'Présenter un argument convaincant',ctx:'"You\'ll need to make a compelling case to the board."',lv:3},
-  ]
-}
+pro:{label:'Vocabulaire pro',icon:'💼',color:'#EAF2FF',tc:'#1a3a5c',cards:[
+{en:'The shipment has been delayed.',fr:'L\'expédition a été retardée.',ctx:'Due to customs clearance / bad weather.',lv:1},
+{en:'Can you action this by end of day?',fr:'Tu peux t\'en occuper d\'ici fin de journée ?',ctx:'Très courant dans les emails pro anglophones.',lv:1},
+{en:'We need to align on the deliverables.',fr:'Nous devons nous aligner sur les livrables.',ctx:'Align on = se mettre d\'accord sur.',lv:1},
+{en:'Let\'s circle back on this next week.',fr:'Revenons là-dessus la semaine prochaine.',ctx:'Circle back = revenir sur un sujet plus tard.',lv:1},
+{en:'I\'ll follow up with the client.',fr:'Je relance le client.',ctx:'Follow up ≠ juste suivre — implique une action proactive.',lv:1},
+{en:'The invoice is pending approval.',fr:'La facture est en attente de validation.',ctx:'Pending = en attente de.',lv:1},
+{en:'We\'re running behind schedule.',fr:'Nous avons du retard sur le planning.',ctx:'Behind schedule = en retard sur le calendrier prévu.',lv:1},
+{en:'Can we get a status update?',fr:'Peut-on avoir un point de situation ?',ctx:'Status update = état d\'avancement.',lv:1},
+{en:'We need to escalate this to management.',fr:'Il faut remonter ça à la direction.',ctx:'Escalate = remonter dans la hiérarchie.',lv:1},
+{en:'Let\'s take this offline.',fr:'Parlons-en en dehors de la réunion.',ctx:'Offline = en aparté, hors réunion.',lv:1},
+{en:'The warehouse is at full capacity.',fr:'L\'entrepôt est à pleine capacité.',ctx:'Logistique courante.',lv:1},
+{en:'The lead time is six weeks.',fr:'Le délai d\'approvisionnement est de six semaines.',ctx:'Lead time = délai entre commande et livraison.',lv:1},
+{en:'Stakeholder',fr:'Partie prenante',ctx:'Personne impactée par ou impliquée dans un projet.',lv:1},
+{en:'Milestone',fr:'Jalon / Étape clé',ctx:'Point de contrôle dans un projet.',lv:1},
+{en:'Deliverable',fr:'Livrable',ctx:'Ce qu\'on s\'engage à remettre.',lv:1},
+{en:'Bandwidth',fr:'Disponibilité (d\'une personne)',ctx:'"Do you have bandwidth?" = as-tu du temps disponible ?',lv:1},
+{en:'Bottleneck',fr:'Goulot d\'étranglement',ctx:'Point de blocage qui ralentit tout le reste.',lv:1},
+{en:'Turnaround time',fr:'Délai d\'exécution',ctx:'Temps entre réception d\'une demande et livraison.',lv:1},
+{en:'Headcount',fr:'Effectif',ctx:'Nombre de personnes dans une équipe.',lv:1},
+{en:'Overhead costs',fr:'Frais généraux',ctx:'Coûts non directement liés à la production.',lv:1},
+{en:'I\'ll loop you in on the email.',fr:'Je t\'inclus dans l\'email.',ctx:'Loop in = inclure quelqu\'un dans la communication.',lv:1},
+{en:'Who is the point of contact on this?',fr:'Qui est l\'interlocuteur référent sur ce sujet ?',ctx:'Point of contact = interlocuteur principal.',lv:1},
+{en:'We\'re on track to meet the deadline.',fr:'Nous sommes en bonne voie pour respecter la date limite.',ctx:'On track = dans les temps.',lv:1},
+{en:'Let\'s debrief after the call.',fr:'Faisons un point après l\'appel.',ctx:'Debrief = compte-rendu à chaud.',lv:1},
+{en:'The figures don\'t add up.',fr:'Les chiffres ne sont pas cohérents.',ctx:'Don\'t add up = ne pas être logique.',lv:1},
+{en:'We need to get sign-off from legal.',fr:'Nous devons obtenir la validation du juridique.',ctx:'Sign-off = validation / approbation formelle.',lv:1},
+{en:'This is a blocker for us.',fr:'C\'est un point bloquant pour nous.',ctx:'Blocker = obstacle qui empêche d\'avancer.',lv:1},
+{en:'We need to streamline the approval process.',fr:'Il faut simplifier le processus de validation.',ctx:'Streamline = rendre plus fluide.',lv:2},
+{en:'The procurement team is renegotiating the terms.',fr:'L\'équipe achats renégocie les conditions.',ctx:'Procurement = achats / approvisionnement.',lv:2},
+{en:'We\'re looking at a tight margin on this contract.',fr:'On est sur une marge serrée pour ce contrat.',ctx:'Tight margin = peu de marge financière.',lv:2},
+{en:'The audit flagged several discrepancies.',fr:'L\'audit a relevé plusieurs écarts.',ctx:'Flag = signaler / relever un problème.',lv:2},
+{en:'We\'re onboarding a new carrier next quarter.',fr:'Nous intégrons un nouveau transporteur au prochain trimestre.',ctx:'Onboarding = intégration d\'un nouveau partenaire.',lv:2},
+{en:'The cash flow forecast looks tight this month.',fr:'Les prévisions de trésorerie sont serrées ce mois-ci.',ctx:'Cash flow = flux de trésorerie.',lv:2},
+{en:'The SLA was breached on three occasions.',fr:'Le SLA a été enfreint à trois reprises.',ctx:'SLA = Service Level Agreement.',lv:2},
+{en:'We need to hedge against currency fluctuations.',fr:'Il faut se couvrir contre les fluctuations de devises.',ctx:'Hedge = se couvrir (terme financier).',lv:2},
+{en:'The freight cost has gone up by 15%.',fr:'Le coût du fret a augmenté de 15%.',ctx:'Freight = fret / transport de marchandises.',lv:2},
+{en:'We\'re overstocked on this SKU.',fr:'Nous sommes en surstock sur cette référence.',ctx:'SKU = Stock Keeping Unit = référence produit.',lv:2},
+{en:'I\'ll send over the breakdown after the meeting.',fr:'Je t\'envoie la ventilation après la réunion.',ctx:'Breakdown = décomposition détaillée des chiffres.',lv:2},
+{en:'The tender was awarded to a competitor.',fr:'L\'appel d\'offres a été remporté par un concurrent.',ctx:'Tender = appel d\'offres.',lv:2},
+{en:'Net margin',fr:'Marge nette',ctx:'Profit après déduction de tous les coûts.',lv:2},
+{en:'Working capital',fr:'Besoin en fonds de roulement (BFR)',ctx:'Argent nécessaire au fonctionnement quotidien.',lv:2},
+{en:'Churn rate',fr:'Taux d\'attrition',ctx:'Pourcentage de clients perdus sur une période.',lv:2},
+{en:'Pain point',fr:'Point de friction / problème récurrent',ctx:'"What are the client\'s pain points?"',lv:2},
+{en:'Leverage',fr:'Levier (avantage stratégique)',ctx:'"We have leverage in this negotiation."',lv:2},
+{en:'Outstanding invoice',fr:'Facture impayée',ctx:'Outstanding = en souffrance / non réglé.',lv:2},
+{en:'Pipeline',fr:'Portefeuille de prospects / projets',ctx:'"What\'s in your pipeline?"',lv:2},
+{en:'We\'re seeing pushback from the client.',fr:'Nous rencontrons une résistance de la part du client.',ctx:'Pushback = résistance / opposition.',lv:2},
+{en:'Let\'s put a pin in that for now.',fr:'Laissons ça de côté pour l\'instant.',ctx:'Put a pin in it = mettre en pause temporairement.',lv:2},
+{en:'The project scope has been creeping.',fr:'Le périmètre du projet a dérivé.',ctx:'Scope creep = dérive du périmètre.',lv:2},
+{en:'We need to backfill this position urgently.',fr:'Il faut pourvoir ce poste de toute urgence.',ctx:'Backfill = remplacer quelqu\'un qui part.',lv:3},
+{en:'The quarterly earnings beat expectations.',fr:'Les résultats trimestriels ont dépassé les attentes.',ctx:'Beat expectations = dépasser les prévisions.',lv:3},
+{en:'We\'re scaling up operations in the region.',fr:'Nous développons les opérations dans la région.',ctx:'Scale up = monter en puissance.',lv:3},
+{en:'We need to de-risk the supply chain.',fr:'Il faut réduire les risques dans la chaîne logistique.',ctx:'De-risk = atténuer les risques.',lv:3},
+{en:'Runway',fr:'Durée de vie de la trésorerie',ctx:'"6 months of runway" = argent disponible pour 6 mois.',lv:3},
+{en:'The deal fell through at the last minute.',fr:'La transaction a échoué à la dernière minute.',ctx:'Fall through = ne pas aboutir.',lv:3},
+{en:'To sanity-check the figures',fr:'Vérifier que les chiffres tiennent la route',ctx:'"Can you sanity-check this?" = est-ce logique ?',lv:3},
+{en:'The margin compression is a concern.',fr:'La compression des marges est préoccupante.',ctx:'Margin compression = réduction des marges.',lv:3},
+{en:'We need to build a business case for this.',fr:'Nous devons construire un argumentaire économique.',ctx:'Business case = dossier justifiant un investissement.',lv:3},
+{en:'The ROI on this initiative is unclear.',fr:'Le retour sur investissement n\'est pas clair.',ctx:'ROI = Return on Investment.',lv:3},
+]},
+idioms:{label:'Expressions idiomatiques',icon:'🗣️',color:'#FEF9E7',tc:'#7d6608',cards:[
+{en:'To get the ball rolling',fr:'Lancer les choses / démarrer',ctx:'"Let\'s get the ball rolling on this project."',lv:1},
+{en:'To be on the same page',fr:'Être sur la même longueur d\'onde',ctx:'"Are we on the same page about the deadline?"',lv:1},
+{en:'To call it a day',fr:'S\'arrêter pour aujourd\'hui',ctx:'"It\'s late, let\'s call it a day."',lv:1},
+{en:'To miss the boat',fr:'Rater le coche',ctx:'"We missed the boat on that opportunity."',lv:1},
+{en:'To bite the bullet',fr:'Prendre son courage à deux mains',ctx:'"We\'ll just have to bite the bullet and do it."',lv:1},
+{en:'To cut corners',fr:'Faire les choses à moitié / bâcler',ctx:'"Don\'t cut corners on safety."',lv:1},
+{en:'To go back to square one',fr:'Repartir de zéro',ctx:'"The plan failed — we\'re back to square one."',lv:1},
+{en:'To read between the lines',fr:'Lire entre les lignes',ctx:'"Read between the lines — he\'s not happy."',lv:1},
+{en:'To be in the loop',fr:'Être dans la boucle / au courant',ctx:'"Keep me in the loop on this."',lv:1},
+{en:'To hit the ground running',fr:'Démarrer sur les chapeaux de roues',ctx:'Très courant pour quelqu\'un d\'opérationnel rapidement.',lv:1},
+{en:'To go the extra mile',fr:'Faire un effort supplémentaire',ctx:'"She always goes the extra mile for clients."',lv:1},
+{en:'To touch base',fr:'Faire un point rapide',ctx:'"Let\'s touch base on Friday."',lv:1},
+{en:'To burn bridges',fr:'Couper les ponts définitivement',ctx:'"Don\'t burn bridges when you resign."',lv:1},
+{en:'Under the weather',fr:'Pas dans son assiette / légèrement malade',ctx:'"I\'m feeling a bit under the weather today."',lv:1},
+{en:'The ball is in your court',fr:'La balle est dans ton camp',ctx:'"I\'ve made my offer. The ball is in your court."',lv:1},
+{en:'It\'s not rocket science',fr:'Ce n\'est pas sorcier',ctx:'"It\'s not rocket science — just follow the process."',lv:1},
+{en:'To bite off more than you can chew',fr:'Voir trop grand',ctx:'"We bit off more than we could chew."',lv:2},
+{en:'To sit on the fence',fr:'Ne pas prendre position',ctx:'"Stop sitting on the fence — which option?"',lv:2},
+{en:'To play hardball',fr:'Jouer dur / ne faire aucune concession',ctx:'"They\'re playing hardball in this negotiation."',lv:2},
+{en:'To pick someone\'s brain',fr:'Profiter de l\'expertise de quelqu\'un',ctx:'"Can I pick your brain about this for 10 minutes?"',lv:2},
+{en:'To face the music',fr:'Faire face aux conséquences',ctx:'"Time to face the music and admit the mistake."',lv:2},
+{en:'To pass the buck',fr:'Renvoyer la responsabilité',ctx:'"Stop passing the buck — take ownership."',lv:2},
+{en:'To throw someone under the bus',fr:'Faire porter le chapeau à quelqu\'un',ctx:'"He threw his colleague under the bus."',lv:2},
+{en:'To move the needle',fr:'Faire avancer les choses de façon significative',ctx:'"What will actually move the needle on our growth?"',lv:2},
+{en:'To drop the ball',fr:'Laisser tomber / manquer à sa mission',ctx:'"We really dropped the ball on this delivery."',lv:2},
+{en:'To be ahead of the curve',fr:'Avoir de l\'avance / être visionnaire',ctx:'"They were ahead of the curve on electric vehicles."',lv:2},
+{en:'To burn the midnight oil',fr:'Travailler tard dans la nuit',ctx:'"We\'ve been burning the midnight oil to meet the deadline."',lv:2},
+{en:'To let the cat out of the bag',fr:'Vendre la mèche',ctx:'"He let the cat out of the bag about the merger."',lv:2},
+{en:'To weather the storm',fr:'Surmonter la tempête / tenir bon',ctx:'"We managed to weather the storm during the crisis."',lv:2},
+{en:'To see eye to eye',fr:'Être du même avis',ctx:'"We don\'t always see eye to eye on strategy."',lv:2},
+{en:'To cut to the chase',fr:'Aller droit au but',ctx:'"Let\'s cut to the chase — what\'s the real issue?"',lv:3},
+{en:'To get the hang of something',fr:'Prendre le coup de main',ctx:'"It takes time but you\'ll get the hang of it."',lv:3},
+{en:'To hit the nail on the head',fr:'Mettre le doigt dessus / toucher juste',ctx:'"You hit the nail on the head with that analysis."',lv:3},
+{en:'To be on thin ice',fr:'Être sur un terrain glissant',ctx:'"He\'s on thin ice after missing the third deadline."',lv:3},
+{en:'To give the benefit of the doubt',fr:'Accorder le bénéfice du doute',ctx:'"Give her the benefit of the doubt."',lv:3},
+{en:'To stay in one\'s lane',fr:'Rester dans son domaine',ctx:'"This is a legal matter — stay in your lane."',lv:3},
+{en:'To read the room',fr:'Sentir l\'atmosphère / s\'adapter',ctx:'"You need to read the room before making that joke."',lv:3},
+{en:'To open a can of worms',fr:'Ouvrir la boîte de Pandore',ctx:'"Bringing up budget now opens a can of worms."',lv:3},
+{en:'To take something with a grain of salt',fr:'Prendre quelque chose avec des pincettes',ctx:'"Take his estimates with a grain of salt."',lv:3},
+{en:'To keep one\'s cards close to one\'s chest',fr:'Jouer serré / ne pas dévoiler ses intentions',ctx:'"She kept her cards close to her chest in negotiations."',lv:3},
+{en:'To have a lot on one\'s plate',fr:'Avoir beaucoup à gérer / être débordé',ctx:'"I can\'t take this on — I have a lot on my plate."',lv:3},
+]},
+tenses:{label:'Temps & auxiliaires',icon:'⏱️',color:'#EAFAF1',tc:'#1a6b3a',cards:[
+{en:'I sent the report yesterday.',fr:'J\'ai envoyé le rapport hier.',ctx:'Simple past — moment précis. Jamais "yesterday" + present perfect.',lv:1},
+{en:'I\'ve already sent the report.',fr:'J\'ai déjà envoyé le rapport.',ctx:'Present perfect — résultat présent, sans moment précis.',lv:1},
+{en:'They might be stuck in traffic.',fr:'Ils sont peut-être bloqués dans les embouteillages.',ctx:'Might = possibilité présente (incertitude).',lv:1},
+{en:'You should call him back.',fr:'Tu devrais le rappeler.',ctx:'Should = conseil ou obligation morale légère.',lv:1},
+{en:'I used to commute two hours a day.',fr:'Je faisais deux heures de trajet par jour autrefois.',ctx:'Used to = habitude passée révolue.',lv:1},
+{en:'He must be in a meeting.',fr:'Il doit être en réunion.',ctx:'Must = déduction logique au présent.',lv:1},
+{en:'Could you send me the file?',fr:'Pourriez-vous m\'envoyer le fichier ?',ctx:'Could = plus poli que can pour une demande.',lv:1},
+{en:'I will call you tomorrow.',fr:'Je t\'appellerai demain.',ctx:'Will = promesse / décision spontanée.',lv:1},
+{en:'I\'m going to call him later.',fr:'Je vais l\'appeler plus tard.',ctx:'Going to = intention préalable / plan déjà décidé.',lv:1},
+{en:'I\'ve just spoken to the client.',fr:'Je viens de parler au client.',ctx:'Present perfect + just = action très récente.',lv:1},
+{en:'I\'ve been working on this for two hours.',fr:'Je travaille là-dessus depuis deux heures.',ctx:'Present perfect continuous — action qui a commencé et continue.',lv:2},
+{en:'She had already left when I arrived.',fr:'Elle était déjà partie quand je suis arrivé.',ctx:'Past perfect — antériorité dans le passé.',lv:2},
+{en:'If I were you, I\'d wait a bit longer.',fr:'À ta place, j\'attendrais encore un peu.',ctx:'Conditionnel 2 — "Were" pour toutes les personnes.',lv:2},
+{en:'You should have told me sooner.',fr:'Tu aurais dû me le dire plus tôt.',ctx:'Should have + pp = reproche ou regret sur le passé.',lv:2},
+{en:'He must have missed his flight.',fr:'Il a dû rater son vol.',ctx:'Must have + pp = déduction sur le passé.',lv:2},
+{en:'She could have handled it better.',fr:'Elle aurait pu mieux gérer ça.',ctx:'Could have + pp = possibilité non réalisée dans le passé.',lv:2},
+{en:'I was about to call you.',fr:'J\'allais justement t\'appeler.',ctx:'Was about to = sur le point de faire quelque chose.',lv:2},
+{en:'I\'d rather you didn\'t mention it.',fr:'Je préférerais que tu n\'en parles pas.',ctx:'Would rather + sujet + past simple.',lv:2},
+{en:'It\'s high time we made a decision.',fr:'Il est grand temps qu\'on prenne une décision.',ctx:'It\'s high time + past simple — urgence.',lv:2},
+{en:'I wish I had more time.',fr:'J\'aimerais avoir plus de temps.',ctx:'Wish + past simple = souhait présent irréel.',lv:2},
+{en:'I wish I had studied more.',fr:'J\'aurais aimé étudier davantage.',ctx:'Wish + past perfect = regret sur le passé.',lv:2},
+{en:'I would have called you if I\'d known.',fr:'Je t\'aurais appelé si j\'avais su.',ctx:'Conditionnel 3 — irréel du passé.',lv:3},
+{en:'By the end of the year, we\'ll have launched three products.',fr:'D\'ici fin d\'année, nous aurons lancé trois produits.',ctx:'Future perfect — action achevée avant un moment futur.',lv:3},
+{en:'I\'m having the document reviewed.',fr:'Je fais relire le document.',ctx:'Have something done = faire faire par quelqu\'un d\'autre.',lv:3},
+{en:'He\'s bound to make mistakes at first.',fr:'Il va forcément faire des erreurs au début.',ctx:'Be bound to = certitude / inévitabilité.',lv:3},
+{en:'I can\'t help feeling that something is wrong.',fr:'Je ne peux pas m\'empêcher de sentir que quelque chose ne va pas.',ctx:'Can\'t help + gerund.',lv:3},
+{en:'Unless I\'m mistaken, the deadline is Friday.',fr:'Sauf erreur de ma part, la date limite est vendredi.',ctx:'Unless = sauf si / à moins que.',lv:3},
+{en:'Had I known earlier, I would have acted differently.',fr:'Si j\'avais su plus tôt, j\'aurais agi différemment.',ctx:'Conditionnel 3 inversé — structure avancée sans "if".',lv:3},
+{en:'The report is to be submitted by Friday.',fr:'Le rapport doit être soumis avant vendredi.',ctx:'Is to be = obligation formelle.',lv:3},
+{en:'He is said to be the best in the field.',fr:'On dit qu\'il est le meilleur dans le domaine.',ctx:'Is said to be = on dit que / il est réputé.',lv:3},
+]},
+faux:{label:'Faux amis & pièges',icon:'⚠️',color:'#FDF0EF',tc:'#8b2020',cards:[
+{en:'Actually',fr:'En fait / En réalité',ctx:'≠ Actuellement → currently / nowadays.',lv:1},
+{en:'Eventually',fr:'Finalement / À terme',ctx:'≠ Éventuellement → possibly / if need be.',lv:1},
+{en:'Currently',fr:'Actuellement / En ce moment',ctx:'≠ Couramment → fluently.',lv:1},
+{en:'Library',fr:'Bibliothèque',ctx:'≠ Librairie → bookshop / bookstore.',lv:1},
+{en:'Attend',fr:'Assister à / Être présent',ctx:'≠ Attendre → to wait.',lv:1},
+{en:'Demand',fr:'Exiger (avec insistance)',ctx:'≠ Demander → to ask.',lv:1},
+{en:'Pretend',fr:'Faire semblant',ctx:'≠ Prétendre → to claim / to argue.',lv:1},
+{en:'Sensible',fr:'Raisonnable / Judicieux',ctx:'≠ Sensible → sensitive.',lv:1},
+{en:'Comprehensive',fr:'Complet / Exhaustif',ctx:'≠ Compréhensible → understandable.',lv:1},
+{en:'Assist',fr:'Aider / Assister',ctx:'≠ Assister à → to attend.',lv:1},
+{en:'Agenda',fr:'Ordre du jour',ctx:'≠ Agenda (planning) → schedule.',lv:1},
+{en:'Delay',fr:'Retard / Reporter',ctx:'≠ Délai → deadline / timeframe.',lv:1},
+{en:'Realize',fr:'Se rendre compte',ctx:'≠ Réaliser (faire) → to carry out.',lv:1},
+{en:'Sympathetic',fr:'Compatissant / Compréhensif',ctx:'≠ Sympathique → nice / likeable.',lv:2},
+{en:'Issue',fr:'Problème / Point à traiter',ctx:'Issue (fr) = outcome en anglais.',lv:2},
+{en:'Consistent',fr:'Cohérent / Régulier',ctx:'≠ Consistant → substantial / thick.',lv:2},
+{en:'Efficient',fr:'Efficace (pour un système)',ctx:'Efficace (pour une personne) → effective.',lv:2},
+{en:'Voyage',fr:'Périple long / voyage en mer',ctx:'Voyage (fr) → trip / journey.',lv:2},
+{en:'College',fr:'Université / Établissement supérieur',ctx:'Collège (fr) → middle school.',lv:2},
+{en:'Gentle',fr:'Doux / Délicat',ctx:'≠ Gentil → kind / nice.',lv:2},
+{en:'Important',fr:'Important / Significatif',ctx:'≠ Important (gros) → large / big.',lv:2},
+{en:'Concentration',fr:'Concentration (attention)',ctx:'≠ Concentration (entreprise) → merger.',lv:2},
+{en:'Argument',fr:'Argument / Raisonnement',ctx:'≠ Argument (dispute) → quarrel.',lv:2},
+{en:'Brave',fr:'Courageux',ctx:'≠ Brave (fr) = kind/good.',lv:3},
+{en:'Inconvenient',fr:'Peu pratique / Mal tombé',ctx:'≠ Inconvénient → drawback.',lv:3},
+{en:'Résumé',fr:'CV',ctx:'≠ Résumé (fr) → summary.',lv:3},
+{en:'Deception',fr:'Tromperie / Mensonge',ctx:'≠ Déception → disappointment.',lv:3},
+{en:'Lecture',fr:'Cours magistral / Conférence',ctx:'≠ Lecture (fr) → reading.',lv:3},
+{en:'Particular',fr:'Spécifique / Précis',ctx:'Particulier (bizarre) → peculiar.',lv:3},
+{en:'Chance',fr:'Hasard / Occasion',ctx:'"By chance" = par hasard. La chance = luck.',lv:3},
+{en:'Commodity',fr:'Matière première / produit de base',ctx:'≠ Commodité → convenience / comfort.',lv:3},
+]},
+travel:{label:'Voyage & quotidien',icon:'✈️',color:'#F0EAF8',tc:'#4a1a7a',cards:[
+{en:'Is this seat taken?',fr:'Cette place est-elle prise ?',ctx:'Dans un train, avion, café.',lv:1},
+{en:'Can I get the bill, please?',fr:'L\'addition, s\'il vous plaît.',ctx:'"Check, please" aux États-Unis.',lv:1},
+{en:'I\'d like to check in, please.',fr:'Je voudrais m\'enregistrer, s\'il vous plaît.',ctx:'Aéroport / hôtel.',lv:1},
+{en:'I\'m just browsing, thank you.',fr:'Je regarde juste, merci.',ctx:'Pour éviter un vendeur insistant.',lv:1},
+{en:'Do you accept card payments?',fr:'Acceptez-vous les paiements par carte ?',ctx:'Partout dans le monde.',lv:1},
+{en:'How long is the wait?',fr:'Combien de temps faut-il attendre ?',ctx:'Restaurant, administration.',lv:1},
+{en:'I\'m here on a business trip.',fr:'Je suis là pour un voyage d\'affaires.',ctx:'À l\'aéroport, à la douane.',lv:1},
+{en:'Carry-on luggage',fr:'Bagage à main / bagage cabine',ctx:'≠ Checked luggage = bagage en soute.',lv:1},
+{en:'Round trip',fr:'Aller-retour',ctx:'≠ One-way = aller simple.',lv:1},
+{en:'Could you call me a cab, please?',fr:'Pourriez-vous m\'appeler un taxi ?',ctx:'Hôtel.',lv:1},
+{en:'My luggage didn\'t make it.',fr:'Mes bagages ne sont pas arrivés.',ctx:'"Make it" = arriver à destination.',lv:2},
+{en:'I have a connecting flight in two hours.',fr:'J\'ai une correspondance dans deux heures.',ctx:'Connecting flight = vol avec correspondance.',lv:2},
+{en:'Is the tip included?',fr:'Le pourboire est-il inclus ?',ctx:'Essentiel aux États-Unis.',lv:2},
+{en:'I\'d like a window seat if possible.',fr:'Je voudrais un siège côté hublot si possible.',ctx:'Window seat ≠ aisle seat (côté couloir).',lv:2},
+{en:'Could I have a wake-up call at 6am?',fr:'Pouvez-vous me réveiller à 6h ?',ctx:'Hôtel.',lv:2},
+{en:'I\'d like to extend my stay by one night.',fr:'Je voudrais prolonger mon séjour d\'une nuit.',ctx:'Hôtel.',lv:2},
+{en:'Overbooked',fr:'Surbooké',ctx:'"The flight is overbooked."',lv:2},
+{en:'Layover',fr:'Escale (avec attente)',ctx:'"A 3-hour layover in Dubai."',lv:2},
+{en:'I need to change my return flight.',fr:'Je dois modifier mon vol retour.',ctx:'Return flight = vol retour.',lv:2},
+{en:'Is there a shuttle service to the airport?',fr:'Y a-t-il une navette pour l\'aéroport ?',ctx:'Shuttle = navette.',lv:2},
+{en:'I\'ll have whatever you recommend.',fr:'Je prendrai ce que vous recommandez.',ctx:'Excellent pour montrer de la confiance.',lv:3},
+{en:'I\'d like to flag an issue with my room.',fr:'Je voudrais signaler un problème avec ma chambre.',ctx:'Flag = signaler formellement.',lv:3},
+{en:'Could you point me in the direction of…?',fr:'Pourriez-vous m\'indiquer la direction de… ?',ctx:'Plus naturel que "where is".',lv:3},
+{en:'I\'m afraid I won\'t be able to make the reservation.',fr:'Je crains de ne pas pouvoir honorer la réservation.',ctx:'Pour annuler poliment.',lv:3},
+{en:'Is there any chance of an upgrade?',fr:'Y aurait-il une possibilité de surclassement ?',ctx:'Hôtel / avion.',lv:3},
+{en:'I\'d like to lodge a complaint.',fr:'Je voudrais déposer une réclamation.',ctx:'Lodge a complaint = formuler une plainte officielle.',lv:3},
+{en:'The flight has been diverted to another airport.',fr:'Le vol a été dérouté vers un autre aéroport.',ctx:'Diverted = dérouté.',lv:3},
+{en:'Is there a non-stop flight or will there be a stopover?',fr:'Y a-t-il un vol direct ou y aura-t-il une escale ?',ctx:'Non-stop = sans escale.',lv:3},
+]},
+natural:{label:'Tournures naturelles',icon:'✨',color:'#F2F2F0',tc:'#2a2a2a',cards:[
+{en:'That works for me.',fr:'Ça me va.',ctx:'≠ "It\'s okay" trop hésitant.',lv:1},
+{en:'I\'ll keep you posted.',fr:'Je te tiens au courant.',ctx:'Keep someone posted = informer régulièrement.',lv:1},
+{en:'It slipped my mind.',fr:'Ça m\'était sorti de la tête.',ctx:'≠ "I forgot" trop direct.',lv:1},
+{en:'I\'m swamped at the moment.',fr:'Je suis débordé en ce moment.',ctx:'Swamped = submergé de travail.',lv:1},
+{en:'How does that sound?',fr:'Qu\'est-ce que tu en penses ? Ça te va ?',ctx:'Pour clore une proposition.',lv:1},
+{en:'Don\'t hesitate to reach out.',fr:'N\'hésite pas à me contacter.',ctx:'Formule de clôture email.',lv:1},
+{en:'Something came up on my end.',fr:'Il s\'est passé quelque chose de mon côté.',ctx:'Pour expliquer un retard sans détails.',lv:1},
+{en:'Let me get back to you on that.',fr:'Je reviens vers toi là-dessus.',ctx:'≠ "I will think about it" trop vague.',lv:1},
+{en:'I appreciate you letting me know.',fr:'Merci de m\'avoir prévenu.',ctx:'≠ "Thank you for the information" trop froid.',lv:1},
+{en:'I hear you.',fr:'Je comprends ce que tu veux dire.',ctx:'Exprime l\'empathie / la compréhension.',lv:1},
+{en:'Fair enough.',fr:'C\'est juste. / D\'accord.',ctx:'Pour concéder un point de façon décontractée.',lv:1},
+{en:'What\'s your take on this?',fr:'Quel est ton avis là-dessus ?',ctx:'Take = point de vue / opinion.',lv:1},
+{en:'I\'m not sure I follow — could you elaborate?',fr:'Je ne suis pas sûr de suivre — tu peux développer ?',ctx:'≠ "I don\'t understand" trop abrupt.',lv:2},
+{en:'I was wondering if you\'d had a chance to look at this.',fr:'Je me demandais si tu avais eu l\'occasion de regarder ça.',ctx:'Relance polie.',lv:2},
+{en:'Just to make sure we\'re on the same page…',fr:'Juste pour qu\'on soit bien alignés…',ctx:'Pour reformuler et confirmer.',lv:2},
+{en:'I\'d push back on that a little.',fr:'Je nuancerais ça légèrement.',ctx:'Désaccord poli.',lv:2},
+{en:'It\'s a bit of a grey area.',fr:'C\'est un peu flou / dans une zone grise.',ctx:'Pas de réponse claire.',lv:2},
+{en:'I\'m not in a position to commit to that right now.',fr:'Je ne suis pas en mesure de m\'engager là-dessus.',ctx:'Refus professionnel poli.',lv:2},
+{en:'That\'s not really my call to make.',fr:'Ce n\'est pas vraiment à moi de décider ça.',ctx:'Pour renvoyer une décision.',lv:2},
+{en:'Can we take a step back?',fr:'Peut-on prendre un peu de recul ?',ctx:'Pour recadrer une discussion.',lv:2},
+{en:'That\'s a fair point.',fr:'C\'est un point valable.',ctx:'Pour concéder sans tout abandonner.',lv:2},
+{en:'We\'ll have to play it by ear.',fr:'On verra au fur et à mesure.',ctx:'Play it by ear = improviser selon la situation.',lv:2},
+{en:'Broadly speaking…',fr:'En termes généraux…',ctx:'Pour introduire une généralité.',lv:2},
+{en:'Off the top of my head…',fr:'Comme ça de mémoire…',ctx:'Pour donner une réponse approximative.',lv:2},
+{en:'To put it bluntly…',fr:'Pour le dire sans détour…',ctx:'Pour annoncer quelque chose de direct.',lv:2},
+{en:'I might be wrong, but…',fr:'Je me trompe peut-être, mais…',ctx:'Introduire une opinion avec précaution.',lv:3},
+{en:'All things considered…',fr:'Tout bien réfléchi…',ctx:'Pour conclure en tenant compte de tout.',lv:3},
+{en:'At the end of the day…',fr:'En fin de compte…',ctx:'Très courant à l\'oral.',lv:3},
+{en:'I\'d be remiss not to mention…',fr:'Je manquerais à mon devoir si je ne mentionnais pas…',ctx:'Formule élégante pour soulever un point important.',lv:3},
+{en:'I\'m going to have to level with you.',fr:'Je vais devoir être honnête avec toi.',ctx:'Level with someone = parler franchement.',lv:3},
+{en:'Let\'s not beat around the bush.',fr:'Ne tournons pas autour du pot.',ctx:'Beat around the bush = éviter le sujet.',lv:3},
+{en:'Let me caveat that by saying…',fr:'Je nuancerai cela en disant…',ctx:'Caveat = réserve / mise en garde.',lv:3},
+{en:'I\'d be inclined to agree.',fr:'Je serais enclin à être d\'accord.',ctx:'Formulation prudente pour exprimer un accord partiel.',lv:3},
+{en:'Let\'s not lose sight of the bigger picture.',fr:'Ne perdons pas de vue la vue d\'ensemble.',ctx:'Bigger picture = vision globale.',lv:3},
+]},
+phrasal:{label:'Phrasal verbs',icon:'🔀',color:'#E8F8F5',tc:'#0e4d3a',cards:[
+{en:'To follow up on something',fr:'Donner suite à / relancer',ctx:'"I\'ll follow up on this after the meeting."',lv:1},
+{en:'To bring up a topic',fr:'Aborder / soulever un sujet',ctx:'"I\'d like to bring up a concern."',lv:1},
+{en:'To put off a meeting',fr:'Reporter une réunion',ctx:'"Can we put off the call until Thursday?"',lv:1},
+{en:'To take on a project',fr:'Prendre en charge un projet',ctx:'"She took on too much work."',lv:1},
+{en:'To come up with an idea',fr:'Trouver / proposer une idée',ctx:'"Can you come up with a solution by Friday?"',lv:1},
+{en:'To look into a problem',fr:'Examiner / investiguer un problème',ctx:'"I\'ll look into this and get back to you."',lv:1},
+{en:'To go over the details',fr:'Passer en revue les détails',ctx:'"Let\'s go over the numbers one more time."',lv:1},
+{en:'To set up a meeting',fr:'Organiser une réunion',ctx:'"Can you set up a call for next week?"',lv:1},
+{en:'To back down',fr:'Reculer / abandonner sa position',ctx:'"He backed down after the pushback."',lv:1},
+{en:'To stand out',fr:'Se démarquer / ressortir',ctx:'"Her presentation really stood out."',lv:1},
+{en:'To call off a meeting',fr:'Annuler une réunion',ctx:'"The meeting was called off."',lv:1},
+{en:'To cut back on expenses',fr:'Réduire les dépenses',ctx:'"We need to cut back on travel costs."',lv:1},
+{en:'To bring about a change',fr:'Provoquer / entraîner un changement',ctx:'"The new policy brought about significant changes."',lv:1},
+{en:'To hand over responsibilities',fr:'Transmettre / céder des responsabilités',ctx:'"She handed over her role to a colleague."',lv:1},
+{en:'To talk someone into something',fr:'Convaincre quelqu\'un de faire quelque chose',ctx:'"He talked me into attending the conference."',lv:2},
+{en:'To talk someone out of something',fr:'Dissuader quelqu\'un de faire quelque chose',ctx:'"She talked him out of resigning."',lv:2},
+{en:'To figure out a solution',fr:'Trouver / comprendre une solution',ctx:'"Let me figure out the best approach."',lv:2},
+{en:'To run out of time',fr:'Manquer de temps',ctx:'"We ran out of time before covering everything."',lv:2},
+{en:'To fall behind on deliverables',fr:'Prendre du retard sur les livrables',ctx:'"We\'re falling behind — we need more resources."',lv:2},
+{en:'To pull off a deal',fr:'Réussir à conclure un accord',ctx:'"They pulled off an impressive deal."',lv:2},
+{en:'To wrap up a meeting',fr:'Conclure / terminer une réunion',ctx:'"Let\'s wrap up — any final questions?"',lv:2},
+{en:'To turn down an offer',fr:'Refuser une offre',ctx:'"We turned down their initial proposal."',lv:2},
+{en:'To carry out a task',fr:'Exécuter / mener à bien une tâche',ctx:'"The team carried out the audit successfully."',lv:2},
+{en:'To narrow down the options',fr:'Réduire le nombre d\'options',ctx:'"Let\'s narrow down to three candidates."',lv:2},
+{en:'To kick off a project',fr:'Lancer / démarrer un projet',ctx:'"We\'ll kick off the new initiative next Monday."',lv:2},
+{en:'To pick up the pace',fr:'Accélérer le rythme',ctx:'"We need to pick up the pace."',lv:2},
+{en:'To run by someone',fr:'Soumettre une idée à quelqu\'un pour avis',ctx:'"Let me run this by the team before we decide."',lv:2},
+{en:'To sort out a problem',fr:'Régler / résoudre un problème',ctx:'"Can you sort out the technical issues?"',lv:2},
+{en:'To tie up loose ends',fr:'Régler les derniers détails en suspens',ctx:'"There are a few loose ends to tie up."',lv:2},
+{en:'To phase out a product',fr:'Supprimer progressivement un produit',ctx:'"We\'re phasing out the old model by Q4."',lv:3},
+{en:'To roll out a new policy',fr:'Déployer une nouvelle politique',ctx:'"The new process will be rolled out next month."',lv:3},
+{en:'To iron out the details',fr:'Régler les derniers détails',ctx:'"We still need to iron out a few things."',lv:3},
+{en:'To head off a problem',fr:'Anticiper / prévenir un problème',ctx:'"Let\'s head off this issue before it escalates."',lv:3},
+{en:'To come across as confident',fr:'Paraître / donner l\'impression d\'être confiant',ctx:'"You came across as very professional."',lv:3},
+{en:'To live up to expectations',fr:'Être à la hauteur des attentes',ctx:'"The product didn\'t live up to the hype."',lv:3},
+{en:'To tap into a market',fr:'Exploiter / pénétrer un marché',ctx:'"We need to tap into the Asian market."',lv:3},
+{en:'To sign off on a decision',fr:'Donner son approbation finale',ctx:'"The board needs to sign off on this."',lv:3},
+{en:'To weigh up the options',fr:'Peser / évaluer les options',ctx:'"We need to weigh up all the options."',lv:3},
+{en:'To zero in on a target',fr:'Se concentrer précisément sur une cible',ctx:'"Let\'s zero in on the most profitable segment."',lv:3},
+]},
+emails:{label:'Emails & registres',icon:'✉️',color:'#FEF4E8',tc:'#7a3a0a',cards:[
+{en:'I hope this email finds you well.',fr:'J\'espère que vous allez bien.',ctx:'Ouverture email formelle standard.',lv:1},
+{en:'Please find attached the document you requested.',fr:'Veuillez trouver ci-joint le document demandé.',ctx:'Find attached = ci-joint.',lv:1},
+{en:'I am writing to follow up on my previous email.',fr:'Je vous écris pour donner suite à mon email précédent.',ctx:'Pour relancer sans agressivité.',lv:1},
+{en:'Could you please let me know your thoughts?',fr:'Pourriez-vous me faire part de votre avis ?',ctx:'Pour demander un retour.',lv:1},
+{en:'I will get back to you as soon as possible.',fr:'Je reviendrai vers vous dès que possible.',ctx:'Engagement de réponse.',lv:1},
+{en:'Thank you for your prompt response.',fr:'Merci pour votre réponse rapide.',ctx:'Prompt = rapide.',lv:1},
+{en:'Please do not hesitate to contact me.',fr:'N\'hésitez pas à me contacter.',ctx:'Formule de clôture standard.',lv:1},
+{en:'As per our conversation earlier today…',fr:'Comme convenu lors de notre échange de ce jour…',ctx:'As per = conformément à / comme convenu.',lv:1},
+{en:'I look forward to hearing from you.',fr:'Dans l\'attente de votre retour.',ctx:'Formule de clôture très courante.',lv:1},
+{en:'Thank you for reaching out.',fr:'Merci de nous avoir contactés.',ctx:'Pour répondre à une prise de contact entrante.',lv:1},
+{en:'I\'m writing on behalf of…',fr:'J\'écris au nom de…',ctx:'On behalf of = au nom de.',lv:1},
+{en:'Please see my comments in red below.',fr:'Veuillez trouver mes commentaires en rouge ci-dessous.',ctx:'Courant lors de révisions de documents partagés.',lv:1},
+{en:'Just a gentle reminder that the deadline is approaching.',fr:'Un petit rappel que la date limite approche.',ctx:'Gentle reminder = rappel poli.',lv:2},
+{en:'I\'m reaching out regarding the proposal we discussed.',fr:'Je vous contacte au sujet de la proposition dont nous avons discuté.',ctx:'Reaching out = prendre contact.',lv:2},
+{en:'Please advise on the best way to proceed.',fr:'Merci de m\'indiquer la meilleure façon de procéder.',ctx:'Please advise = formule formelle.',lv:2},
+{en:'I wanted to flag a potential issue with the timeline.',fr:'Je voulais signaler un problème potentiel avec le calendrier.',ctx:'Flag = signaler de façon proactive.',lv:2},
+{en:'Could we schedule a call at your earliest convenience?',fr:'Pourrait-on planifier un appel dès que possible ?',ctx:'At your earliest convenience = dès que vous le pouvez.',lv:2},
+{en:'I\'m looping in [name] who will be handling this going forward.',fr:'J\'inclus [nom] qui prendra en charge cela à l\'avenir.',ctx:'Loop in = inclure quelqu\'un dans la boucle.',lv:2},
+{en:'Apologies for the delayed response.',fr:'Toutes mes excuses pour la réponse tardive.',ctx:'Ouverture pour une réponse en retard.',lv:2},
+{en:'I\'m copying [name] for visibility.',fr:'Je mets [nom] en copie pour information.',ctx:'For visibility = pour que tout le monde soit au courant.',lv:2},
+{en:'As a heads-up, the deadline has moved.',fr:'Pour information, la date limite a changé.',ctx:'Heads-up = avertissement préventif.',lv:2},
+{en:'Happy to jump on a call if that\'s easier.',fr:'Je peux faire un appel rapide si c\'est plus simple.',ctx:'Jump on a call = passer un coup de fil.',lv:2},
+{en:'Please disregard my previous email.',fr:'Veuillez ignorer mon email précédent.',ctx:'Pour corriger une erreur d\'envoi.',lv:2},
+{en:'I trust you received my previous message.',fr:'Je suppose que vous avez bien reçu mon message précédent.',ctx:'Pour une relance formelle.',lv:2},
+{en:'Further to my email below, I would like to add…',fr:'En complément de mon email ci-dessous…',ctx:'Further to = en complément de. Courant en UK.',lv:3},
+{en:'I trust this is in order.',fr:'Je suppose que tout est en ordre.',ctx:'Formule de clôture formelle.',lv:3},
+{en:'Please be advised that…',fr:'Veuillez noter que…',ctx:'Formule officielle pour annoncer un changement.',lv:3},
+{en:'I would be grateful if you could…',fr:'Je vous serais reconnaissant de bien vouloir…',ctx:'Très formel.',lv:3},
+{en:'As discussed, I have actioned the following points.',fr:'Comme convenu, j\'ai traité les points suivants.',ctx:'As discussed = comme convenu.',lv:3},
+{en:'I\'ll escalate this matter if I do not hear back by end of week.',fr:'Je ferai remonter ce sujet si je n\'ai pas de retour d\'ici vendredi.',ctx:'Pour formaliser une relance avec une conséquence.',lv:3},
+]},
+collocations:{label:'Collocations clés',icon:'🔗',color:'#EAF2FF',tc:'#1a3a6a',cards:[
+{en:'Make a decision',fr:'Prendre une décision',ctx:'≠ Take a decision (moins courant).',lv:1},
+{en:'Make progress',fr:'Faire des progrès',ctx:'"We\'re making good progress on the project."',lv:1},
+{en:'Take responsibility',fr:'Prendre ses responsabilités',ctx:'"He took full responsibility for the mistake."',lv:1},
+{en:'Pay attention',fr:'Faire attention / être attentif',ctx:'"Pay attention to the details."',lv:1},
+{en:'Meet a deadline',fr:'Respecter une deadline',ctx:'"We need to meet the Friday deadline."',lv:1},
+{en:'Raise a concern',fr:'Soulever une préoccupation',ctx:'"I\'d like to raise a concern about the timeline."',lv:1},
+{en:'Run a meeting',fr:'Animer / diriger une réunion',ctx:'"She runs the weekly team meeting."',lv:1},
+{en:'Set a goal',fr:'Fixer un objectif',ctx:'"Let\'s set clear goals for Q3."',lv:1},
+{en:'Keep in touch',fr:'Rester en contact',ctx:'"Let\'s keep in touch after the project."',lv:1},
+{en:'Take the initiative',fr:'Prendre l\'initiative',ctx:'"Don\'t wait to be asked — take the initiative."',lv:1},
+{en:'Give a presentation',fr:'Faire une présentation',ctx:'≠ Make a presentation (moins courant).',lv:1},
+{en:'Provide feedback',fr:'Donner un retour / un feedback',ctx:'"Could you provide feedback on the draft?"',lv:1},
+{en:'Build a relationship',fr:'Construire une relation',ctx:'"It takes time to build a solid relationship."',lv:1},
+{en:'Address a concern',fr:'Répondre à / traiter une préoccupation',ctx:'"I\'d like to address the concerns raised earlier."',lv:1},
+{en:'Create value',fr:'Créer de la valeur',ctx:'"Our goal is to create value for stakeholders."',lv:1},
+{en:'Draw a conclusion',fr:'Tirer une conclusion',ctx:'"It\'s too early to draw any conclusions."',lv:2},
+{en:'Reach an agreement',fr:'Parvenir à un accord',ctx:'"Both parties reached an agreement."',lv:2},
+{en:'Handle a situation',fr:'Gérer une situation',ctx:'"How do you plan to handle this situation?"',lv:2},
+{en:'Strike a balance',fr:'Trouver un équilibre',ctx:'"We need to strike a balance between quality and speed."',lv:2},
+{en:'Bridge a gap',fr:'Combler un écart / une lacune',ctx:'"This training will help bridge the skills gap."',lv:2},
+{en:'Drive results',fr:'Produire des résultats',ctx:'"He\'s known for driving results under pressure."',lv:2},
+{en:'Gain traction',fr:'Prendre de l\'élan',ctx:'"The new product is gaining traction."',lv:2},
+{en:'Lay the groundwork',fr:'Poser les bases',ctx:'"We spent months laying the groundwork."',lv:2},
+{en:'Break even',fr:'Atteindre le seuil de rentabilité',ctx:'"We expect to break even by Q2."',lv:2},
+{en:'Exceed expectations',fr:'Dépasser les attentes',ctx:'"The results exceeded our initial expectations."',lv:2},
+{en:'Manage expectations',fr:'Gérer les attentes',ctx:'"It\'s important to manage client expectations early."',lv:2},
+{en:'Close a deal',fr:'Conclure un accord',ctx:'"The sales team closed three deals this week."',lv:2},
+{en:'Allocate resources',fr:'Allouer des ressources',ctx:'"We need to allocate more resources to this project."',lv:2},
+{en:'Optimize a process',fr:'Optimiser un processus',ctx:'"We\'re looking to optimize the onboarding process."',lv:3},
+{en:'Streamline operations',fr:'Rationaliser les opérations',ctx:'"The merger will help streamline our operations."',lv:3},
+{en:'Mitigate risk',fr:'Atténuer / limiter un risque',ctx:'"We need to mitigate the operational risk."',lv:3},
+{en:'Foster collaboration',fr:'Favoriser la collaboration',ctx:'"Leadership should foster collaboration."',lv:3},
+{en:'Unlock value',fr:'Créer / libérer de la valeur',ctx:'"The merger is expected to unlock significant value."',lv:3},
+{en:'Navigate uncertainty',fr:'Naviguer dans l\'incertitude',ctx:'"Companies must learn to navigate uncertainty."',lv:3},
+{en:'Articulate a vision',fr:'Formuler / exprimer une vision',ctx:'"A good leader can articulate a clear vision."',lv:3},
+{en:'Calibrate expectations',fr:'Ajuster / cadrer les attentes',ctx:'"Let\'s calibrate expectations before the client call."',lv:3},
+{en:'Capitalize on an opportunity',fr:'Tirer parti d\'une opportunité',ctx:'"We need to capitalize on this market window."',lv:3},
+{en:'Demonstrate value',fr:'Démontrer sa valeur',ctx:'"This project is our chance to demonstrate value."',lv:3},
+]},
+nuances:{label:'Nuances & registres',icon:'🎭',color:'#F9EAFB',tc:'#5a1a7a',cards:[
+{en:'I disagree.',fr:'Je ne suis pas d\'accord.',ctx:'Direct. Correct mais peut sembler abrupt en anglais pro.',lv:1},
+{en:'I\'m not sure I agree.',fr:'Je ne suis pas sûr d\'être d\'accord.',ctx:'Plus doux — ouvre le débat sans confronter.',lv:1},
+{en:'I see your point, but…',fr:'Je vois ce que tu veux dire, mais…',ctx:'Reconnaît l\'argument avant de le nuancer.',lv:1},
+{en:'Can you?',fr:'Tu peux ?',ctx:'Informel. Réservé aux collègues proches.',lv:1},
+{en:'Would you mind…?',fr:'Cela vous dérangerait-il de… ?',ctx:'Très poli. Attend une réponse positive.',lv:1},
+{en:'I\'m afraid I can\'t make it.',fr:'Je crains de ne pas pouvoir venir.',ctx:'Poli pour décliner une invitation.',lv:1},
+{en:'Sorry, can\'t make it.',fr:'Désolé, je ne peux pas venir.',ctx:'Très informel. Entre amis ou collègues proches.',lv:1},
+{en:'Regrettably, I will be unable to attend.',fr:'Malheureusement, il m\'est impossible d\'assister.',ctx:'Très formel. Email officiel.',lv:1},
+{en:'I need this done.',fr:'J\'ai besoin que ça soit fait.',ctx:'Direct. Ton assertif, légèrement autoritaire.',lv:1},
+{en:'It would be great if you could…',fr:'Ce serait super si tu pouvais…',ctx:'Informel mais positif.',lv:1},
+{en:'If I may, I\'d like to raise a point.',fr:'Si vous me le permettez, je voudrais soulever un point.',ctx:'Formel. Pour interrompre poliment.',lv:2},
+{en:'It might be worth considering…',fr:'Il pourrait valoir la peine d\'envisager…',ctx:'Très poli, suggère sans imposer.',lv:2},
+{en:'Have you considered…?',fr:'Avez-vous envisagé… ?',ctx:'Invite à la réflexion sans dicter une réponse.',lv:2},
+{en:'We can\'t do that.',fr:'Nous ne pouvons pas faire ça.',ctx:'Direct. Peut paraître dur selon le contexte.',lv:2},
+{en:'That may not be feasible at this stage.',fr:'Cela ne semble pas faisable à ce stade.',ctx:'Doux et professionnel. Laisse une porte ouverte.',lv:2},
+{en:'I\'m afraid that\'s outside the scope of what we can offer.',fr:'Je crains que ce soit en dehors de ce que nous pouvons offrir.',ctx:'Refus formel et poli.',lv:2},
+{en:'I think there may be a misunderstanding.',fr:'Je pense qu\'il y a peut-être un malentendu.',ctx:'Très diplomatique. Corrige sans confronter.',lv:2},
+{en:'The data tells a slightly different story.',fr:'Les données racontent une histoire légèrement différente.',ctx:'Contredire avec des faits, pas des opinions.',lv:2},
+{en:'Do you have a moment? I\'d like to discuss something.',fr:'Tu as un moment ? Je voudrais discuter de quelque chose.',ctx:'Plus doux que "We need to talk".',lv:2},
+{en:'I think we should…',fr:'Je pense qu\'on devrait…',ctx:'Direct mais inclusif.',lv:2},
+{en:'It seems there may have been a miscommunication on our end.',fr:'Il semblerait qu\'il y ait eu un problème de communication de notre côté.',ctx:'Très diplomatique. Assume une responsabilité partagée.',lv:3},
+{en:'I have significant concerns about this approach.',fr:'J\'ai de sérieuses réserves concernant cette approche.',ctx:'Formel et sérieux sans être agressif.',lv:3},
+{en:'I expected a different outcome.',fr:'Je m\'attendais à un résultat différent.',ctx:'Exprime la déception sans accusation.',lv:3},
+{en:'Let me be direct.',fr:'Laissez-moi être direct.',ctx:'Annonce une vérité difficile. Prépare l\'interlocuteur.',lv:3},
+{en:'With respect, I think we\'re missing the bigger picture.',fr:'Avec tout le respect que je vous dois, je pense qu\'on passe à côté.',ctx:'Désaccord fort mais respectueux.',lv:3},
+{en:'I hear what you\'re saying, and I\'d push back on that.',fr:'Je comprends ce que tu dis, et je nuancerais ça.',ctx:'Écoute active + désaccord articulé.',lv:3},
+]},
+finance:{label:'Finance & investissement',icon:'📈',color:'#EDFDF0',tc:'#0a4a1a',cards:[
+{en:'Bull market',fr:'Marché haussier',ctx:'Prices are rising. ≠ Bear market (marché baissier).',lv:1},
+{en:'Bear market',fr:'Marché baissier',ctx:'Prices are falling — typically 20%+ decline.',lv:1},
+{en:'Portfolio',fr:'Portefeuille (d\'investissements)',ctx:'"A diversified portfolio reduces risk."',lv:1},
+{en:'Dividend',fr:'Dividende',ctx:'"This stock pays a quarterly dividend."',lv:1},
+{en:'Return on investment',fr:'Retour sur investissement',ctx:'ROI = (gain - cost) / cost.',lv:1},
+{en:'Compound interest',fr:'Intérêts composés',ctx:'"Compound interest is the eighth wonder of the world."',lv:1},
+{en:'Liquidity',fr:'Liquidité',ctx:'"Real estate has low liquidity compared to stocks."',lv:1},
+{en:'ETF',fr:'Fonds indiciel coté (tracker)',ctx:'Exchange-Traded Fund = basket of assets traded like a stock.',lv:1},
+{en:'Market cap',fr:'Capitalisation boursière',ctx:'"Apple\'s market cap exceeds $3 trillion."',lv:1},
+{en:'Equity',fr:'Capitaux propres / actions',ctx:'"She has 20% equity in the startup."',lv:1},
+{en:'Volatility',fr:'Volatilité',ctx:'"High volatility means high risk and high reward potential."',lv:1},
+{en:'Short selling',fr:'Vente à découvert',ctx:'Betting that an asset\'s price will fall.',lv:2},
+{en:'Capital gains',fr:'Plus-values',ctx:'"Capital gains tax applies when you sell at a profit."',lv:2},
+{en:'Dollar-cost averaging',fr:'Investissement progressif / lissage du prix d\'achat',ctx:'Investing fixed amounts regularly regardless of price.',lv:2},
+{en:'Fixed income',fr:'Revenu fixe / obligations',ctx:'Bonds, government securities — predictable returns.',lv:2},
+{en:'Gross margin',fr:'Marge brute',ctx:'Revenue minus cost of goods sold.',lv:2},
+{en:'EBITDA',fr:'BAIIA (résultat avant intérêts, impôts, dépréciation)',ctx:'Key metric for comparing companies.',lv:2},
+{en:'Rebalancing',fr:'Rééquilibrage (de portefeuille)',ctx:'"I rebalance my portfolio every quarter."',lv:2},
+{en:'Index fund',fr:'Fonds indiciel',ctx:'Tracks a market index like the S&P 500.',lv:2},
+{en:'Alpha',fr:'Alpha (surperformance par rapport au marché)',ctx:'"Generating alpha means beating the benchmark."',lv:2},
+{en:'Beta',fr:'Bêta (sensibilité au marché)',ctx:'Beta > 1 = more volatile than the market.',lv:2},
+{en:'Drawdown',fr:'Drawdown / baisse maximale',ctx:'"A 20% drawdown from the peak."',lv:3},
+{en:'Yield curve',fr:'Courbe des taux',ctx:'Graph of interest rates across different maturities.',lv:3},
+{en:'Quantitative easing',fr:'Assouplissement quantitatif',ctx:'Central bank buying assets to inject money.',lv:3},
+{en:'Inflation hedge',fr:'Protection contre l\'inflation',ctx:'"Gold is often considered an inflation hedge."',lv:3},
+{en:'Solvency',fr:'Solvabilité',ctx:'"The bank\'s solvency ratio exceeds regulatory requirements."',lv:3},
+{en:'Haircut (finance)',fr:'Décote',ctx:'"A 30% haircut was applied to the asset valuation."',lv:3},
+{en:'Amortization',fr:'Amortissement',ctx:'"The loan is amortized over 20 years."',lv:3},
+{en:'Underwriting',fr:'Souscription / prise ferme',ctx:'"The bank is underwriting the bond issuance."',lv:3},
+{en:'Due diligence',fr:'Diligence raisonnable / vérifications préalables',ctx:'"We\'re conducting due diligence on the acquisition."',lv:3},
+{en:'Mark to market',fr:'Évaluation à la valeur de marché',ctx:'Valuing assets at current market price.',lv:3},
+]},
+vocab_daily:{label:'Mots du quotidien',icon:'💬',color:'#FFF8E8',tc:'#6b4a00',cards:[
+{en:'Straightforward',fr:'Simple / sans détour / direct',ctx:'"It\'s a straightforward task."',lv:1},
+{en:'Genuine',fr:'Sincère / authentique / véritable',ctx:'"A genuine concern." / "He was genuinely surprised."',lv:1},
+{en:'Thorough',fr:'Approfondi / minutieux / rigoureux',ctx:'"A thorough review."',lv:1},
+{en:'Seamless',fr:'Fluide / sans accroc',ctx:'"A seamless transition."',lv:1},
+{en:'Workaround',fr:'Solution de contournement',ctx:'"We found a workaround for the technical issue."',lv:1},
+{en:'Trade-off',fr:'Compromis / arbitrage',ctx:'"There\'s always a trade-off between speed and quality."',lv:1},
+{en:'Tweak',fr:'Ajustement mineur / peaufiner',ctx:'"Just a few tweaks and it\'ll be perfect."',lv:1},
+{en:'Glitch',fr:'Bug / problème technique mineur',ctx:'"We had a glitch in the system this morning."',lv:1},
+{en:'Takeaway',fr:'Point clé / enseignement / conclusion',ctx:'"What\'s the main takeaway from today\'s meeting?"',lv:1},
+{en:'Onboarding',fr:'Intégration (d\'un nouvel employé ou client)',ctx:'"The onboarding process takes two weeks."',lv:1},
+{en:'Burnout',fr:'Épuisement professionnel',ctx:'"She\'s showing signs of burnout."',lv:1},
+{en:'Rollout',fr:'Déploiement / lancement progressif',ctx:'"The rollout is planned for Q3."',lv:1},
+{en:'Buy-in',fr:'Adhésion / approbation',ctx:'"We need buy-in from all departments before proceeding."',lv:2},
+{en:'Alignment',fr:'Alignement / cohérence',ctx:'"There\'s no alignment between the teams."',lv:2},
+{en:'Deep dive',fr:'Analyse approfondie',ctx:'"Let\'s do a deep dive into the data next week."',lv:2},
+{en:'Red flag',fr:'Signal d\'alarme / signe inquiétant',ctx:'"His evasive answers were a red flag."',lv:2},
+{en:'Sanity check',fr:'Vérification de cohérence',ctx:'"Can you do a quick sanity check on these numbers?"',lv:2},
+{en:'Pivot',fr:'Pivot / changement de direction stratégique',ctx:'"The startup had to pivot after losing its main client."',lv:2},
+{en:'Ecosystem',fr:'Écosystème',ctx:'"The tech ecosystem in Paris is growing fast."',lv:2},
+{en:'Risk appetite',fr:'Appétit pour le risque / tolérance au risque',ctx:'"Our risk appetite is quite conservative."',lv:2},
+{en:'Leverage (verb)',fr:'Tirer parti de / utiliser de façon optimale',ctx:'"We need to leverage our existing network."',lv:2},
+{en:'Feedback loop',fr:'Boucle de rétroaction',ctx:'"We need a feedback loop to improve continuously."',lv:2},
+{en:'Granular',fr:'Détaillé / granulaire / au niveau micro',ctx:'"I need a more granular breakdown of the costs."',lv:3},
+{en:'Boilerplate',fr:'Texte standard / clause type',ctx:'"That\'s just boilerplate language in the contract."',lv:3},
+{en:'Ballpark figure',fr:'Estimation approximative / ordre de grandeur',ctx:'"Can you give me a ballpark figure?"',lv:3},
+{en:'Silo',fr:'Silo (fonctionnement en vase clos)',ctx:'"We need to break down silos between departments."',lv:3},
+{en:'Actionable',fr:'Actionnable / concret et réalisable',ctx:'"I need actionable insights, not just data."',lv:3},
+{en:'Scalable',fr:'Évolutif / qui peut monter en charge',ctx:'"Is this process scalable as we grow?"',lv:3},
+{en:'Value proposition',fr:'Proposition de valeur',ctx:'"What\'s our value proposition for this client?"',lv:3},
+{en:'Throughput',fr:'Débit / volume traité par unité de temps',ctx:'"We need to increase throughput in the warehouse."',lv:3},
+]},
+grammar:{label:'Structures grammaticales',icon:'🧠',color:'#F0F8FF',tc:'#1a3a6a',cards:[
+{en:'Not only… but also…',fr:'Non seulement… mais aussi…',ctx:'"Not only did we miss the deadline, but we also went over budget."',lv:1},
+{en:'Either… or…',fr:'Soit… soit…',ctx:'"Either we fix it now, or we accept the consequences."',lv:1},
+{en:'Neither… nor…',fr:'Ni… ni…',ctx:'"Neither the client nor the team was informed."',lv:1},
+{en:'The more… the more…',fr:'Plus… plus…',ctx:'"The more data we have, the more accurate our model."',lv:1},
+{en:'Despite + noun/gerund',fr:'Malgré + nom',ctx:'"Despite the setbacks, we delivered on time."',lv:1},
+{en:'Although / Even though',fr:'Bien que / Même si',ctx:'"Although it was risky, we proceeded."',lv:1},
+{en:'Provided that / As long as',fr:'À condition que / tant que',ctx:'"We\'ll proceed, provided that the budget is approved."',lv:1},
+{en:'Unless',fr:'Sauf si / à moins que',ctx:'"Unless we act now, we\'ll miss the window."',lv:1},
+{en:'Rather than',fr:'Plutôt que de',ctx:'"Rather than complaining, let\'s find a solution."',lv:1},
+{en:'Due to / Owing to',fr:'En raison de / dû à',ctx:'"Due to the storm, flights were cancelled."',lv:1},
+{en:'Whereas',fr:'Alors que / tandis que (contraste)',ctx:'"Sales went up, whereas costs remained stable."',lv:2},
+{en:'By the time',fr:'Au moment où / d\'ici à ce que',ctx:'"By the time you read this, the deal will be done."',lv:2},
+{en:'The fact that',fr:'Le fait que',ctx:'"The fact that they agreed surprised us all."',lv:2},
+{en:'What + subject + verb',fr:'Ce que / ce qui',ctx:'"What concerns me is the timeline."',lv:2},
+{en:'It is worth + gerund',fr:'Ça vaut la peine de',ctx:'"It\'s worth noting that the figures are estimates."',lv:2},
+{en:'There is no point in + gerund',fr:'Ça ne sert à rien de',ctx:'"There\'s no point in rushing if we\'re going to make mistakes."',lv:2},
+{en:'Not until',fr:'Ce n\'est qu\'à partir de',ctx:'"Not until Friday will we have the final results."',lv:2},
+{en:'The sooner… the better',fr:'Plus tôt… mieux c\'est',ctx:'"The sooner we address this, the better."',lv:2},
+{en:'Given that',fr:'Étant donné que / sachant que',ctx:'"Given that the deadline is tomorrow, we need to act fast."',lv:2},
+{en:'As a result',fr:'Par conséquent / en conséquence',ctx:'"Sales dropped. As a result, we had to cut costs."',lv:1},
+{en:'It goes without saying that',fr:'Il va sans dire que',ctx:'"It goes without saying that quality is non-negotiable."',lv:3},
+{en:'Needless to say',fr:'Inutile de dire / cela va sans dire',ctx:'"Needless to say, we were disappointed."',lv:3},
+{en:'Be that as it may',fr:'Quoi qu\'il en soit',ctx:'"Be that as it may, we still need a solution."',lv:3},
+{en:'Were it not for',fr:'N\'eût été / sans',ctx:'"Were it not for your help, we would have failed."',lv:3},
+{en:'So much so that',fr:'À tel point que',ctx:'"The demand increased, so much so that we ran out of stock."',lv:3},
+{en:'Had I known earlier, I would have acted differently.',fr:'Si j\'avais su plus tôt, j\'aurais agi différemment.',ctx:'Inversion conditionnelle avancée.',lv:3},
+{en:'To the extent that',fr:'Dans la mesure où',ctx:'"To the extent that resources allow, we will expand."',lv:3},
+{en:'On the grounds that',fr:'Au motif que / au prétexte que',ctx:'"They rejected it on the grounds that it was too risky."',lv:3},
+{en:'Insofar as',fr:'Dans la mesure où / pour autant que',ctx:'"Insofar as I know, the deal is still on the table."',lv:3},
+{en:'By the same token',fr:'De même / dans le même ordre d\'idées',ctx:'"We can\'t overspend. By the same token, we can\'t underinvest."',lv:3},
+]},
+connectors:{label:'Connecteurs logiques',icon:'🔄',color:'#F5F0FF',tc:'#3a1a7a',cards:[
+{en:'Therefore',fr:'Donc / par conséquent',ctx:'"The data is incomplete. Therefore, we cannot proceed."',lv:1},
+{en:'However',fr:'Cependant / toutefois',ctx:'"The plan is solid. However, the budget is a concern."',lv:1},
+{en:'Furthermore',fr:'De plus / qui plus est',ctx:'"Furthermore, the timeline is too aggressive."',lv:1},
+{en:'Nevertheless',fr:'Néanmoins / malgré tout',ctx:'"It was risky. Nevertheless, we proceeded."',lv:1},
+{en:'Consequently',fr:'Par conséquent / de ce fait',ctx:'"Costs rose. Consequently, margins fell."',lv:1},
+{en:'Moreover',fr:'De plus / en outre',ctx:'"The product is excellent. Moreover, it\'s competitively priced."',lv:1},
+{en:'Nonetheless',fr:'Néanmoins / quand même',ctx:'More informal than "nevertheless".',lv:1},
+{en:'In other words',fr:'En d\'autres termes / autrement dit',ctx:'"In other words, we\'re out of time."',lv:1},
+{en:'For instance',fr:'Par exemple',ctx:'Slightly more formal than "for example".',lv:1},
+{en:'On the other hand',fr:'D\'un autre côté',ctx:'"On the other hand, the risks are significant."',lv:1},
+{en:'As such',fr:'En tant que tel / à ce titre',ctx:'"It\'s a pilot project. As such, we expect some issues."',lv:2},
+{en:'Accordingly',fr:'Par conséquent / en conséquence',ctx:'"The budget was cut. Accordingly, the team was reduced."',lv:2},
+{en:'Conversely',fr:'À l\'inverse / inversement',ctx:'"Sales rose in Q1. Conversely, Q2 saw a decline."',lv:2},
+{en:'In turn',fr:'En retour / à son tour',ctx:'"Trust builds loyalty. Loyalty, in turn, drives retention."',lv:2},
+{en:'To this end',fr:'À cette fin / dans ce but',ctx:'"We need to cut costs. To this end, we\'re reviewing all contracts."',lv:2},
+{en:'On balance',fr:'Tout compte fait / dans l\'ensemble',ctx:'"On balance, the benefits outweigh the risks."',lv:2},
+{en:'Broadly speaking',fr:'En termes généraux',ctx:'"Broadly speaking, the strategy is sound."',lv:2},
+{en:'Strictly speaking',fr:'À proprement parler / strictement',ctx:'"Strictly speaking, this falls outside our remit."',lv:2},
+{en:'At first glance',fr:'À première vue',ctx:'"At first glance, the numbers look good."',lv:2},
+{en:'With this in mind',fr:'En gardant cela à l\'esprit',ctx:'"With this in mind, let me explain our approach."',lv:2},
+{en:'In the final analysis',fr:'En dernière analyse / au bout du compte',ctx:'"In the final analysis, it comes down to execution."',lv:3},
+{en:'To put it another way',fr:'Autrement dit / pour le dire autrement',ctx:'"To put it another way, we\'re running out of runway."',lv:3},
+{en:'In essence',fr:'En substance / pour l\'essentiel',ctx:'"In essence, the proposal is sound."',lv:3},
+{en:'Taken as a whole',fr:'Dans l\'ensemble / pris globalement',ctx:'"Taken as a whole, the results are encouraging."',lv:3},
+{en:'By extension',fr:'Par extension',ctx:'"This affects our team, and by extension, the whole department."',lv:3},
+{en:'On closer inspection',fr:'En y regardant de plus près',ctx:'"On closer inspection, there are several inconsistencies."',lv:3},
+{en:'That is to say',fr:'C\'est-à-dire',ctx:'More formal version of "in other words".',lv:2},
+{en:'In contrast',fr:'En contraste / à l\'inverse',ctx:'"In contrast, our European division performed well."',lv:1},
+{en:'In addition to',fr:'En plus de / outre',ctx:'"In addition to the delays, we faced quality issues."',lv:1},
+{en:'With regard to',fr:'En ce qui concerne / concernant',ctx:'"With regard to your proposal, we have a few questions."',lv:2},
+{en:'In light of',fr:'À la lumière de / compte tenu de',ctx:'"In light of recent events, we need to reassess."',lv:2},
+]}
 };
 
-// ─── DATA ────────────────────────────────────────────────────────────────────
+const totalEntries=Object.values(BANK).reduce((s,c)=>s+c.cards.length,0);
+const CAT_KEYS=Object.keys(BANK);
+
 function defaultData(){return{
   decks:[
     {id:1,name:'Yellowstone',dir:'en-fr',type:'phrase'},
@@ -565,135 +789,315 @@ function defaultData(){return{
     {id:2,deckId:1,a:"I'm not built for this.",b:"Je ne suis pas fait pour ça.",ctx:'',type:'phrase',dir:'en-fr',score:0,mult:1,due:0},
     {id:3,deckId:2,a:"Je ne suis pas sûr de ça.",b:"I'm not sure about that.",ctx:'',type:'phrase',dir:'fr-en',score:0,mult:1,due:0},
   ],
-  nextDeckId:4,nextCardId:4,streak:0,lastSession:0,newToday:0,lastNewDay:'',bankAdded:{}
+  nextDeckId:4,nextCardId:4,streak:0,lastSession:0,
+  newToday:0,lastNewDay:'',
+  reviewedToday:0,lastReviewDay:'',
+  bankAdded:{},
+  notifTime:'20:00',
+  notifEnabled:false,
+  totalReviewed:0
 };}
 
-let D;try{D=JSON.parse(localStorage.getItem(SK))||defaultData();}catch(e){D=defaultData();}
+let D;
+try{D=JSON.parse(localStorage.getItem(SK))||defaultData();}catch(e){D=defaultData();}
 if(!D.bankAdded)D.bankAdded={};
-if(!D.newToday)D.newToday=0;
-if(!D.lastNewDay)D.lastNewDay='';
+if(!D.notifTime)D.notifTime='20:00';
+if(D.reviewedToday===undefined)D.reviewedToday=0;
+if(!D.lastReviewDay)D.lastReviewDay='';
+if(!D.totalReviewed)D.totalReviewed=0;
 
-let aDeck=D.decks[0]?.id,qDeck=null,qCards=[],qIdx=0,qScores=[],curTab='home',newDeckForm=false,bankCat=null,EV=null;
+let aDeck=null,qDeck=null,qMode='all',qExploreCat=null;
+let qCards=[],qIdx=0,qScores=[],curTab='home',newDeckForm=false,bankCat=null,EV=null;
+let showMastered=false,ficheSearch='';
 
 function sv(){try{localStorage.setItem(SK,JSON.stringify(D));}catch(e){}}
 function now(){return Date.now();}
-function today(){return new Date().toDateString();}
-
-function resetDailyIfNeeded(){
-  if(D.lastNewDay!==today()){D.newToday=0;D.lastNewDay=today();sv();}
+function tod(){return new Date().toDateString();}
+function resetDaily(){
+  if(D.lastNewDay!==tod()){D.newToday=0;D.lastNewDay=tod();sv();}
+  if(D.lastReviewDay!==tod()){D.reviewedToday=0;D.lastReviewDay=tod();sv();}
 }
+
+function isDiscovery(){
+  return (D.totalReviewed||0) < DISCOVERY_THRESHOLD;
+}
+function getIV(s){return isDiscovery()?IV_DISC[s]:IV[s];}
+function getIL(s){return isDiscovery()?IL_DISC[s]:IL[s];}
 
 function fdue(due){
   const d=due-now();if(d<=0)return'<span style="color:var(--red)">à revoir</span>';
   const m=Math.floor(d/60000),h=Math.floor(d/3600000),dy=Math.floor(d/86400000);
   if(dy>=1)return'dans '+dy+'j';if(h>=1)return'dans '+h+'h';if(m>=1)return'dans '+m+'min';return'bientôt';
 }
-
-function starHTML(score){
-  const colors=['','var(--red)','var(--red)','var(--orange)','var(--glite)','var(--gvif)'];
-  const col=score>0?colors[score]:'var(--text3)';
-  let h='<span style="color:'+col+'">';
-  for(let i=1;i<=5;i++)h+=i<=score?'★':'☆';
-  return h+'</span>';
+function starHTML(s){
+  const c=s===0?'var(--text3)':s<=2?'var(--red)':s===3?'var(--orange)':s===4?'var(--gl)':'var(--gv)';
+  let h='<span style="color:'+c+';font-size:11px">';for(let i=1;i<=5;i++)h+=i<=s?'★':'☆';return h+'</span>';
 }
-
 function iV(){
   if(!window.speechSynthesis)return;
   function p(){const vs=window.speechSynthesis.getVoices();EV=vs.find(v=>v.lang==='en-US'&&v.name.includes('Samantha'))||vs.find(v=>v.lang==='en-US')||vs.find(v=>v.lang.startsWith('en'));}
   p();window.speechSynthesis.onvoiceschanged=p;
 }iV();
-
-function spk(t){
-  if(!window.speechSynthesis)return;
-  window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.88;if(EV)u.voice=EV;
-  window.speechSynthesis.speak(u);
-}
+function spk(t){if(!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.88;if(EV)u.voice=EV;window.speechSynthesis.speak(u);}
 
 function T(tab){
   curTab=tab;
-  ['home','decks','cards','quiz','explore'].forEach(t=>{
+  ['home','themes','fiches','quiz','explore'].forEach(t=>{
     document.getElementById('s-'+t).classList.toggle('active',t===tab);
     document.getElementById('n-'+t).classList.toggle('active',t===tab);
   });
-  if(tab==='home')rHome();if(tab==='decks')rDecks();if(tab==='cards')rCards();
-  if(tab==='quiz')rQuizTab();if(tab==='explore'){bankCat=null;rExplore();}
+  updateNavBadge();
+  if(tab==='home')rHome();
+  if(tab==='themes')rThemes();
+  if(tab==='fiches')rFiches();
+  if(tab==='quiz')rQuizTab();
+  if(tab==='explore'){bankCat=null;rExplore();}
+}
+
+function updateNavBadge(){
+  const due=D.cards.filter(c=>c.due<=now()).length;
+  const nb=document.getElementById('n-quiz');
+  let badge=nb.querySelector('.nb-badge');
+  if(due>=10){
+    if(!badge){badge=document.createElement('span');badge.className='nb-badge';nb.appendChild(badge);}
+    badge.textContent=due>99?'99+':due;
+  }else if(badge){badge.remove();}
+}
+
+// ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
+function canNotify(){return 'Notification' in window && 'serviceWorker' in navigator;}
+async function requestNotifPermission(){
+  if(!canNotify())return false;
+  const p=await Notification.requestPermission();
+  D.notifEnabled=p==='granted';sv();return p==='granted';
+}
+function scheduleNotifs(){
+  if(!D.notifEnabled)return;
+  // Schedule daily reminder via service worker message
+  if(navigator.serviceWorker.controller){
+    navigator.serviceWorker.controller.postMessage({
+      type:'SCHEDULE',time:D.notifTime,dueCount:D.cards.filter(c=>c.due<=now()).length,streak:D.streak||0
+    });
+  }
+}
+function checkDueNotif(){
+  if(!D.notifEnabled)return;
+  const due=D.cards.filter(c=>c.due<=now()).length;
+  if(due>=10&&Notification.permission==='granted'){
+    new Notification('MyEnglish 📚',{body:`${due} fiches t'attendent ! Lance une session.`,icon:'/favicon.ico'});
+  }
+}
+
+// Register SW inline
+const SW_CODE=`
+self.addEventListener('message',e=>{
+  if(e.data.type==='SCHEDULE'){
+    const{time,dueCount,streak}=e.data;
+    const[h,m]=time.split(':').map(Number);
+    const now=new Date(),target=new Date();
+    target.setHours(h,m,0,0);
+    if(target<=now)target.setDate(target.getDate()+1);
+    const delay=target-now;
+    setTimeout(()=>{
+      self.registration.showNotification('MyEnglish 📚',{
+        body:dueCount>0?\`${dueCount} fiches dues — c\'est l\'heure de réviser !\`:'Ouvre MyEnglish pour continuer ta progression.',
+        icon:'/favicon.ico'
+      });
+    },delay);
+  }
+});
+`;
+if('serviceWorker' in navigator){
+  const blob=new Blob([SW_CODE],{type:'application/javascript'});
+  const url=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url).catch(()=>{});
 }
 
 // ─── HOME ────────────────────────────────────────────────────────────────────
 function rHome(){
-  resetDailyIfNeeded();
+  resetDaily();updateNavBadge();
   const el=document.getElementById('s-home');
-  const total=D.cards.length,due=D.cards.filter(c=>c.due<=now()).length;
-  const mastered=D.cards.filter(c=>c.score>=4).length,streak=D.streak||0;
-  const newLeft=Math.max(0,MAX_NEW_PER_DAY-D.newToday);
-  const newPct=Math.min(100,Math.round((D.newToday/MAX_NEW_PER_DAY)*100));
+  const total=D.cards.length;
+  const due=D.cards.filter(c=>c.due<=now()).length;
+  const mastered=D.cards.filter(c=>c.score>=4).length;
+  const streak=D.streak||0;
+  const reviewPct=Math.min(100,Math.round((D.reviewedToday/DAILY_GOAL)*100));
+  const addedExplore=Object.keys(D.bankAdded).length;
+  const globalPct=Math.round((addedExplore/totalEntries)*100);
+  const disc=isDiscovery();
+
+  // Streak dots — last 7 days visual
+  const dots=Array.from({length:7},(_,i)=>{
+    if(i<streak&&i<6)return'<div class="streak-dot done"></div>';
+    if(i===Math.min(streak,6))return'<div class="streak-dot today"></div>';
+    return'<div class="streak-dot"></div>';
+  }).join('');
+
+  // Notification banner
+  const notifBanner=canNotify()&&!D.notifEnabled?
+    `<div class="notif-banner"><div class="notif-banner-text">🔔 Active les notifications pour ne jamais rater une révision</div><button class="notif-banner-btn" onclick="enableNotifs()">Activer</button></div>`:'';
+
+  // Discovery mode banner
+  const discBanner=disc?
+    `<div style="background:#fff3cd;border:0.5px solid #ffc107;border-radius:var(--r);padding:10px 14px;margin-bottom:1rem;font-size:12px;color:#856404">⚡ Mode Découverte actif — intervalles courts pour t\'accrocher rapidement (${D.totalReviewed||0}/${DISCOVERY_THRESHOLD} révisions)</div>`:'';
+
+  // Mastered detail
+  const masteredSection=showMastered?`<div class="mastered-detail">${buildMasteredDetail()}<button class="btn-sec" onclick="showMastered=false;rHome()" style="margin-top:10px">Fermer</button></div>`:'';
+
   el.innerHTML=`
     <div class="home-hero">
-      <div class="home-greeting">Tableau de bord</div>
-      <h1>MyEnglish</h1>
+      <div class="home-hero-text">
+        <div class="home-greeting">Tableau de bord</div>
+        <h1>MyEnglish</h1>
+      </div>
     </div>
+    ${notifBanner}${discBanner}
     <div class="home-stats">
-      <div class="stat"><div class="stat-n" style="color:${due>0?'var(--red)':'var(--gvif)'}">${due}</div><div class="stat-l">à revoir</div></div>
-      <div class="stat"><div class="stat-n">${total}</div><div class="stat-l">cartes</div></div>
-      <div class="stat"><div class="stat-n" style="color:var(--gvif)">${mastered}</div><div class="stat-l">maîtrisées</div></div>
+      <div class="stat" style="border-color:${due>0?'var(--red)':'var(--border)'}">
+        <div class="stat-n" style="color:${due>0?'var(--red)':'var(--gv)'}">${due}</div>
+        <div class="stat-l">À revoir</div>
+      </div>
+      <div class="stat"><div class="stat-n">${total}</div><div class="stat-l">Fiches</div></div>
+      <div class="stat clickable" onclick="toggleMastered()">
+        <div class="stat-n" style="color:var(--gv)">${mastered}</div>
+        <div class="stat-l">Maîtrisées ↗</div>
+      </div>
     </div>
-    <div class="streak"><div style="font-size:22px">🔥</div><div><div class="streak-n">${streak} jour${streak!==1?'s':''}</div><div class="streak-l">consécutif${streak!==1?'s':''}</div></div></div>
-    <div class="daily-limit">
-      <div class="dl-label">Nouvelles cartes aujourd'hui</div>
-      <div class="dl-bar-wrap"><div class="dl-bar" style="width:${newPct}%"></div></div>
-      <div class="dl-count">${D.newToday}/${MAX_NEW_PER_DAY}</div>
+    ${masteredSection}
+    <div class="streak-card">
+      <div class="streak-fire">🔥</div>
+      <div class="streak-info">
+        <div class="streak-n">${streak} jour${streak!==1?'s':''}</div>
+        <div class="streak-l">consécutif${streak!==1?'s':''}</div>
+        <div class="streak-days">${dots}</div>
+      </div>
     </div>
-    <button class="btn-main" onclick="sQAll()">${due>0?'Réviser — '+due+' carte'+(due>1?'s':'')+' due'+(due>1?'s':''):'S\'entraîner'}</button>
-    <button class="btn-secondary" onclick="T('explore')">Explorer du nouveau contenu</button>
-    <button class="btn-secondary" onclick="T('decks')">Gérer mes decks</button>`;
+    <div class="daily-goal">
+      <div class="daily-top">
+        <span class="daily-label">Objectif du jour</span>
+        <span class="daily-count">${D.reviewedToday} / ${DAILY_GOAL} fiches</span>
+      </div>
+      <div class="dbar"><div class="dbar-fill" style="width:${reviewPct}%"></div></div>
+    </div>
+    <div class="global-prog">
+      <div class="gp-top"><span class="gp-label">Progression Explore</span><span class="gp-pct">${globalPct}%</span></div>
+      <div class="gp-bar"><div class="gp-fill" style="width:${globalPct}%"></div></div>
+      <div class="gp-sub">${addedExplore} / ${totalEntries} entrées ajoutées à tes thèmes</div>
+    </div>
+    <button class="btn-main" onclick="sQAll()">${due>0?'Réviser — '+due+' fiche'+(due>1?'s':'')+' due'+(due>1?'s':''):'S\'entraîner'}</button>
+    <button class="btn-sec" onclick="T('explore')">Explorer du nouveau contenu</button>
+    <button class="btn-sec" onclick="showSettings()">⚙️ Paramètres & export</button>`;
 }
-function sQAll(){qDeck=null;T('quiz');}
 
-// ─── DECKS ───────────────────────────────────────────────────────────────────
-function rDecks(){
-  const el=document.getElementById('s-decks');
-  const html=D.decks.map(d=>{
-    const tot=D.cards.filter(c=>c.deckId===d.id).length,due=D.cards.filter(c=>c.deckId===d.id&&c.due<=now()).length;
+function toggleMastered(){showMastered=!showMastered;rHome();}
+function buildMasteredDetail(){
+  // Per-category mastered count
+  const rows=[];
+  // Personal themes
+  D.decks.forEach(d=>{
+    const cards=D.cards.filter(c=>c.deckId===d.id&&c.score>=4);
+    if(cards.length>0)rows.push(`<div class="mastered-row"><span class="mastered-cat">${d.name}</span><span class="mastered-val">${cards.length}</span></div>`);
+  });
+  // Explore categories
+  CAT_KEYS.forEach(key=>{
+    const cat=BANK[key];
+    const m=D.cards.filter(c=>c.exploreKey&&c.exploreKey.startsWith(key+'-')&&c.score>=4).length;
+    if(m>0)rows.push(`<div class="mastered-row"><span class="mastered-cat">${cat.icon} ${cat.label}</span><span class="mastered-val">${m}</span></div>`);
+  });
+  return rows.length?rows.join(''):'<div class="empty">Aucune fiche maîtrisée pour l\'instant.</div>';
+}
+
+function sQAll(){qDeck=null;qMode='all';T('quiz');}
+async function enableNotifs(){
+  const ok=await requestNotifPermission();
+  if(ok){scheduleNotifs();rHome();}
+  else alert('Notifications refusées. Tu peux les activer dans Réglages iPhone → Safari → Notifications.');
+}
+
+function showSettings(){
+  const el=document.getElementById('s-home');
+  el.innerHTML=`<button class="back-btn" onclick="showMastered=false;rHome()">← Retour</button>
+    <div class="page-title">Paramètres</div>
+    <div class="settings-section">
+      <div class="settings-title">Notifications</div>
+      <div class="settings-row">
+        <div><div class="settings-label">Rappel quotidien</div><div class="settings-sub">Heure du rappel si pas ouvert depuis 24h</div></div>
+        <input type="time" value="${D.notifTime}" onchange="D.notifTime=this.value;sv();scheduleNotifs()" style="border:0.5px solid var(--border2);border-radius:var(--rsm);padding:6px 8px;background:var(--bg);color:var(--text);font-size:13px"/>
+      </div>
+      <div class="settings-row">
+        <div><div class="settings-label">Notifications ${D.notifEnabled?'activées ✓':'désactivées'}</div></div>
+        <button class="btn-sm" onclick="enableNotifs()">${D.notifEnabled?'Désactiver':'Activer'}</button>
+      </div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-title">Mes données</div>
+      <div class="settings-row"><div><div class="settings-label">Exporter mes données</div><div class="settings-sub">Fichier de sauvegarde JSON</div></div><button class="btn-sm" onclick="exportData()">Exporter</button></div>
+      <div class="settings-row"><div><div class="settings-label">Importer des données</div><div class="settings-sub">Restaurer depuis un fichier</div></div><button class="btn-sm" onclick="document.getElementById('importFile').click()">Importer</button></div>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)"/>
+    </div>
+    <div class="settings-section">
+      <div class="settings-title">Statistiques</div>
+      <div class="settings-row"><div><div class="settings-label">${D.cards.length} fiches · ${D.cards.filter(c=>c.score>=4).length} maîtrisées</div><div class="settings-sub">${D.cards.filter(c=>c.due<=now()).length} à revoir · ${D.totalReviewed||0} révisions totales</div></div></div>
+      <div class="settings-row"><div><div class="settings-label">Mode ${isDiscovery()?'Découverte ⚡':'Normal'}</div><div class="settings-sub">${isDiscovery()?'Intervalles courts jusqu\'à '+DISCOVERY_THRESHOLD+' révisions':'Intervalles complets actifs'}</div></div></div>
+    </div>`;
+}
+function exportData(){const blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='myenglish-backup-'+new Date().toISOString().split('T')[0]+'.json';a.click();URL.revokeObjectURL(url);}
+function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const imp=JSON.parse(ev.target.result);if(!imp.cards||!imp.decks)throw new Error('Format invalide');D=imp;sv();alert('Import réussi — '+D.cards.length+' fiches restaurées.');rHome();}catch(err){alert('Erreur : '+err.message);}};r.readAsText(f);}
+
+// ─── THEMES ──────────────────────────────────────────────────────────────────
+function rThemes(){
+  const el=document.getElementById('s-themes');
+  const ICONS=['📺','🗓️','📖','💼','🎵','🎬','📝','🌍'];
+  const html=D.decks.map((d,i)=>{
+    const tot=D.cards.filter(c=>c.deckId===d.id).length;
+    const due=D.cards.filter(c=>c.deckId===d.id&&c.due<=now()).length;
     const dl=d.dir==='en-fr'?'EN→FR':d.dir==='fr-en'?'FR→EN':'Les deux';
-    return`<div class="deck-card" onclick="goDeck(${d.id})">
-      <div class="deck-name">${d.name}</div>
-      <div class="deck-meta">${tot} carte${tot!==1?'s':''}</div>
-      ${due>0?`<span class="due-pill">${due} à revoir</span>`:`<span class="ok-pill">À jour</span>`}
-      <span class="dir-tag">${dl}</span>
+    return`<div class="theme-item" onclick="goDeck(${d.id})">
+      <div class="theme-item-icon">${ICONS[i%ICONS.length]}</div>
+      <div class="theme-item-info">
+        <div class="theme-item-name">${d.name}</div>
+        <div class="theme-item-meta">${tot} fiche${tot!==1?'s':''} · <span class="dir-tag">${dl}</span></div>
+      </div>
+      <div class="theme-item-right">
+        ${due>0?`<span class="due-pill">${due} dues</span>`:`<span class="ok-pill">À jour</span>`}
+      </div>
     </div>`;
   }).join('');
-  const form=newDeckForm?`<div class="form-box"><div class="form-title">Nouveau deck</div>
+  const form=newDeckForm?`<div class="form-box"><div class="form-title">Nouveau thème</div>
     <div class="form-row"><label>Nom</label><input type="text" id="dni" placeholder="ex. Peaky Blinders, Finance…"/></div>
     <div class="form-row"><label>Direction</label><select id="ddi"><option value="en-fr">Anglais → Français</option><option value="fr-en">Français → Anglais</option><option value="both">Les deux</option></select></div>
     <div class="form-row"><label>Type</label><select id="dti"><option value="phrase">Phrases</option><option value="mot">Vocabulaire</option><option value="mixed">Les deux</option></select></div>
     <div class="form-actions"><button class="btn btn-g" onclick="tF(false)">Annuler</button><button class="btn btn-p" onclick="mkDeck()">Créer</button></div>
   </div>`:'';
-  el.innerHTML=`<div class="page-title">Mes decks</div><div class="deck-grid">${html}<div class="add-deck" onclick="tF(true)">+ Nouveau deck</div></div>${form}`;
+  el.innerHTML=`<div class="page-title">Mes thèmes</div><div class="theme-list">${html}<div class="add-theme-btn" onclick="tF(true)">+ Nouveau thème</div></div>${form}`;
   if(newDeckForm)setTimeout(()=>document.getElementById('dni')?.focus(),80);
 }
-function tF(v){newDeckForm=v;rDecks();}
-function mkDeck(){
-  const name=document.getElementById('dni')?.value.trim();if(!name)return;
-  D.decks.push({id:D.nextDeckId++,name,dir:document.getElementById('ddi').value,type:document.getElementById('dti').value});
-  sv();newDeckForm=false;rDecks();
-}
-function goDeck(id){aDeck=id;qDeck=id;T('cards');}
+function tF(v){newDeckForm=v;rThemes();}
+function mkDeck(){const name=document.getElementById('dni')?.value.trim();if(!name)return;D.decks.push({id:D.nextDeckId++,name,dir:document.getElementById('ddi').value,type:document.getElementById('dti').value});sv();newDeckForm=false;rThemes();}
+function goDeck(id){aDeck=id;T('fiches');}
 
-// ─── CARDS ───────────────────────────────────────────────────────────────────
-function dPills(sel,fn,showAll){
-  let h=showAll?`<button class="pill ${sel===null?'active':''}" onclick="${fn}(null)">Tous</button>`:'';
+// ─── FICHES ──────────────────────────────────────────────────────────────────
+function dPills(sel,fn,all){
+  let h=all?`<button class="pill ${sel===null?'active':''}" onclick="${fn}(null)">Tous</button>`:'';
   return h+D.decks.map(d=>`<button class="pill ${d.id===sel?'active':''}" onclick="${fn}(${d.id})">${d.name}</button>`).join('');
 }
 
-function rCards(){
-  const el=document.getElementById('s-cards');
-  if(!D.decks.length){el.innerHTML='<div class="empty">Crée un deck d\'abord.</div>';return;}
-  const cards=aDeck===null?D.cards:D.cards.filter(c=>c.deckId===aDeck);
+function rFiches(){
+  const el=document.getElementById('s-fiches');
+  if(!D.decks.length){el.innerHTML='<div class="empty">Crée un thème d\'abord.</div>';return;}
+
+  const allCards=aDeck===null?D.cards:D.cards.filter(c=>c.deckId===aDeck);
+  const filtered=ficheSearch?allCards.filter(c=>c.a.toLowerCase().includes(ficheSearch.toLowerCase())||c.b.toLowerCase().includes(ficheSearch.toLowerCase())):allCards;
+
+  // Separate personal and explore cards
+  const personalCards=filtered.filter(c=>!c.fromBank);
+  const exploreCards=filtered.filter(c=>c.fromBank);
+
   const deck=aDeck!==null?D.decks.find(d=>d.id===aDeck):null;
   const dirOpts=!deck||deck.dir==='both'?'<option value="en-fr">EN → FR</option><option value="fr-en">FR → EN</option>':deck.dir==='en-fr'?'<option value="en-fr">EN → FR</option>':'<option value="fr-en">FR → EN</option>';
   const typeOpts=!deck||deck.type==='mixed'?'<option value="phrase">Phrase</option><option value="mot">Mot</option>':deck.type==='mot'?'<option value="mot">Mot</option>':'<option value="phrase">Phrase</option>';
-  const rows=cards.length?cards.map(c=>`<div class="card-item">
+
+  function cardHTML(c){return`<div class="card-item">
     <div class="card-texts">
       <div class="card-a">${c.a}</div><div class="card-b">${c.b}</div>
       ${c.ctx?`<div class="card-ctx">${c.ctx}</div>`:''}
@@ -701,193 +1105,273 @@ function rCards(){
     </div>
     <div class="card-right"><div>${starHTML(c.score)}</div><div class="card-due">${fdue(c.due)}</div></div>
     <button class="del-btn" onclick="delCard(${c.id})">✕</button>
-  </div>`).join(''):'<div class="empty">Aucune carte ici.</div>';
-  const addForm=aDeck!==null?`<div class="form-box"><div class="form-title">Ajouter une carte</div>
+  </div>`;}
+
+  const personalHTML=personalCards.length?personalCards.map(cardHTML).join(''):'<div style="font-size:13px;color:var(--text3);padding:8px 0">Aucune fiche personnelle.</div>';
+  const exploreHTML=exploreCards.length?exploreCards.map(cardHTML).join(''):'';
+
+  const addForm=aDeck!==null?`<div class="form-box"><div class="form-title">Ajouter une fiche</div>
     <div class="form-row"><label>Direction</label><select id="idir" onchange="uLbls()">${dirOpts}</select></div>
-    <div class="form-row"><label id="la">Question</label><input type="text" id="ia" placeholder=""/></div>
-    <div class="form-row"><label id="lb">Réponse</label><input type="text" id="ib" placeholder=""/></div>
-    <div class="form-row"><label>Exemple / contexte <span style="color:var(--text3);font-weight:400">(optionnel)</span></label><textarea id="ictx" placeholder="ex. Used in formal emails to indicate a future date."></textarea></div>
+    <div class="form-row"><label id="la">Question</label><input type="text" id="ia"/></div>
+    <div class="form-row"><label id="lb">Réponse</label><input type="text" id="ib"/></div>
+    <div class="form-row"><label>Contexte / exemple <span style="font-weight:400;text-transform:none">(optionnel)</span></label><textarea id="ictx" placeholder="ex. Used in formal emails."></textarea></div>
     <div class="form-row"><label>Type</label><select id="ityp">${typeOpts}</select></div>
     <div class="form-actions"><button class="btn btn-p" onclick="addCard()">Ajouter</button></div>
   </div>`:'';
-  el.innerHTML=`<div class="pill-row">${dPills(aDeck,'setAD',true)}</div><div class="card-list">${rows}</div>${addForm}`;
+
+  el.innerHTML=`
+    <div class="pill-row">${dPills(aDeck,'setAD',true)}</div>
+    <input class="search-box" type="text" placeholder="🔍 Rechercher une fiche…" value="${ficheSearch}" oninput="ficheSearch=this.value;rFiches()"/>
+    <div class="section-header"><span>Mes fiches (${personalCards.length})</span><div class="section-header-line"></div></div>
+    <div class="card-list">${personalHTML}</div>
+    ${exploreCards.length?`<div class="section-header"><span>Explore (${exploreCards.length})</span><div class="section-header-line"></div></div><div class="card-list">${exploreHTML}</div>`:''}
+    ${addForm}`;
   uLbls();
 }
-function uLbls(){
-  const dir=document.getElementById('idir')?.value||'en-fr';
-  const la=document.getElementById('la'),lb=document.getElementById('lb'),ia=document.getElementById('ia'),ib=document.getElementById('ib');
-  if(dir==='en-fr'){if(la)la.textContent='Anglais (question)';if(lb)lb.textContent='Français (réponse)';if(ia)ia.placeholder='ex. To get the ball rolling';if(ib)ib.placeholder='ex. Lancer les choses';}
-  else{if(la)la.textContent='Français (question)';if(lb)lb.textContent='Anglais (réponse)';if(ia)ia.placeholder='ex. Je rentre tard.';if(ib)ib.placeholder='ex. I\'m coming home late.';}
-}
-function setAD(id){aDeck=id;rCards();}
+function uLbls(){const dir=document.getElementById('idir')?.value||'en-fr';const la=document.getElementById('la'),lb=document.getElementById('lb'),ia=document.getElementById('ia'),ib=document.getElementById('ib');if(dir==='en-fr'){if(la)la.textContent='Anglais (question)';if(lb)lb.textContent='Français (réponse)';if(ia)ia.placeholder='ex. Overwhelming';if(ib)ib.placeholder='ex. Écrasant';}else{if(la)la.textContent='Français (question)';if(lb)lb.textContent='Anglais (réponse)';if(ia)ia.placeholder='ex. Je rentre tard.';if(ib)ib.placeholder='ex. I\'m coming home late.';}}
+function setAD(id){aDeck=id;rFiches();}
 function addCard(){
-  resetDailyIfNeeded();
-  if(D.newToday>=MAX_NEW_PER_DAY){alert('Limite quotidienne de '+MAX_NEW_PER_DAY+' nouvelles cartes atteinte. Reviens demain !');return;}
+  resetDaily();
+  if(D.newToday>=MAX_NEW){alert('Limite de '+MAX_NEW+' nouvelles fiches aujourd\'hui atteinte.');return;}
   const a=document.getElementById('ia')?.value.trim(),b=document.getElementById('ib')?.value.trim();
-  const ctx=document.getElementById('ictx')?.value.trim()||'';
-  const type=document.getElementById('ityp')?.value||'phrase',dir=document.getElementById('idir')?.value||'en-fr';
+  const ctx=document.getElementById('ictx')?.value.trim()||'',type=document.getElementById('ityp')?.value||'phrase',dir=document.getElementById('idir')?.value||'en-fr';
   if(!a||!b)return;
   D.cards.push({id:D.nextCardId++,deckId:aDeck,a,b,ctx,type,dir,score:0,mult:1,due:0});
-  D.newToday++;sv();rCards();
+  D.newToday++;sv();rFiches();
 }
-function delCard(id){if(!confirm('Supprimer cette carte ?'))return;D.cards=D.cards.filter(c=>c.id!==id);sv();rCards();}
+function delCard(id){if(!confirm('Supprimer cette fiche ?'))return;D.cards=D.cards.filter(c=>c.id!==id);sv();rFiches();}
 
 // ─── EXPLORE ─────────────────────────────────────────────────────────────────
-function getUnlockedCount(catKey){
-  const cat=BANK[catKey];
-  let unlocked=1;
-  for(let i=0;i<cat.cards.length;i++){
-    if(i===0){unlocked=1;continue;}
-    const bk=catKey+'-'+(i-1);
-    if(D.bankAdded[bk]){
-      const addedCard=D.cards.find(c=>c.exploreKey===bk);
-      if(addedCard&&addedCard.score>=4)unlocked=i+1;
-      else if(D.bankAdded[bk])unlocked=Math.max(unlocked,i);
-    }else break;
+function getUnlocked(catKey){
+  const cat=BANK[catKey];let u=1;
+  for(let i=0;i<cat.cards.length-1;i++){
+    const bk=catKey+'-'+i;
+    if(D.bankAdded[bk]){const c=D.cards.find(x=>x.exploreKey===bk);if(c&&c.score>=4)u=i+2;else break;}
+    else break;
   }
-  return Math.min(unlocked,cat.cards.length);
+  return Math.min(u,cat.cards.length);
 }
 
 function rExplore(){
   const el=document.getElementById('s-explore');
-  if(bankCat){rExploreCat(el,bankCat);return;}
-  const totalAll=Object.values(BANK).reduce((s,c)=>s+c.cards.length,0);
+  if(bankCat){rExpCat(el,bankCat);return;}
   const addedAll=Object.keys(D.bankAdded).length;
-  const html=Object.entries(BANK).map(([key,cat])=>{
-    const tot=cat.cards.length;
-    const added=cat.cards.filter((_,i)=>D.bankAdded[key+'-'+i]).length;
-    const unlocked=getUnlockedCount(key);
-    const pct=Math.round((added/tot)*100);
+  const html=CAT_KEYS.map(key=>{
+    const cat=BANK[key];
+    const tot=cat.cards.length,added=cat.cards.filter((_,i)=>D.bankAdded[key+'-'+i]).length;
+    const unlocked=getUnlocked(key);
+    const locked=tot-unlocked;
     return`<div class="cat-card" style="background:${cat.color};color:${cat.tc}" onclick="bankCat='${key}';rExplore()">
       <div class="cat-icon">${cat.icon}</div>
       <div class="cat-name">${cat.label}</div>
-      <div class="cat-progress">${added}/${tot} ajoutées · ${unlocked} débloquées</div>
+      <div class="cat-sub">${added}/${tot} · ${locked>0?locked+' verrouillées':'tout débloqué ✓'}</div>
     </div>`;
   }).join('');
-  el.innerHTML=`
-    <div class="explore-header">
-      <div class="page-title">Explore</div>
-      <div class="explore-desc">Contenu structuré en 3 niveaux. Atteins 4/5 sur une carte pour débloquer la suivante.</div>
-    </div>
+  el.innerHTML=`<div class="page-title">Explore</div>
+    <div class="explore-intro">Contenu en 3 niveaux. Note ≥ 4/5 pour débloquer la fiche suivante dans chaque catégorie.</div>
     <div class="cat-grid">${html}</div>
-    <p style="font-size:12px;color:var(--text3);text-align:center">${addedAll} / ${totalAll} entrées ajoutées à tes decks</p>`;
+    <p style="font-size:12px;color:var(--text3);text-align:center">${addedAll} / ${totalEntries} entrées ajoutées</p>`;
 }
 
-function rExploreCat(el,key){
+function rExpCat(el,key){
   const cat=BANK[key];
   const dOpts=D.decks.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
-  const unlocked=getUnlockedCount(key);
-  const lvLabels={1:'Niveau 1',2:'Niveau 2',3:'Niveau 3'};
-  const lvColors={1:'lv1',2:'lv2',3:'lv3'};
+  const unlocked=getUnlocked(key);
+  const unlockedCards=cat.cards.slice(0,unlocked);
+  const lockedCards=cat.cards.slice(unlocked);
+  const lvLabels={1:'Niveau 1 — Fondations',2:'Niveau 2 — Intermédiaire',3:'Niveau 3 — Niveau natif'};
   let lastLv=0;
-  const items=cat.cards.map((c,i)=>{
-    const bk=key+'-'+i,done=!!D.bankAdded[bk],isLocked=i>=unlocked;
+
+  const unlockedHTML=unlockedCards.map((c,i)=>{
+    const bk=key+'-'+i,done=!!D.bankAdded[bk];
     const es=c.en.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    let lvHeader='';
-    if(c.lv!==lastLv){lastLv=c.lv;lvHeader=`<div style="margin:${i>0?'18px':'4px'} 0 8px"><span class="level-badge ${lvColors[c.lv]}">${lvLabels[c.lv]}</span></div>`;}
-    if(isLocked){
-      return lvHeader+`<div class="bank-item" style="opacity:.4">
-        <div class="bank-en" style="padding-right:30px">🔒 ${c.en}</div>
-        <div class="bank-fr">${c.fr}</div>
-        ${c.ctx?`<div class="bank-note">${c.ctx}</div>`:''}
-      </div>`;
-    }
-    return lvHeader+`<div class="bank-item">
+    let lvH='';
+    if(c.lv!==lastLv){lastLv=c.lv;lvH=`<div style="margin:${i>0?'14px':'2px'} 0 8px"><span class="level-badge ${c.lv===1?'lv1':c.lv===2?'lv2':'lv3'}">${lvLabels[c.lv]}</span></div>`;}
+    return lvH+`<div class="bank-item">
       <button class="add-btn ${done?'done':''}" onclick="addBCard('${key}',${i})" ${done?'disabled':''}>${done?'✓':'+'}</button>
-      <div class="bank-en">${c.en} <button onclick="spk('${es}')" style="background:none;border:none;cursor:pointer;font-size:13px;vertical-align:middle">🔊</button></div>
+      <div class="bank-en">${c.en} <button onclick="spk('${es}')" style="background:none;border:none;cursor:pointer;font-size:12px;vertical-align:middle;opacity:.7">🔊</button></div>
       <div class="bank-fr">${c.fr}</div>
       ${c.ctx?`<div class="bank-note">${c.ctx}</div>`:''}
     </div>`;
   }).join('');
+
+  let lockedHTML='';
+  if(lockedCards.length>0){
+    const nextLv=lockedCards[0].lv;
+    lockedHTML=`<div style="margin:14px 0 8px"><span class="level-badge ${nextLv===2?'lv2':'lv3'}">${lvLabels[nextLv]}</span></div>`;
+    lockedHTML+=lockedCards.map((c,i)=>{
+      const actualIdx=unlocked+i;
+      const bk=key+'-'+actualIdx;
+      return`<div class="bank-item locked-item">
+        <button class="add-btn" disabled style="opacity:.3">+</button>
+        <div class="bank-en">${c.en}</div>
+        <div class="bank-fr">${c.fr}</div>
+        ${c.ctx?`<div class="bank-note">${c.ctx}</div>`:''}
+      </div>`;
+    }).join('');
+    lockedHTML+=`<div class="locked-section">🔒 ${lockedCards.length} fiche${lockedCards.length>1?'s':''} verrouillée${lockedCards.length>1?'s':''} — obtiens 4/5 pour débloquer la suivante</div>`;
+  }
+
   el.innerHTML=`
     <button class="back-btn" onclick="bankCat=null;rExplore()">← Retour</button>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px"><span style="font-size:24px">${cat.icon}</span><span style="font-size:17px;font-weight:700">${cat.label}</span></div>
-    <p style="font-size:13px;color:var(--text2);margin-bottom:1rem">Obtiens 4/5 sur une carte pour débloquer la suivante.</p>
-    <div class="form-row" style="margin-bottom:1rem"><label>Ajouter dans le deck</label><select id="bds">${dOpts}</select></div>
-    ${items}`;
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:4px"><span style="font-size:22px">${cat.icon}</span><span style="font-size:16px;font-weight:700">${cat.label}</span></div>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:1rem">${unlocked} / ${cat.cards.length} débloquées</p>
+    <div class="form-row" style="margin-bottom:1rem"><label>Ajouter dans le thème</label><select id="bds">${dOpts}</select></div>
+    ${unlockedHTML}${lockedHTML}`;
+}
+
+function animatePlusOne(){
+  const navEl=document.getElementById('n-home');
+  const rect=navEl.getBoundingClientRect();
+  const el=document.createElement('div');
+  el.className='plus-one';
+  el.textContent='+1';
+  el.style.left=(rect.left+rect.width/2-15)+'px';
+  el.style.top=(rect.top-10)+'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),900);
 }
 
 function addBCard(catKey,idx){
-  resetDailyIfNeeded();
-  if(D.newToday>=MAX_NEW_PER_DAY){alert('Limite quotidienne atteinte ('+MAX_NEW_PER_DAY+' nouvelles cartes). Reviens demain !');return;}
+  resetDaily();
+  if(D.newToday>=MAX_NEW){alert('Limite de '+MAX_NEW+' nouvelles fiches atteinte.');return;}
   const c=BANK[catKey].cards[idx],bk=catKey+'-'+idx;
   if(D.bankAdded[bk])return;
   const deckId=parseInt(document.getElementById('bds')?.value)||D.decks[0]?.id;
   D.cards.push({id:D.nextCardId++,deckId,a:c.en,b:c.fr,ctx:c.ctx||'',type:c.en.split(' ').length<=3?'mot':'phrase',dir:'en-fr',score:0,mult:1,due:0,fromBank:true,exploreKey:bk});
   D.bankAdded[bk]=true;D.newToday++;sv();
-  rExploreCat(document.getElementById('s-explore'),bankCat);
+  animatePlusOne();
+  updateNavBadge();
+  rExpCat(document.getElementById('s-explore'),bankCat);
 }
 
 // ─── QUIZ ────────────────────────────────────────────────────────────────────
 function rQuizTab(){
   const el=document.getElementById('s-quiz');
-  if(!D.decks.length){el.innerHTML='<div class="empty">Crée un deck d\'abord.</div>';return;}
-  el.innerHTML=`<div class="pill-row">${dPills(qDeck,'sQD',true)}</div><div id="qa"></div>`;
+  if(!D.decks.length&&D.cards.length===0){el.innerHTML='<div class="empty">Ajoute des fiches d\'abord.</div>';return;}
+
+  const themesBtns=D.decks.map(d=>`<button class="pill ${qMode==='theme'&&qDeck===d.id?'active':''}" onclick="setQMode('theme',${d.id})">${d.name}</button>`).join('');
+  const catBtns=qMode==='explore'?CAT_KEYS.map(key=>{const cat=BANK[key];const added=Object.keys(D.bankAdded).filter(k=>k.startsWith(key+'-')).length;return added>0?`<button class="pill ${qExploreCat===key?'active':''}" onclick="setQExploreCat('${key}')">${cat.icon} ${cat.label}</button>`:''}).join(''):'';
+
+  el.innerHTML=`
+    <div class="quiz-selector">
+      <div class="quiz-sel-title">Source</div>
+      <div class="quiz-sel-grid">
+        <div class="qsel-btn ${qMode==='all'?'active':''}" onclick="setQMode('all')"><div class="qsel-icon">⚡</div>Toutes</div>
+        <div class="qsel-btn ${qMode==='themes'?'active':''}" onclick="setQMode('themes')"><div class="qsel-icon">📚</div>Mes thèmes</div>
+        <div class="qsel-btn ${qMode==='explore'?'active':''}" onclick="setQMode('explore')"><div class="qsel-icon">🌐</div>Explore</div>
+      </div>
+      ${qMode==='theme'||qMode==='themes'?`<div class="pill-row">${themesBtns}</div>`:''}
+      ${qMode==='explore'?`<div class="pill-row">${catBtns||'<span style="font-size:13px;color:var(--text3)">Ajoute des fiches Explore d\'abord.</span>'}</div>`:''}
+    </div>
+    <div id="qa"></div>`;
   stQuiz();
 }
-function sQD(id){qDeck=id;rQuizTab();}
+
+function setQMode(mode,deckId){
+  qMode=mode;
+  if(deckId!==undefined)qDeck=deckId;
+  if(mode==='explore')qExploreCat=null;
+  rQuizTab();
+}
+function setQExploreCat(key){qExploreCat=key;rQuizTab();}
+
+function getQuizCards(){
+  if(qMode==='all')return D.cards;
+  if(qMode==='themes')return D.cards.filter(c=>!c.fromBank);
+  if(qMode==='theme')return D.cards.filter(c=>c.deckId===qDeck);
+  if(qMode==='explore'){
+    if(qExploreCat)return D.cards.filter(c=>c.exploreKey&&c.exploreKey.startsWith(qExploreCat+'-'));
+    return D.cards.filter(c=>c.fromBank);
+  }
+  return D.cards;
+}
 
 function stQuiz(){
-  const all=qDeck===null?D.cards:D.cards.filter(c=>c.deckId===qDeck);
-  if(!all.length){document.getElementById('qa').innerHTML='<div class="empty">Aucune carte dans ce deck.</div>';return;}
+  const all=getQuizCards();
+  if(!all.length){document.getElementById('qa').innerHTML='<div class="empty">Aucune fiche dans cette sélection.</div>';return;}
   const due=all.filter(c=>c.due<=now()).sort(()=>Math.random()-.5);
   const nd=all.filter(c=>c.due>now()).sort((a,b)=>a.score-b.score);
   qCards=[...due,...nd.slice(0,Math.max(3,10-due.length))];
   qIdx=0;qScores=[];rQCard();
 }
 
-function enText(card){return card.dir==='fr-en'?card.b:card.a;}
+function enTxt(c){return c.dir==='fr-en'?c.b:c.a;}
 
 function rQCard(){
   const area=document.getElementById('qa');if(!area)return;
   if(qIdx>=qCards.length){
     const avg=qScores.length?(qScores.reduce((a,b)=>a+b,0)/qScores.length).toFixed(1):'—';
-    const t=today(),last=new Date(D.lastSession||0).toDateString(),yest=new Date(now()-86400000).toDateString();
+    const t=tod(),last=new Date(D.lastSession||0).toDateString(),yest=new Date(now()-86400000).toDateString();
     if(last!==t){D.streak=last===yest?(D.streak||0)+1:1;D.lastSession=now();sv();}
-    area.innerHTML=`<div class="result"><div class="result-score">${avg}<span style="font-size:28px;font-weight:400">/5</span></div><div class="result-sub">${qScores.length} carte${qScores.length!==1?'s':''} révisée${qScores.length!==1?'s':''}</div><button class="btn-main" onclick="stQuiz()">Recommencer</button></div>`;
+    checkDueNotif();
+    area.innerHTML=`<div class="result">
+      <div class="result-score">${avg}<span style="font-size:26px;font-weight:400">/5</span></div>
+      <div class="result-sub">${qScores.length} fiche${qScores.length!==1?'s':''} révisée${qScores.length!==1?'s':''}</div>
+      <button class="btn-main" onclick="stQuiz()">Recommencer</button>
+    </div>`;
     return;
   }
-  const card=qCards[qIdx],pct=Math.round((qIdx/qCards.length)*100);
-  const duc=qCards.filter(c=>c.due<=now()).length;
-  const isEF=card.dir!=='fr-en',q=isEF?card.a:card.b,ans=isEF?card.b:card.a;
-  const safe=enText(card).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-  const tp=`<span class="tp ${card.fromBank?'tp-b':card.type==='mot'?'tp-m':'tp-p'}" style="font-size:11px">${card.fromBank?'Explore':card.type}</span>`;
+  const card=qCards[qIdx],pct=Math.round((qIdx/qCards.length)*100),duc=qCards.filter(c=>c.due<=now()).length;
+  const isEF=card.dir!=='fr-en',q=isEF?card.a:card.b,safe=enTxt(card).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  const tp=`<span class="tp ${card.fromBank?'tp-b':card.type==='mot'?'tp-m':'tp-p'}">${card.fromBank?'Explore':card.type}</span>`;
+  const discBadge=isDiscovery()?'<span class="discovery-badge">⚡ découverte</span>':'';
+
   area.innerHTML=`
     <div class="quiz-stats">
       <div class="qs"><div class="qs-n">${qIdx}</div><div class="qs-l">Vues</div></div>
       <div class="qs"><div class="qs-n">${qCards.length-qIdx}</div><div class="qs-l">Restantes</div></div>
-      <div class="qs"><div class="qs-n" style="color:${duc>0?'var(--red)':'var(--gvif)'}">${duc}</div><div class="qs-l">Dues</div></div>
+      <div class="qs"><div class="qs-n" style="color:${duc>0?'var(--red)':'var(--gv)'}">${duc}</div><div class="qs-l">Dues</div></div>
     </div>
     <div class="prog"><div class="prog-fill" style="width:${pct}%"></div></div>
     <div class="quiz-card">
-      <div class="quiz-dir">${isEF?'Traduire en français':'Traduire en anglais'} · ${tp}</div>
+      <div class="quiz-dir">${isEF?'Traduire en français':'Traduire en anglais'} · ${tp} ${discBadge}</div>
       <div class="quiz-q">${q}</div>
       <button class="audio-btn" onclick="spk('${safe}')">🔊 Écouter</button>
-      <div id="az"></div>
+      <input class="write-input" id="wa" type="text" placeholder="Écris ta réponse…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
     </div>
-    <div id="qb" class="reveal-wrap"><button class="btn-main" style="max-width:240px;margin:0 auto" onclick="rvl()">Voir la réponse</button></div>`;
+    <div id="qb" class="reveal-wrap" style="margin-top:.5rem">
+      <button class="btn-main" style="max-width:220px;margin:0 auto" onclick="rvl()">Voir la réponse</button>
+    </div>`;
+  setTimeout(()=>document.getElementById('wa')?.focus(),100);
+  document.getElementById('wa')?.addEventListener('keydown',e=>{if(e.key==='Enter')rvl();});
 }
 
 function rvl(){
-  const card=qCards[qIdx];
-  const isEF=card.dir!=='fr-en',ans=isEF?card.b:card.a;
-  const safe=enText(card).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-  const ctxHtml=card.ctx?`<div class="quiz-ctx">${card.ctx}</div>`:'';
-  document.getElementById('az').innerHTML=`<div class="quiz-ans">${ans}</div>${ctxHtml}<button class="audio-btn" style="margin-top:6px" onclick="spk('${safe}')">🔊 Réécouter</button>`;
-  document.getElementById('qb').innerHTML=`<p class="score-hint">C'est acquis à quel niveau ?</p><div class="score-grid">${[1,2,3,4,5].map(s=>`<button class="score-btn sc${s}" onclick="rate(${s})"><span>${s}</span><span class="score-sub">${IL[s]}</span></button>`).join('')}</div>`;
+  const card=qCards[qIdx],isEF=card.dir!=='fr-en',ans=isEF?card.b:card.a,safe=enTxt(card).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  const typed=document.getElementById('wa')?.value||'';
+  const il=isDiscovery()?IL_DISC:IL;
+  document.getElementById('qb').innerHTML=`
+    <div class="quiz-card" style="min-height:auto;padding:1rem 1.25rem;gap:8px">
+      <div class="quiz-ans">${ans}</div>
+      ${card.ctx?`<div class="quiz-ctx">${card.ctx}</div>`:''}
+      <div class="write-compare">
+        <div class="write-yours">Ta réponse : <em>${typed||'—'}</em></div>
+        <div class="write-correct">Correct : ${ans}</div>
+      </div>
+      <button class="audio-btn" onclick="spk('${safe}')">🔊 Écouter</button>
+    </div>
+    <p class="score-hint" style="margin-top:.75rem">C'est acquis à quel niveau ?</p>
+    <div class="score-grid">${[1,2,3,4,5].map(s=>`<button class="score-btn sc${s}" onclick="rate(${s})"><span>${s}</span><span class="score-sub">${il[s]}</span></button>`).join('')}</div>`;
 }
 
 function rate(s){
   const card=qCards[qIdx],real=D.cards.find(c=>c.id===card.id);
   if(real){
     real.score=s;
-    const base=IV[s],mult=s>=4?(real.mult||1):1;
+    const base=getIV(s),mult=s>=4?(real.mult||1):1;
     real.due=now()+base*mult;
     real.mult=s>=4?Math.min((real.mult||1)*1.6,12):1;
   }
-  qScores.push(s);sv();qIdx++;rQCard();
+  qScores.push(s);
+  D.reviewedToday=(D.reviewedToday||0)+1;
+  D.totalReviewed=(D.totalReviewed||0)+1;
+  sv();qIdx++;updateNavBadge();rQCard();
 }
 
+// Init
+resetDaily();
+updateNavBadge();
 rHome();
 </script>
 </body>
