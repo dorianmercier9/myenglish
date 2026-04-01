@@ -1352,17 +1352,19 @@ function rQCard(){
 }
 
 function rvl(){
-  const card=qCards[qIdx],isEF=card.dir!=='fr-en',ans=isEF?card.b:card.a,safe=enTxt(card).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  const card=qCards[qIdx],isEF=card.dir!=='fr-en',ans=isEF?card.b:card.a;
   const typed=document.getElementById('wa')?.value||'';
   const il=getIL;
-  const ansSafe=ans.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-  const ctxSafe=(card.ctx||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
   document.getElementById('qb').innerHTML=`<div class="quiz-card" style="min-height:auto;padding:1rem 1.25rem;gap:8px">
-    <div class="quiz-ans">${ans} <button onclick="spk('${ansSafe}')" style="background:none;border:none;cursor:pointer;font-size:13px;opacity:.7">🔊</button></div>
-    ${card.ctx?`<div class="quiz-ctx">${card.ctx} <button onclick="spkCtx('${ctxSafe}')" style="background:none;border:none;cursor:pointer;font-size:12px;opacity:.6">🔊</button></div>`:''}
-    <div class="write-compare"><div class="write-yours">Ta réponse : <em>${typed||'—'}</em></div><div class="write-correct">Correct : ${ans}</div></div><button class="audio-btn" onclick="spk('${safe}')">🔊 Écouter</button></div>
+    <div class="quiz-ans">${ans} <button id="btn-ans" style="background:none;border:none;cursor:pointer;font-size:13px;opacity:.7">🔊</button></div>
+    ${card.ctx?`<div class="quiz-ctx">${card.ctx} <button id="btn-ctx" style="background:none;border:none;cursor:pointer;font-size:12px;opacity:.6">🔊</button></div>`:''}
+    <div class="write-compare"><div class="write-yours">Ta réponse : <em>${typed||'—'}</em></div><div class="write-correct">Correct : ${ans}</div></div></div>
     <p class="score-hint" style="margin-top:.75rem">C'est acquis à quel niveau ?</p>
     <div class="score-grid">${[1,2,3,4,5].map(s=>`<button class="score-btn sc${s}" onclick="rate(${s})"><span>${s}</span><span class="score-sub">${il(s)}</span></button>`).join('')}</div>`;
+  const btnAns=document.getElementById('btn-ans');
+  if(btnAns)btnAns.onclick=()=>spk(ans);
+  const btnCtx=document.getElementById('btn-ctx');
+  if(btnCtx)btnCtx.onclick=()=>spkCtx(card.ctx||'');
 }
 
 // Speak context — extracts English sentence from ctx (strips French notes)
