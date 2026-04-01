@@ -224,12 +224,13 @@ h1{font-size:24px;font-weight:700;letter-spacing:-.4px;line-height:1.2}
 <script>
 const SK='myenglish_v4';
 const DAILY_GOAL=10;
-const MAX_NEW=15;
-const DISCOVERY_THRESHOLD=30;
-const IV_DISC={1:600000,2:1800000,3:7200000,4:21600000,5:43200000};
-const IV={1:3600000,2:10800000,3:28800000,4:86400000,5:172800000};
-const IL={1:'1h',2:'3h',3:'8h',4:'1j',5:'2j'};
-const IL_DISC={1:'10min',2:'30min',3:'2h',4:'6h',5:'12h'};
+const EXPLORE_DECK_ID=9999;
+const IV_FLASH={1:600000,2:1800000,3:7200000,4:21600000,5:43200000};
+const IV_MID={1:1800000,2:7200000,3:21600000,4:64800000,5:129600000};
+const IV_NORM={1:3600000,2:10800000,3:28800000,4:86400000,5:172800000};
+const IL_FLASH={1:'10min',2:'30min',3:'2h',4:'6h',5:'12h'};
+const IL_MID={1:'30min',2:'2h',3:'6h',4:'18h',5:'36h'};
+const IL_NORM={1:'1h',2:'3h',3:'8h',4:'1j',5:'2j'};
 
 const BANK={
 pro:{label:'Vocabulaire pro',icon:'💼',color:'#EAF2FF',tc:'#1a3a5c',cards:[
@@ -1018,7 +1019,8 @@ function defaultData(){return{
   decks:[
     {id:1,name:'Yellowstone',dir:'en-fr',type:'phrase'},
     {id:2,name:'Quotidien',dir:'fr-en',type:'mixed'},
-    {id:3,name:'Vocabulaire',dir:'both',type:'mot'}
+    {id:3,name:'Vocabulaire',dir:'both',type:'mot'},
+    {id:EXPLORE_DECK_ID,name:'Explore',dir:'en-fr',type:'mixed',isExplore:true}
   ],
   cards:[
     {id:1,deckId:1,a:"You're gonna regret that.",b:"Tu vas le regretter.",ctx:'',type:'phrase',dir:'en-fr',score:0,mult:1,due:0},
@@ -1037,6 +1039,7 @@ function defaultData(){return{
 let D;
 try{D=JSON.parse(localStorage.getItem(SK))||defaultData();}catch(e){D=defaultData();}
 if(!D.bankAdded)D.bankAdded={};
+if(!D.decks.find(d=>d.id===EXPLORE_DECK_ID)){D.decks.push({id:EXPLORE_DECK_ID,name:'Explore',dir:'en-fr',type:'mixed',isExplore:true});sv();}
 if(!D.notifTime)D.notifTime='20:00';
 if(D.reviewedToday===undefined)D.reviewedToday=0;
 if(!D.lastReviewDay)D.lastReviewDay='';
@@ -1050,12 +1053,15 @@ function sv(){try{localStorage.setItem(SK,JSON.stringify(D));}catch(e){}}
 function now(){return Date.now();}
 function tod(){return new Date().toDateString();}
 function resetDaily(){
-  if(D.lastNewDay!==tod()){D.newToday=0;D.lastNewDay=tod();}
-  if(D.lastReviewDay!==tod()){D.reviewedToday=0;D.lastReviewDay=tod();}
+  let changed=false;
+  if(D.lastNewDay!==tod()){D.newToday=0;D.lastNewDay=tod();changed=true;}
+  if(D.lastReviewDay!==tod()){D.reviewedToday=0;D.lastReviewDay=tod();changed=true;}
+  if(changed)sv();
 }
-function isDiscovery(){return (D.totalReviewed||0)<DISCOVERY_THRESHOLD;}
-function getIV(s){return isDiscovery()?IV_DISC[s]:IV[s];}
-function getIL(s){return isDiscovery()?IL_DISC[s]:IL[s];}
+function getMode(){const t=D.totalReviewed||0;return t<30?'flash':t<100?'mid':'norm';}
+function getIV(s){const m=getMode();return m==='flash'?IV_FLASH[s]:m==='mid'?IV_MID[s]:IV_NORM[s];}
+function getIL(s){const m=getMode();return m==='flash'?IL_FLASH[s]:m==='mid'?IL_MID[s]:IL_NORM[s];}
+function getModeName(){return getMode()==='flash'?'Flash ⚡':getMode()==='mid'?'Intermédiaire 🔥':'Normal 📚';}
 
 function fdue(due){
   const d=due-now();if(d<=0)return'<span style="color:var(--red)">à revoir</span>';
@@ -1129,10 +1135,10 @@ function rHome(){
   const el=document.getElementById('s-home');
   const total=D.cards.length,due=D.cards.filter(c=>c.due<=now()).length;
   const mastered=D.cards.filter(c=>c.score>=4).length,streak=D.streak||0;
-  const reviewPct=Math.min(100,Math.round((D.reviewedToday/DAILY_GOAL)*100));
+  const reviewPct=Math.min(100,Math.round((Math.min(D.reviewedToday,DAILY_GOAL)/DAILY_GOAL)*100));
   const addedExplore=Object.keys(D.bankAdded).length;
   const globalPct=Math.round((addedExplore/totalEntries)*100);
-  const disc=isDiscovery();
+  const mode=getMode();
   const dots=Array.from({length:7},(_,i)=>{
     if(i<Math.min(streak,6))return'<div class="streak-dot done"></div>';
     if(i===Math.min(streak,6))return'<div class="streak-dot today"></div>';
@@ -1140,8 +1146,8 @@ function rHome(){
   }).join('');
   const notifBanner=canNotify()&&!D.notifEnabled?
     `<div class="notif-banner"><div class="notif-banner-text">🔔 Active les notifications pour ne jamais rater une révision</div><button class="notif-banner-btn" onclick="enableNotifs()">Activer</button></div>`:'';
-  const discBanner=disc?
-    `<div style="background:#fff3cd;border:0.5px solid #ffc107;border-radius:var(--r);padding:10px 14px;margin-bottom:1rem;font-size:12px;color:#856404">⚡ Mode Découverte — intervalles courts pour t\'accrocher (${D.totalReviewed||0}/${DISCOVERY_THRESHOLD} révisions)</div>`:'';
+  const discBanner=getMode()!=='norm'?
+    `<div style="background:#fff3cd;border:0.5px solid #ffc107;border-radius:var(--r);padding:10px 14px;margin-bottom:1rem;font-size:12px;color:#856404">${mode==='flash'?'⚡ Mode Flash':'🔥 Mode Intermédiaire'} — ${D.totalReviewed||0} révisions · intervalles ${mode==='flash'?'très courts':'courts'}</div>`:'';
   const masteredSection=showMastered?`<div class="mastered-detail">${buildMasteredDetail()}<button class="btn-sec" onclick="showMastered=false;rHome()" style="margin-top:10px">Fermer</button></div>`:'';
 
   el.innerHTML=`<div class="home-hero"><div class="home-greeting">Tableau de bord</div><h1>MyEnglish</h1></div>
@@ -1157,7 +1163,7 @@ function rHome(){
     </div>
     ${masteredSection}
     <div class="streak-card"><div class="streak-fire">🔥</div><div class="streak-info"><div class="streak-n">${streak} jour${streak!==1?'s':''}</div><div class="streak-l">consécutif${streak!==1?'s':''}</div><div class="streak-days">${dots}</div></div></div>
-    <div class="daily-goal"><div class="daily-top"><span class="daily-label">Objectif du jour</span><span class="daily-count">${D.reviewedToday} / ${DAILY_GOAL} fiches</span></div><div class="dbar"><div class="dbar-fill" style="width:${reviewPct}%"></div></div></div>
+    <div class="daily-goal"><div class="daily-top"><span class="daily-label">Objectif du jour</span><span class="daily-count" style="color:${D.reviewedToday>=DAILY_GOAL?'var(--gv)':'var(--accent)'}"> ${Math.min(D.reviewedToday,DAILY_GOAL)} / ${DAILY_GOAL} fiches${D.reviewedToday>=DAILY_GOAL?' ✓':''}</span></div><div class="dbar"><div class="dbar-fill" style="width:${reviewPct}%"></div></div></div>
     <div class="global-prog"><div class="gp-top"><span class="gp-label">Progression Explore</span><span class="gp-pct">${globalPct}%</span></div><div class="gp-bar"><div class="gp-fill" style="width:${globalPct}%"></div></div><div class="gp-sub">${addedExplore} / ${totalEntries} entrées ajoutées</div></div>
     <button class="btn-main" onclick="sQAll()">${due>0?'Réviser — '+due+' fiche'+(due>1?'s':'')+' due'+(due>1?'s':''):'S\'entraîner'}</button>
     <button class="btn-sec" onclick="T('explore')">Explorer du nouveau contenu</button>
@@ -1196,7 +1202,8 @@ function showSettings(){
     <div class="settings-section">
       <div class="settings-title">Statistiques</div>
       <div class="settings-row"><div><div class="settings-label">${D.cards.length} fiches · ${D.cards.filter(c=>c.score>=4).length} maîtrisées</div><div class="settings-sub">${D.cards.filter(c=>c.due<=now()).length} à revoir · ${D.totalReviewed||0} révisions totales</div></div></div>
-      <div class="settings-row"><div><div class="settings-label">Mode ${isDiscovery()?'Découverte ⚡':'Normal'}</div><div class="settings-sub">${isDiscovery()?'Intervalles courts actifs':'Intervalles complets'}</div></div></div>
+      <div class="settings-row"><div><div class="settings-label">Mode ${getModeName()}</div><div class="settings-sub">${D.totalReviewed||0} révisions totales · Flash &lt;30 · Intermédiaire 30-100 · Normal 100+</div></div></div>
+      <div class="settings-row"><div><div class="settings-label">Nouvelles fiches / jour</div><div class="settings-sub">Actuellement : ${D.maxNew||15}</div></div><div style="display:flex;align-items:center;gap:8px"><input type="range" min="5" max="30" step="5" value="${D.maxNew||15}" oninput="this.nextElementSibling.textContent=this.value;D.maxNew=parseInt(this.value);sv()" style="width:80px"/><span style="font-size:13px;font-weight:600;min-width:20px">${D.maxNew||15}</span></div></div>
     </div>`;
 }
 function exportData(){const blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='myenglish-backup-'+new Date().toISOString().split('T')[0]+'.json';a.click();URL.revokeObjectURL(url);}
@@ -1206,7 +1213,7 @@ function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileRe
 function rThemes(){
   const el=document.getElementById('s-themes');
   const ICONS=['📺','🗓️','📖','💼','🎵','🎬','📝','🌍','🎭','🏋️'];
-  const html=D.decks.map((d,i)=>{
+  const html=D.decks.filter(d=>!d.isExplore).map((d,i)=>{
     const tot=D.cards.filter(c=>c.deckId===d.id).length,due=D.cards.filter(c=>c.deckId===d.id&&c.due<=now()).length;
     const dl=d.dir==='en-fr'?'EN→FR':d.dir==='fr-en'?'FR→EN':'Les deux';
     return`<div class="theme-item" onclick="goDeck(${d.id})"><div class="theme-item-icon">${ICONS[i%ICONS.length]}</div><div class="theme-item-info"><div class="theme-item-name">${d.name}</div><div class="theme-item-meta">${tot} fiche${tot!==1?'s':''} · <span class="dir-tag">${dl}</span></div></div><div class="theme-item-right">${due>0?`<span class="due-pill">${due} dues</span>`:`<span class="ok-pill">À jour</span>`}</div></div>`;
@@ -1235,7 +1242,17 @@ function rFiches(){
   function cHTML(c){return`<div class="card-item"><div class="card-texts"><div class="card-a">${c.a}</div><div class="card-b">${c.b}</div>${c.ctx?`<div class="card-ctx">${c.ctx}</div>`:''}<span class="tp ${c.fromBank?'tp-b':c.type==='mot'?'tp-m':'tp-p'}">${c.fromBank?'Explore':c.type}</span></div><div class="card-right"><div>${starHTML(c.score)}</div><div class="card-due">${fdue(c.due)}</div></div><button class="del-btn" onclick="delCard(${c.id})">✕</button></div>`;}
   const pHTML=personalCards.length?personalCards.map(cHTML).join(''):'<div style="font-size:13px;color:var(--text3);padding:8px 0">Aucune fiche personnelle.</div>';
   const addForm=aDeck!==null?`<div class="form-box"><div class="form-title">Ajouter une fiche</div><div class="form-row"><label>Direction</label><select id="idir" onchange="uLbls()">${dirOpts}</select></div><div class="form-row"><label id="la">Question</label><input type="text" id="ia"/></div><div class="form-row"><label id="lb">Réponse</label><input type="text" id="ib"/></div><div class="form-row"><label>Contexte <span style="font-weight:400;text-transform:none">(optionnel)</span></label><textarea id="ictx" placeholder="ex. Used in formal emails. / She felt overwhelmed by the workload."></textarea></div><div class="form-row"><label>Type</label><select id="ityp">${typeOpts}</select></div><div class="form-actions"><button class="btn btn-p" onclick="addCard()">Ajouter</button></div></div>`:'';
-  el.innerHTML=`<div class="pill-row">${dPills(aDeck,'setAD',true)}</div><input class="search-box" type="text" placeholder="🔍 Rechercher…" value="${ficheSearch}" oninput="ficheSearch=this.value;rFiches()"/>
+  // Summary bar for Tous
+  const totalDue=allCards.filter(c=>c.due<=now()).length;
+  const totalMastered=allCards.filter(c=>c.score>=4).length;
+  const summaryBar=aDeck===null?`<div style="display:flex;gap:8px;margin-bottom:10px;font-size:12px">
+    <span style="background:var(--redbg);color:var(--red);padding:3px 9px;border-radius:99px;font-weight:600">${totalDue} à revoir</span>
+    <span style="background:var(--glbg);color:var(--gv);padding:3px 9px;border-radius:99px;font-weight:600">${totalMastered} maîtrisées</span>
+    <span style="background:var(--bg2);color:var(--text3);padding:3px 9px;border-radius:99px">${allCards.length} total</span>
+  </div>`:'';
+  el.innerHTML=`<div class="pill-row">${dPills(aDeck,'setAD',true)}</div>
+    ${summaryBar}
+    <input class="search-box" type="text" placeholder="🔍 Rechercher…" value="${ficheSearch}" oninput="ficheSearch=this.value;rFiches()"/>
     <div class="section-header"><span>Mes fiches (${personalCards.length})</span><div class="section-header-line"></div></div>
     <div class="card-list">${pHTML}</div>
     ${exploreCards.length?`<div class="section-header"><span>Explore (${exploreCards.length})</span><div class="section-header-line"></div></div><div class="card-list">${exploreCards.map(cHTML).join('')}</div>`:''}
@@ -1243,7 +1260,7 @@ function rFiches(){
 }
 function uLbls(){const dir=document.getElementById('idir')?.value||'en-fr';const la=document.getElementById('la'),lb=document.getElementById('lb'),ia=document.getElementById('ia'),ib=document.getElementById('ib');if(dir==='en-fr'){if(la)la.textContent='Anglais (question)';if(lb)lb.textContent='Français (réponse)';if(ia)ia.placeholder='ex. Overwhelming';if(ib)ib.placeholder='ex. Écrasant';}else{if(la)la.textContent='Français (question)';if(lb)lb.textContent='Anglais (réponse)';if(ia)ia.placeholder='ex. Je rentre tard.';if(ib)ib.placeholder='ex. I\'m coming home late.';}}
 function setAD(id){aDeck=id;rFiches();}
-function addCard(){resetDaily();if(D.newToday>=MAX_NEW){alert('Limite de '+MAX_NEW+' nouvelles fiches aujourd\'hui atteinte.');return;}const a=document.getElementById('ia')?.value.trim(),b=document.getElementById('ib')?.value.trim(),ctx=document.getElementById('ictx')?.value.trim()||'',type=document.getElementById('ityp')?.value||'phrase',dir=document.getElementById('idir')?.value||'en-fr';if(!a||!b)return;D.cards.push({id:D.nextCardId++,deckId:aDeck,a,b,ctx,type,dir,score:0,mult:1,due:0});D.newToday++;sv();rFiches();}
+function addCard(){resetDaily();const maxNew=D.maxNew||15;if(D.newToday>=maxNew){alert('Limite de '+maxNew+' nouvelles fiches aujourd\'hui atteinte. Change-la dans Paramètres.');return;}const a=document.getElementById('ia')?.value.trim(),b=document.getElementById('ib')?.value.trim(),ctx=document.getElementById('ictx')?.value.trim()||'',type=document.getElementById('ityp')?.value||'phrase',dir=document.getElementById('idir')?.value||'en-fr';if(!a||!b)return;D.cards.push({id:D.nextCardId++,deckId:aDeck,a,b,ctx,type,dir,score:0,mult:1,due:0});D.newToday++;sv();rFiches();}
 function delCard(id){if(!confirm('Supprimer cette fiche ?'))return;D.cards=D.cards.filter(c=>c.id!==id);sv();rFiches();}
 
 // EXPLORE
@@ -1262,7 +1279,7 @@ function rExpCat(el,key){
   const unlockedHTML=cat.cards.slice(0,unlocked).map((c,i)=>{const bk=key+'-'+i,done=!!D.bankAdded[bk];const es=c.en.replace(/\\/g,'\\\\').replace(/'/g,"\\'");let lvH='';if(c.lv!==lastLv){lastLv=c.lv;lvH=`<div style="margin:${i>0?'14px':'2px'} 0 8px"><span class="level-badge ${c.lv===1?'lv1':c.lv===2?'lv2':'lv3'}">${lvLabels[c.lv]}</span></div>`;}return lvH+`<div class="bank-item"><button class="add-btn ${done?'done':''}" onclick="addBCard('${key}',${i})" ${done?'disabled':''}>${done?'✓':'+'}</button><div class="bank-en">${c.en} <button onclick="spk('${es}')" style="background:none;border:none;cursor:pointer;font-size:12px;vertical-align:middle;opacity:.7">🔊</button></div><div class="bank-fr">${c.fr}</div>${c.ctx?`<div class="bank-note">${c.ctx}</div>`:''}</div>`;}).join('');
   const lockedCards=cat.cards.slice(unlocked);
   const lockedHTML=lockedCards.length>0?`<div style="margin:14px 0 8px"><span class="level-badge ${lockedCards[0].lv===2?'lv2':'lv3'}">${lvLabels[lockedCards[0].lv]}</span></div>`+lockedCards.map((c)=>`<div class="bank-item locked-item"><button class="add-btn" disabled style="opacity:.3">+</button><div class="bank-en">${c.en}</div><div class="bank-fr">${c.fr}</div>${c.ctx?`<div class="bank-note">${c.ctx}</div>`:''}</div>`).join('')+`<div class="locked-section">🔒 ${lockedCards.length} fiche${lockedCards.length>1?'s':''} verrouillée${lockedCards.length>1?'s':''} — obtiens 4/5 pour débloquer la suivante</div>`:'';
-  el.innerHTML=`<button class="back-btn" onclick="bankCat=null;rExplore()">← Retour</button><div style="display:flex;align-items:center;gap:9px;margin-bottom:4px"><span style="font-size:22px">${cat.icon}</span><span style="font-size:16px;font-weight:700">${cat.label}</span></div><p style="font-size:12px;color:var(--text2);margin-bottom:1rem">${unlocked} / ${cat.cards.length} débloquées</p><div class="form-row" style="margin-bottom:1rem"><label>Ajouter dans le thème</label><select id="bds">${dOpts}</select></div>${unlockedHTML}${lockedHTML}`;
+  el.innerHTML=`<button class="back-btn" onclick="bankCat=null;rExplore()">← Retour</button><div style="display:flex;align-items:center;gap:9px;margin-bottom:4px"><span style="font-size:22px">${cat.icon}</span><span style="font-size:16px;font-weight:700">${cat.label}</span></div><p style="font-size:12px;color:var(--text2);margin-bottom:1rem">${unlocked} / ${cat.cards.length} débloquées · ajout automatique dans le thème Explore</p>${unlockedHTML}${lockedHTML}`;
 }
 
 function animatePlusOne(){
@@ -1273,9 +1290,9 @@ function animatePlusOne(){
 }
 
 function addBCard(catKey,idx){
-  resetDaily();if(D.newToday>=MAX_NEW){alert('Limite de '+MAX_NEW+' nouvelles fiches atteinte.');return;}
+  resetDaily();const maxNewB=D.maxNew||15;if(D.newToday>=maxNewB){alert('Limite de '+maxNewB+' nouvelles fiches atteinte.');return;}
   const c=BANK[catKey].cards[idx],bk=catKey+'-'+idx;if(D.bankAdded[bk])return;
-  const deckId=parseInt(document.getElementById('bds')?.value)||D.decks[0]?.id;
+  const deckId=EXPLORE_DECK_ID;
   D.cards.push({id:D.nextCardId++,deckId,a:c.en,b:c.fr,ctx:c.ctx||'',type:c.en.split(' ').length<=3?'mot':'phrase',dir:'en-fr',score:0,mult:1,due:0,fromBank:true,exploreKey:bk});
   D.bankAdded[bk]=true;D.newToday++;sv();animatePlusOne();updateNavBadge();
   rExpCat(document.getElementById('s-explore'),bankCat);
@@ -1322,10 +1339,13 @@ function rQCard(){
   const card=qCards[qIdx],pct=Math.round((qIdx/qCards.length)*100),duc=qCards.filter(c=>c.due<=now()).length;
   const isEF=card.dir!=='fr-en',q=isEF?card.a:card.b,safe=enTxt(card).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
   const tp=`<span class="tp ${card.fromBank?'tp-b':card.type==='mot'?'tp-m':'tp-p'}">${card.fromBank?'Explore':card.type}</span>`;
-  const discBadge=isDiscovery()?'<span class="discovery-badge">⚡ découverte</span>':'';
+  const discBadge=getMode()!=='norm'?'<span class="discovery-badge">'+(getMode()==='flash'?'⚡ flash':'🔥 intermédiaire')+'</span>':'';
   area.innerHTML=`<div class="quiz-stats"><div class="qs"><div class="qs-n">${qIdx}</div><div class="qs-l">Vues</div></div><div class="qs"><div class="qs-n">${qCards.length-qIdx}</div><div class="qs-l">Restantes</div></div><div class="qs"><div class="qs-n" style="color:${duc>0?'var(--red)':'var(--gv)'}">${duc}</div><div class="qs-l">Dues</div></div></div>
     <div class="prog"><div class="prog-fill" style="width:${pct}%"></div></div>
-    <div class="quiz-card"><div class="quiz-dir">${isEF?'Traduire en français':'Traduire en anglais'} · ${tp} ${discBadge}</div><div class="quiz-q">${q}</div><button class="audio-btn" onclick="spk('${safe}')">🔊 Écouter</button><input class="write-input" id="wa" type="text" placeholder="Écris ta réponse…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/></div>
+    <div class="quiz-card"><div class="quiz-dir">${isEF?'Traduire en français':'Traduire en anglais'} · ${tp} ${discBadge}</div><div class="quiz-q">${q}</div><button class="audio-btn" onclick="spk('${safe}')">🔊 Écouter</button><div style="display:flex;gap:8px;width:100%;margin-top:4px">
+      <input class="write-input" id="wa" type="text" placeholder="Écris ta réponse…" autocomplete="off" autocapitalize="sentences" spellcheck="true" style="flex:1;margin-top:0"/>
+      <button id="mic-btn" onclick="toggleMic()" style="background:var(--bg);border:1.5px solid var(--border2);border-radius:var(--rsm);padding:0 14px;font-size:18px;cursor:pointer;flex-shrink:0" title="Dicter">🎤</button>
+    </div></div>
     <div id="qb" class="reveal-wrap" style="margin-top:.5rem"><button class="btn-main" style="max-width:220px;margin:0 auto" onclick="rvl()">Voir la réponse</button></div>`;
   setTimeout(()=>document.getElementById('wa')?.focus(),100);
   document.getElementById('wa')?.addEventListener('keydown',e=>{if(e.key==='Enter')rvl();});
@@ -1335,9 +1355,36 @@ function rvl(){
   const card=qCards[qIdx],isEF=card.dir!=='fr-en',ans=isEF?card.b:card.a,safe=enTxt(card).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
   const typed=document.getElementById('wa')?.value||'';
   const il=getIL;
-  document.getElementById('qb').innerHTML=`<div class="quiz-card" style="min-height:auto;padding:1rem 1.25rem;gap:8px"><div class="quiz-ans">${ans}</div>${card.ctx?`<div class="quiz-ctx">${card.ctx}</div>`:''}<div class="write-compare"><div class="write-yours">Ta réponse : <em>${typed||'—'}</em></div><div class="write-correct">Correct : ${ans}</div></div><button class="audio-btn" onclick="spk('${safe}')">🔊 Écouter</button></div>
+  const ansSafe=ans.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  const ctxSafe=(card.ctx||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  document.getElementById('qb').innerHTML=`<div class="quiz-card" style="min-height:auto;padding:1rem 1.25rem;gap:8px">
+    <div class="quiz-ans">${ans} <button onclick="spk('${ansSafe}')" style="background:none;border:none;cursor:pointer;font-size:13px;opacity:.7">🔊</button></div>
+    ${card.ctx?`<div class="quiz-ctx">${card.ctx} <button onclick="spk('${ctxSafe}')" style="background:none;border:none;cursor:pointer;font-size:12px;opacity:.6">🔊</button></div>`:''}
+    <div class="write-compare"><div class="write-yours">Ta réponse : <em>${typed||'—'}</em></div><div class="write-correct">Correct : ${ans}</div></div><button class="audio-btn" onclick="spk('${safe}')">🔊 Écouter</button></div>
     <p class="score-hint" style="margin-top:.75rem">C'est acquis à quel niveau ?</p>
     <div class="score-grid">${[1,2,3,4,5].map(s=>`<button class="score-btn sc${s}" onclick="rate(${s})"><span>${s}</span><span class="score-sub">${il(s)}</span></button>`).join('')}</div>`;
+}
+
+// Speech recognition
+let recognition=null;
+function toggleMic(){
+  const btn=document.getElementById('mic-btn');
+  const inp=document.getElementById('wa');
+  if(!btn||!inp)return;
+  if(recognition){recognition.stop();recognition=null;btn.textContent='🎤';btn.style.borderColor='var(--border2)';return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('Reconnaissance vocale non disponible sur ce navigateur.');return;}
+  recognition=new SR();
+  recognition.lang=qCards[qIdx]?.dir!=='fr-en'?'en-US':'fr-FR';
+  recognition.continuous=false;recognition.interimResults=true;
+  recognition.onstart=()=>{btn.textContent='⏹';btn.style.borderColor='var(--red)';};
+  recognition.onresult=e=>{
+    let t='';for(let r of e.results)t+=r[0].transcript;
+    inp.value=t;
+  };
+  recognition.onend=()=>{btn.textContent='🎤';btn.style.borderColor='var(--border2)';recognition=null;};
+  recognition.onerror=e=>{btn.textContent='🎤';btn.style.borderColor='var(--border2)';recognition=null;if(e.error!=='aborted')alert('Erreur micro : '+e.error);};
+  recognition.start();
 }
 
 function rate(s){
