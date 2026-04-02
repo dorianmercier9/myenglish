@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="MyEnglish"/>
@@ -3439,8 +3439,23 @@ function resetDaily(){
   if(ch)sv();
 }
 function getMode(){const t=D.totalReviewed||0;return t<30?'flash':t<100?'mid':'norm';}
-function getIV(s){const m=getMode();return m==='flash'?IV_FLASH[s]:m==='mid'?IV_MID[s]:IV_NORM[s];}
-function getIL(s){const m=getMode();return m==='flash'?IL_FLASH[s]:m==='mid'?IL_MID[s]:IL_NORM[s];}
+const BASE_IV={1:5*60000,2:30*60000,3:12*3600000,4:24*3600000,5:3*24*3600000};
+const BASE_IL={1:'5min',2:'30min',3:'12h',4:'1j',5:'3j'};
+function getIV(s,card){
+  if(!card||!card.totalRatings)return Math.min(BASE_IV[s],BASE_IV[3]);
+  if(s>=4)return BASE_IV[s]*(card.mult||1);
+  return BASE_IV[s];
+}
+function getIL(s,card){
+  if(!card||!card.totalRatings){return s>=4?'12h (1ère vue)':BASE_IL[s];}
+  if(s>=4){
+    const ms=BASE_IV[s]*(card.mult||1);
+    const dy=Math.round(ms/86400000);
+    if(dy>=1)return dy+'j';
+    return Math.round(ms/3600000)+'h';
+  }
+  return BASE_IL[s];
+}
 
 function fdue(due){
   const d=due-now();if(d<=0)return'<span style="color:var(--red)">à revoir</span>';
@@ -3569,7 +3584,7 @@ function rHome(){
         <div class="streak-l">de streak</div>
         <div class="streak-dots">${dots}</div>
       </div>
-      <div style="text-align:right">
+      <div style="text-align:right;flex-shrink:0;min-width:88px">
         <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-bottom:3px">Aujourd'hui</div>
         <div style="font-size:22px;font-weight:800;color:${D.reviewedToday>=dg?'var(--green)':'var(--brand)'};letter-spacing:-.5px">${Math.min(D.reviewedToday,dg)}<span style="font-size:13px;color:var(--text3);font-weight:500"> / ${dg}</span></div>
         <div class="prog-bar" style="width:80px;margin-top:5px"><div class="prog-fill" style="width:${revPct}%"></div></div>
@@ -3632,6 +3647,17 @@ function exportData(){const b=new Blob([JSON.stringify(D,null,2)],{type:'applica
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const i=JSON.parse(ev.target.result);if(!i.cards||!i.decks)throw new Error('Format invalide');D=i;sv();alert('Import réussi — '+D.cards.length+' fiches restaurées.');rHome();}catch(err){alert('Erreur : '+err.message);}};r.readAsText(f);}
 
 // ─── TRAIN ────────────────────────────────────────────────────
+function renderExplorePills(){
+  const added=D.cards.filter(c=>c.fromBank);
+  if(!added.length)return '<p style="font-size:13px;color:var(--text3);padding:4px 0 8px">Aucune fiche Explore. Va dans Explorer !</p>';
+  const oxKeys=OXFORD_KEYS.filter(k=>D.cards.some(c=>c.exploreKey?.startsWith('ox_'+k+'-')));
+  const metaKeys=Object.keys(META).filter(mk=>META[mk].cats.some(c=>D.cards.some(x=>x.exploreKey?.startsWith(c+'-'))));
+  return`<div class="pill-row" style="margin-bottom:14px">
+    <button class="pill ${!qExploreCat?'active':''}" onclick="setQCat(null)">Tout</button>
+    ${metaKeys.map(mk=>`<button class="pill ${qExploreCat==='meta_'+mk?'active':''}" onclick="qExploreCat='meta_'+mk;rTrain()">${META[mk].icon} ${META[mk].label}</button>`).join('')}
+    ${oxKeys.map(k=>`<button class="pill ${qExploreCat==='ox_'+k?'active':''}" onclick="qExploreCat='ox_'+k;rTrain()">${OXFORD[k].icon} ${OXFORD[k].label}</button>`).join('')}
+  </div>`;
+}
 function rTrain(){
   const el=document.getElementById('s-train');
   const due=D.cards.filter(c=>c.due<=now()).length;
@@ -3642,9 +3668,8 @@ function rTrain(){
       <button class="pill ${qMode==='explore'?'active':''}" onclick="setQMode('explore')">🗺️ Explore</button>
     </div>
     ${qMode==='themes'?'<div class="pill-row">'+D.decks.filter(d=>!d.isExplore).map(d=>`<button class="pill ${qDeck===d.id?'active':''}" onclick="setQTheme(${d.id})">${d.name}</button>`).join('')+'</div>'  :''}
-    ${qMode==='explore'?'<div class="pill-row">'+CAT_KEYS.map(k=>{const a=Object.keys(D.bankAdded).filter(bk=>bk.startsWith(k+'-')).length;return a>0?`<button class="pill ${qExploreCat===k?'active':''}" onclick="setQCat('${k}')">${BANK[k].icon} ${BANK[k].label}</button>`:''}).join('')+OXFORD_KEYS.map(k=>{const a=Object.keys(D.bankAdded).filter(bk=>bk.startsWith('ox_'+k+'-')).length;return a>0?`<button class="pill ${qExploreCat==='ox_'+k?'active':''}" onclick="setQCat(\'ox_${k}\')">${OXFORD[k].icon} ${OXFORD[k].label}</button>`:''}).join('')+'</div>':''}
-  `;
-
+    ${qMode==='explore'?renderExplorePills():''}
+  `
   el.innerHTML=`<div class="train-wrap">
     <div class="page-title">S'entraîner</div>
     <div class="mode-grid">
@@ -3688,6 +3713,11 @@ function getQuizCards(){
   if(qMode==='themes')return qDeck?D.cards.filter(c=>c.deckId===qDeck):D.cards.filter(c=>!c.fromBank);
   if(qMode==='explore'){
     if(qExploreCat){
+      if(qExploreCat.startsWith('meta_')){
+        const mk=qExploreCat.slice(5);
+        const cats=META[mk]?.cats||[];
+        return D.cards.filter(c=>c.exploreKey&&cats.some(k=>c.exploreKey.startsWith(k+'-')));
+      }
       if(qExploreCat.startsWith('ox_')){
         const k=qExploreCat.slice(3);
         return D.cards.filter(c=>c.exploreKey&&c.exploreKey.startsWith('ox_'+k+'-'));
@@ -3731,7 +3761,7 @@ function rQCard(){
   const safe=enTxt(card).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
   const tp=card.fromBank?'tc-explore':card.type==='mot'?'tc-mot':'tc-phrase';
   const tpLabel=card.fromBank?'Explore':card.type;
-  const discBadge=getMode()!=='norm'?`<div class="disc-badge">${getMode()==='flash'?'⚡ Flash':'🔥 Intermédiaire'}</div>`:'';
+  const discBadge=card.isHard?`<div class="disc-badge" style="background:var(--redbg);color:var(--red)">🔁 Difficile</div>`:(!card.totalRatings?`<div class="disc-badge">✨ Nouveau</div>`:'');
 
   area.innerHTML=`<div class="quiz-stats">
     <div class="qs"><div class="qs-n">${qIdx}</div><div class="qs-l">Vues</div></div>
@@ -3769,7 +3799,7 @@ function rvl(){
     </div>
   </div>
   <p class="score-hint" style="margin-top:14px">C'est acquis à quel niveau ?</p>
-  <div class="score-grid">${[1,2,3,4,5].map(s=>`<button class="score-btn sc${s}" onclick="rate(${s})"><span>${s}</span><span class="score-sub">${getIL(s)}</span></button>`).join('')}</div>`;
+  <div class="score-grid">${[1,2,3,4,5].map(s=>`<button class="score-btn sc${s}" onclick="rate(${s})"><span>${s}</span><span class="score-sub">${getIL(s,card)}</span></button>`).join('')}</div>`;
   const ba=document.getElementById('btn-ans-audio');
   if(ba)ba.onclick=()=>spk(ans);
   const bc=document.getElementById('btn-ctx-audio');
@@ -3778,8 +3808,16 @@ function rvl(){
 
 function rate(s){
   const card=qCards[qIdx],real=D.cards.find(c=>c.id===card.id);
-  if(real){real.score=s;const base=getIV(s),mult=s>=4?(real.mult||1):1;
-    real.due=now()+base*mult;real.mult=s>=4?Math.min((real.mult||1)*1.6,12):1;}
+  if(real){
+    real.totalRatings=(real.totalRatings||0)+1;
+    real.score=s;
+    real.due=now()+getIV(s,real);
+    if(s>=4)real.mult=Math.min((real.mult||1)*1.5,16);
+    else if(s<=2)real.mult=1;
+    if(s<=2)real.hardStreak=(real.hardStreak||0)+1;
+    else real.hardStreak=0;
+    real.isHard=(real.hardStreak||0)>=3;
+  }
   qScores.push(s);D.reviewedToday=(D.reviewedToday||0)+1;D.totalReviewed=(D.totalReviewed||0)+1;
   sv();qIdx++;updateDot();rQCard();
 }
@@ -4080,16 +4118,18 @@ function uLbls(){
 
 async function autoTranslate(){
   const inp=document.getElementById('ia');if(!inp?.value.trim())return;
+  const dir=document.getElementById('idir')?.value||'en-fr';
+  const langpair=dir==='fr-en'?'fr|en':'en|fr';
   const res=document.getElementById('trans-result');
   if(res){res.style.display='block';res.textContent='⏳ Traduction…';}
   try{
-    const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(inp.value.trim())}&langpair=en|fr`);
+    const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(inp.value.trim())}&langpair=${langpair}&de=myenglish@app.fr`);
     const d=await r.json();
     const t=d.responseData?.translatedText;
-    if(t&&res){
-      res.textContent='→ '+t;
+    if(t&&t!=='NO QUERY SPECIFIED'&&res){
+      res.style.display='block';res.textContent='→ '+t;
       const ib=document.getElementById('ib');if(ib&&!ib.value)ib.value=t;
-    }
+    } else if(res)res.style.display='none';
   }catch(e){if(res)res.style.display='none';}
 }
 
