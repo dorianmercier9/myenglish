@@ -60,13 +60,13 @@
 
 /* ─── RESET ──────────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);overscroll-behavior:none;
   font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display',sans-serif;
   font-size:15px;-webkit-font-smoothing:antialiased}
 
 /* ─── APP SHELL ───────────────────────────────────────────── */
-.app{display:flex;flex-direction:column;height:100%;padding-top:var(--sat)}
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.app{display:flex;flex-direction:column;height:100%;padding-top:var(--sat);overflow:hidden;max-width:100vw;}
+.content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;max-width:100vw;}
 .screen{display:none;min-height:100%}.screen.active{display:block}
 
 /* ─── BOTTOM NAV ──────────────────────────────────────────── */
@@ -115,7 +115,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
 .section-label::after{content:'';flex:1;height:0.5px;background:var(--border2)}
 
 /* ─── HOME SCREEN ─────────────────────────────────────────── */
-.home-wrap{padding:20px 20px 0}
+.home-wrap{padding:20px 16px 0;overflow-x:hidden;max-width:100%;box-sizing:border-box;}
 
 .home-header{
   display:flex;align-items:center;justify-content:space-between;
@@ -227,8 +227,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
 }
 
 /* Mastered detail */
-.stats-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.stat-pill{background:var(--bg2);border:0.5px solid var(--border);border-radius:99px;padding:8px 14px;font-size:12px;font-weight:500;color:var(--text2);box-shadow:var(--shadow-sm)}
+.stats-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;max-width:100%;}
+.stat-pill{background:var(--bg2);border:0.5px solid var(--border);border-radius:99px;padding:7px 11px;font-size:11px;font-weight:500;color:var(--text2);box-shadow:var(--shadow-sm);white-space:nowrap;}
 .stat-pill.clickable{cursor:pointer;transition:background .15s}
 .stat-pill.clickable:active{background:var(--bg3)}
 .stat-pill-n{font-size:15px;font-weight:800;color:var(--text);margin-right:3px}
@@ -431,14 +431,20 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
 
 .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
 .cat-card{
-  border-radius:var(--r);padding:16px;cursor:pointer;border:none;
+  border-radius:var(--r);padding:14px;cursor:pointer;
   text-align:left;transition:transform .15s,box-shadow .15s;
-  box-shadow:var(--shadow-sm);
+  box-shadow:var(--shadow-sm);background:var(--bg2);
+  border:0.5px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.cat-card::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;
+  width:3px;border-radius:3px 0 0 3px;
 }
 .cat-card:active{transform:scale(.97)}
-.cat-icon{font-size:22px;margin-bottom:8px}
-.cat-name{font-size:13px;font-weight:700;line-height:1.3}
-.cat-sub{font-size:11px;opacity:.7;margin-top:4px}
+.cat-icon{font-size:20px;margin-bottom:6px;line-height:1}
+.cat-name{font-size:12px;font-weight:700;line-height:1.3;color:var(--text)}
+.cat-sub{font-size:10px;color:var(--text3);margin-top:3px}
 
 /* Bank items */
 .level-badge{
@@ -470,16 +476,17 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
 .cat-card-wrap{position:relative}
 .cat-quick-add{
   position:absolute;bottom:0;left:0;right:0;
-  background:rgba(0,0,0,0.12);color:inherit;border:none;
-  padding:7px;font-size:11px;font-weight:700;cursor:pointer;
+  background:var(--bg3);border:none;border-top:0.5px solid var(--border);
+  padding:6px;font-size:10px;font-weight:700;cursor:pointer;
   text-align:center;letter-spacing:.02em;
   transition:background .15s;
 }
-.cat-quick-add:active{background:rgba(0,0,0,0.22)}
+.cat-quick-add:active{background:var(--border2)}
 .cat-done-badge{
   position:absolute;bottom:0;left:0;right:0;
-  text-align:center;padding:6px;font-size:10px;font-weight:700;
-  color:var(--green);background:rgba(22,163,74,0.1);
+  text-align:center;padding:5px;font-size:10px;font-weight:700;
+  color:var(--green);background:var(--greenbg);
+  border-top:0.5px solid var(--border);
 }
 .cat-quick-add-ctx{
   width:100%;border:none;border-top:0.5px solid var(--border);
@@ -1512,7 +1519,7 @@ grammar:{label:'Grammaire en contexte',icon:'🧠',color:'#F0F8FF',tc:'#1a3a6a',
 
 const META={
   pro:{label:'Pro & Business',icon:'💼',color:'#EAF2FF',tc:'#1a3a5c',cats:['pro','emails','collocations','business_phrases']},
-  expression:{label:'Expression & Style',icon:'🗣️',color:'#FEF9E7',tc:'#7d6608',cats:['natural','nuances','connectors','phrasal']},
+  expression:{label:'Expression & Style',icon:'💬',color:'#FEF9E7',tc:'#7d6608',cats:['natural','nuances','connectors','phrasal']},
   grammaire:{label:'Grammaire & Structure',icon:'📚',color:'#EAFAF1',tc:'#1a6b3a',cats:['tenses','grammar']},
   pieges:{label:'Pièges & Vocabulaire',icon:'⚠️',color:'#FDF0EF',tc:'#8b2020',cats:['faux','vocab_daily','idioms']},
   interets:{label:'Centres d\'intérêt',icon:'🎯',color:'#F0EAF8',tc:'#4a1a7a',cats:['travel','finance']}
@@ -1521,7 +1528,7 @@ const META_KEYS=Object.keys(META);
 
 // OXFORD 3000 Bank
 const OXFORD={
-verbs:{label:'Verbes & actions',icon:'🔵',color:'#E8F0FF',tc:'#1a2a6a',cards:[
+verbs:{label:'Verbes & actions',icon:'▶️',color:'#E8F0FF',tc:'#1a2a6a',cards:[
 {en:'angry',fr:'En colère / fâché',ctx:'"He was angry about the last-minute change."',lv:1},
 {en:'anxious',fr:'Anxieux / inquiet',ctx:'"She felt anxious before the presentation."',lv:1},
 {en:'brave',fr:'Courageux',ctx:'"It was brave of him to admit the mistake."',lv:1},
@@ -3649,14 +3656,9 @@ function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileRe
 // ─── TRAIN ────────────────────────────────────────────────────
 function renderExplorePills(){
   const added=D.cards.filter(c=>c.fromBank);
-  if(!added.length)return '<p style="font-size:13px;color:var(--text3);padding:4px 0 8px">Aucune fiche Explore. Va dans Explorer !</p>';
-  const oxKeys=OXFORD_KEYS.filter(k=>D.cards.some(c=>c.exploreKey?.startsWith('ox_'+k+'-')));
-  const metaKeys=Object.keys(META).filter(mk=>META[mk].cats.some(c=>D.cards.some(x=>x.exploreKey?.startsWith(c+'-'))));
-  return`<div class="pill-row" style="margin-bottom:14px">
-    <button class="pill ${!qExploreCat?'active':''}" onclick="setQCat(null)">Tout</button>
-    ${metaKeys.map(mk=>`<button class="pill ${qExploreCat==='meta_'+mk?'active':''}" onclick="qExploreCat='meta_'+mk;rTrain()">${META[mk].icon} ${META[mk].label}</button>`).join('')}
-    ${oxKeys.map(k=>`<button class="pill ${qExploreCat==='ox_'+k?'active':''}" onclick="qExploreCat='ox_'+k;rTrain()">${OXFORD[k].icon} ${OXFORD[k].label}</button>`).join('')}
-  </div>`;
+  if(!added.length)return '<p style="font-size:13px;color:var(--text3);padding:4px 0 8px">Aucune fiche Explore ajoutée — va dans Explorer pour commencer !</p>';
+  // No subcategory filter — just launch directly
+  return '';
 }
 function rTrain(){
   const el=document.getElementById('s-train');
@@ -3664,10 +3666,10 @@ function rTrain(){
   const srcBtns=`
     <div class="pill-row">
       <button class="pill ${qMode==='all'?'active':''}" onclick="setQMode('all')">⚡ Toutes</button>
-      <button class="pill ${qMode==='themes'?'active':''}" onclick="setQMode('themes')">📚 Mes thèmes</button>
+      <button class="pill ${qMode==='themes'?'active':''}" onclick="setQMode('themes')">📚 Thèmes</button>
       <button class="pill ${qMode==='explore'?'active':''}" onclick="setQMode('explore')">🗺️ Explore</button>
     </div>
-    ${qMode==='themes'?'<div class="pill-row">'+D.decks.filter(d=>!d.isExplore).map(d=>`<button class="pill ${qDeck===d.id?'active':''}" onclick="setQTheme(${d.id})">${d.name}</button>`).join('')+'</div>'  :''}
+    ${qMode==='themes'?'<div class="pill-row">'+D.decks.filter(d=>!d.isExplore).map(d=>`<button class="pill ${qDeck===d.id?'active':''}" onclick="setQTheme(${d.id})">${d.name}</button>`).join('')+'</div>':''}
     ${qMode==='explore'?renderExplorePills():''}
   `
   el.innerHTML=`<div class="train-wrap">
@@ -3739,6 +3741,15 @@ function startSession(){
 }
 function enTxt(c){return c.dir==='fr-en'?c.b:c.a;}
 
+function getCatIcon(card){
+  if(!card.exploreKey)return'';
+  if(card.exploreKey.startsWith('ox_')){
+    const k=card.exploreKey.split('-')[0].slice(3);
+    return OXFORD[k]?.icon||'';
+  }
+  const k=card.exploreKey.split('-')[0];
+  return BANK[k]?.icon||'';
+}
 function rQCard(){
   const area=document.getElementById('qa');if(!area)return;
   if(qIdx>=qCards.length){
@@ -3763,6 +3774,7 @@ function rQCard(){
   const tpLabel=card.fromBank?'Explore':card.type;
   const discBadge=card.isHard?`<div class="disc-badge" style="background:var(--redbg);color:var(--red)">🔁 Difficile</div>`:(!card.totalRatings?`<div class="disc-badge">✨ Nouveau</div>`:'');
 
+  const catIcon=getCatIcon(card);
   area.innerHTML=`<div class="quiz-stats">
     <div class="qs"><div class="qs-n">${qIdx}</div><div class="qs-l">Vues</div></div>
     <div class="qs"><div class="qs-n">${qCards.length-qIdx}</div><div class="qs-l">Restantes</div></div>
@@ -3770,7 +3782,10 @@ function rQCard(){
   </div>
   <div class="qprog"><div class="qprog-fill" style="width:${pct}%"></div></div>
   <div class="quiz-card">
-    <div class="quiz-dir">${isEF?'Traduire en français':'Traduire en anglais'} · <span class="type-chip ${tp}">${tpLabel}</span> ${discBadge}</div>
+    <div class="quiz-dir" style="display:flex;align-items:center;justify-content:space-between;width:100%">
+      <span>${isEF?'EN → FR':'FR → EN'} · <span class="type-chip ${tp}">${tpLabel}</span></span>
+      <span style="display:flex;align-items:center;gap:5px">${discBadge}${catIcon?`<span style="font-size:18px;opacity:.8">${catIcon}</span>`:''}</span>
+    </div>
     <div class="quiz-q">${q}</div>
     <button class="audio-btn" onclick="spk('${safe}')">🔊 Écouter</button>
     <div class="write-wrap">
@@ -3915,13 +3930,14 @@ function renderOxTab(added,totalOx){
     const u=getUnlockedOx(key);
     const nextIdx=cat.cards.findIndex((_,i)=>!D.bankAdded['ox_'+key+'-'+i]&&i<u);
     const hasNext=nextIdx>=0;
-    return`<div class="cat-card-wrap" style="position:relative">
-      <div class="cat-card" style="background:${cat.color};color:${cat.tc};padding-bottom:${hasNext?'40px':'16px'}" onclick="bankCat='${key}';rExplore()">
+    return`<div class="cat-card-wrap">
+      <div class="cat-card" style="padding-bottom:${hasNext?'38px':'14px'}" onclick="bankCat='${key}';rExplore()">
+        <div style="position:absolute;top:0;left:0;bottom:0;width:3px;background:${cat.tc};border-radius:3px 0 0 3px"></div>
         <div class="cat-icon">${cat.icon}</div>
         <div class="cat-name">${cat.label}</div>
         <div class="cat-sub">${a}/${cat.cards.length}</div>
       </div>
-      ${hasNext?`<button class="cat-quick-add" onclick="event.stopPropagation();quickAddOx('${key}')" title="Ajouter la prochaine fiche">+ Ajouter</button>`:`<div class="cat-done-badge">✓ Tout ajouté</div>`}
+      ${hasNext?`<button class="cat-quick-add" style="color:${cat.tc}" onclick="event.stopPropagation();quickAddOx('${key}')">+ Ajouter</button>`:`<div class="cat-done-badge">✓</div>`}
     </div>`;
   }).join('');
   return`<div class="cat-grid">${html}</div><p style="font-size:12px;color:var(--text3);text-align:center;margin-top:4px">${added} / ${totalOx} mots Oxford ajoutés</p>`;
