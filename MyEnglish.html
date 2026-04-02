@@ -2078,7 +2078,7 @@ society:{label:'Personnes & société',icon:'🌍',color:'#E8FFF8',tc:'#0a4a3a',
 {en:'still',fr:'Encore / toujours',ctx:'"We are still waiting for approval."',lv:1},
 {en:'suddenly',fr:'Soudainement / brusquement',ctx:'"The market suddenly shifted."',lv:2},
 {en:'then',fr:'Alors / ensuite / à ce moment',ctx:'"Do it now, then follow up."',lv:1},
-{en:'today',fr:'Aujourd\'hui',ctx:'"What matters today may not matter tomorrow."',lv:1},
+{en:'today',fr:'Auj.',ctx:'"What matters today may not matter tomorrow."',lv:1},
 {en:'tomorrow',fr:'Demain',ctx:'"Don\'t put off until tomorrow what you can do today."',lv:1},
 {en:'twice',fr:'Deux fois',ctx:'"Check twice before submitting."',lv:1},
 {en:'ultimately',fr:'En fin de compte / finalement',ctx:'"Ultimately, results are what matter."',lv:2},
@@ -3598,7 +3598,7 @@ function rHome(){
         <div class="streak-dots">${dots}</div>
       </div>
       <div style="text-align:right;flex-shrink:0;width:70px;overflow:hidden">
-        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-bottom:3px">Aujourd'hui</div>
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-bottom:3px">Auj.</div>
         <div style="font-size:22px;font-weight:800;color:${D.reviewedToday>=dg?'var(--green)':'var(--brand)'};letter-spacing:-.5px">${Math.min(D.reviewedToday,dg)}<span style="font-size:11px;color:var(--text3);font-weight:500">/${dg}</span></div>
         <div class="prog-bar" style="width:64px;margin-top:4px"><div class="prog-fill" style="width:${revPct}%"></div></div>
       </div>
