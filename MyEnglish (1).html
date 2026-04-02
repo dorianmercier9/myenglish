@@ -8,374 +8,181 @@
 <meta name="apple-mobile-web-app-title" content="MyEnglish"/>
 <title>MyEnglish</title>
 <style>
-/* ─── TOKENS ─────────────────────────────────────────────── */
 :root{
-  /* Brand */
-  --brand:#1B2CC1;
-  --brand-deep:#141FA8;
-  --brand-light:#E8EBFF;
-  --brand-mid:#4A5FE0;
-  --gold:#F59E0B;
-  --gold-light:#FEF3C7;
-  --gold-dark:#D97706;
-
-  /* Neutrals */
-  --bg:#F8F8FC;
-  --bg2:#FFFFFF;
-  --bg3:#F0F0F8;
-  --text:#0D0D1A;
-  --text2:#4A4A6A;
-  --text3:#9090B0;
-  --border:rgba(27,44,193,0.08);
-  --border2:rgba(27,44,193,0.15);
-
-  /* Semantic */
-  --red:#DC2626;--redbg:#FEF2F2;
-  --green:#16A34A;--greenbg:#F0FDF4;
+  --brand:#1B2CC1;--brand-deep:#141FA8;--brand-light:#E8EBFF;--brand-mid:#4A5FE0;
+  --gold:#F59E0B;--gold-light:#FEF3C7;--gold-dark:#D97706;
+  --bg:#F8F8FC;--bg2:#FFFFFF;--bg3:#F0F0F8;
+  --text:#0D0D1A;--text2:#4A4A6A;--text3:#9090B0;
+  --border:rgba(27,44,193,0.08);--border2:rgba(27,44,193,0.15);
+  --red:#DC2626;--redbg:#FEF2F2;--green:#16A34A;--greenbg:#F0FDF4;
   --orange:#EA580C;--orangebg:#FFF7ED;
-
-  /* Shape */
   --r:14px;--rsm:9px;--rxs:6px;
-
-  /* Safe areas */
-  --sat:env(safe-area-inset-top,0px);
-  --sab:env(safe-area-inset-bottom,0px);
-
-  /* Shadows */
-  --shadow-sm:0 1px 3px rgba(27,44,193,0.08),0 1px 2px rgba(27,44,193,0.04);
-  --shadow:0 4px 16px rgba(27,44,193,0.10),0 2px 4px rgba(27,44,193,0.06);
-  --shadow-lg:0 8px 32px rgba(27,44,193,0.14),0 4px 8px rgba(27,44,193,0.08);
+  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+  --shadow-sm:0 1px 3px rgba(27,44,193,0.08);
+  --shadow:0 4px 16px rgba(27,44,193,0.10);
+  --shadow-lg:0 8px 32px rgba(27,44,193,0.14);
 }
 @media(prefers-color-scheme:dark){:root{
   --bg:#0A0A14;--bg2:#12121E;--bg3:#1A1A2E;
   --text:#F0F0FF;--text2:#9090C0;--text3:#505070;
   --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
   --brand:#4A5FE0;--brand-light:#1A1F3A;--brand-mid:#6B7AE8;
-  --gold:#F59E0B;--gold-light:#1A1500;
-  --redbg:#1A0505;--greenbg:#001A07;--orangebg:#1A0800;
+  --gold-light:#1A1500;--redbg:#1A0505;--greenbg:#001A07;
   --shadow-sm:0 1px 3px rgba(0,0,0,0.3);
   --shadow:0 4px 16px rgba(0,0,0,0.4);
   --shadow-lg:0 8px 32px rgba(0,0,0,0.5);
 }}
-
-/* ─── RESET ──────────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);overscroll-behavior:none;
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display',sans-serif;
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;
   font-size:15px;-webkit-font-smoothing:antialiased}
-
-/* ─── APP SHELL ───────────────────────────────────────────── */
-.app{display:flex;flex-direction:column;height:100%;padding-top:var(--sat);overflow:hidden;max-width:100vw;}
-.content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;max-width:100vw;}
+.app{display:flex;flex-direction:column;height:100%;padding-top:var(--sat);overflow:hidden}
+.content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 .screen{display:none;min-height:100%}.screen.active{display:block}
 
-/* ─── BOTTOM NAV ──────────────────────────────────────────── */
-.nav{
-  display:flex;background:var(--bg2);
-  border-top:0.5px solid var(--border2);
-  padding-bottom:var(--sab);
-  position:relative;
-  box-shadow:0 -4px 20px rgba(27,44,193,0.06);
-}
-.nb{
-  flex:1;background:none;border:none;
-  padding:10px 0 9px;
+/* NAV */
+.nav{display:flex;background:var(--bg2);border-top:0.5px solid var(--border2);
+  padding-bottom:var(--sab);box-shadow:0 -4px 20px rgba(27,44,193,0.06)}
+.nb{flex:1;background:none;border:none;padding:10px 0 8px;
   display:flex;flex-direction:column;align-items:center;gap:4px;
-  cursor:pointer;color:var(--text3);
-  font-size:10px;letter-spacing:.02em;font-weight:500;
-  position:relative;transition:color .2s;
-}
+  cursor:pointer;color:var(--text3);font-size:10px;font-weight:500;
+  letter-spacing:.02em;position:relative;transition:color .2s}
 .nb.active{color:var(--brand)}
-.nb.active .nb-dot{opacity:1;transform:scale(1)}
 .nb-icon{font-size:22px;line-height:1;transition:transform .2s}
 .nb.active .nb-icon{transform:scale(1.05)}
-.nb-dot{
-  position:absolute;top:8px;right:calc(50% - 16px);
-  width:7px;height:7px;border-radius:50%;
-  background:var(--gold);border:2px solid var(--bg2);
-  opacity:0;transform:scale(0);transition:all .2s;
-}
-.nb-badge{
-  position:absolute;top:6px;right:calc(50% - 18px);
-  background:var(--red);color:#fff;border-radius:99px;
-  font-size:9px;font-weight:700;padding:1px 5px;
-  min-width:16px;text-align:center;
-}
+.nb-dot{position:absolute;top:8px;right:calc(50% - 16px);width:7px;height:7px;
+  border-radius:50%;background:var(--gold);border:2px solid var(--bg2);
+  opacity:0;transform:scale(0);transition:all .2s}
+.nb-dot.show{opacity:1;transform:scale(1)}
 
-/* ─── TYPOGRAPHY ──────────────────────────────────────────── */
-.page-title{
-  font-size:11px;font-weight:700;color:var(--text3);
-  text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px;
-}
-.section-label{
-  font-size:11px;font-weight:700;color:var(--text3);
-  text-transform:uppercase;letter-spacing:.08em;
-  margin:20px 0 10px;display:flex;align-items:center;gap:8px;
-}
-.section-label::after{content:'';flex:1;height:0.5px;background:var(--border2)}
+/* COMMON */
+.page-wrap{padding:20px 18px 20px}
+.page-title{font-size:11px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px}
+.btn-primary{width:100%;background:var(--brand);color:#fff;border:none;
+  border-radius:var(--r);padding:15px;font-size:15px;font-weight:700;
+  cursor:pointer;box-shadow:var(--shadow);transition:transform .15s}
+.btn-primary:active{transform:scale(.98)}
+.btn-secondary{width:100%;background:var(--bg2);color:var(--text);
+  border:0.5px solid var(--border2);border-radius:var(--r);padding:13px;
+  font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px}
+.btn-sm{border:none;border-radius:var(--rsm);padding:7px 13px;
+  font-size:12px;font-weight:700;cursor:pointer;background:var(--bg3);color:var(--text2)}
+.pill-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.pill{background:var(--bg2);border:1px solid var(--border);border-radius:99px;
+  padding:7px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer}
+.pill.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.back-btn{background:none;border:none;font-size:13px;color:var(--text2);
+  cursor:pointer;margin-bottom:16px;padding:0;display:flex;align-items:center;gap:6px;font-weight:600}
+.empty{text-align:center;padding:48px 16px;color:var(--text3);font-size:14px}
+.empty-icon{font-size:40px;margin-bottom:12px;opacity:.4}
 
-/* ─── HOME SCREEN ─────────────────────────────────────────── */
-.home-wrap{padding:20px 18px 0;overflow-x:hidden;max-width:100%;box-sizing:border-box;}
-
-.home-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:24px;
-}
-.home-greeting{font-size:13px;color:var(--text3);font-weight:500}
-.home-title{font-size:28px;font-weight:800;letter-spacing:-.5px;color:var(--text);margin-top:2px}
+/* HOME */
+.home-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.home-title{font-size:28px;font-weight:800;letter-spacing:-.5px;color:var(--text)}
 .home-title span{color:var(--brand)}
-.home-avatar{
-  width:40px;height:40px;border-radius:50%;
-  background:var(--brand-light);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;
-}
-
-/* Hero CTA */
-.hero-cta{
-  background:linear-gradient(135deg,var(--brand) 0%,var(--brand-mid) 100%);
-  border-radius:var(--r);padding:20px;margin-bottom:16px;
-  position:relative;overflow:hidden;cursor:pointer;
-  box-shadow:var(--shadow-lg);
-  transition:transform .15s,box-shadow .15s;
-}
-.hero-cta:active{transform:scale(.98);box-shadow:var(--shadow)}
-.hero-cta::before{
-  content:'';position:absolute;
-  top:-30px;right:-30px;width:120px;height:120px;
-  border-radius:50%;background:rgba(255,255,255,0.06);
-}
-.hero-cta::after{
-  content:'';position:absolute;
-  bottom:-20px;right:20px;width:80px;height:80px;
-  border-radius:50%;background:rgba(255,255,255,0.04);
-}
-.hero-label{font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);
+.home-avatar{width:38px;height:38px;border-radius:50%;background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer}
+.hero-cta{background:linear-gradient(135deg,var(--brand) 0%,var(--brand-mid) 100%);
+  border-radius:var(--r);padding:20px;margin-bottom:14px;cursor:pointer;
+  box-shadow:var(--shadow-lg);transition:transform .15s;position:relative;overflow:hidden}
+.hero-cta:active{transform:scale(.98)}
+.hero-cta::before{content:'';position:absolute;top:-30px;right:-30px;
+  width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.06)}
+.hero-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.65);
   text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
 .hero-main{font-size:22px;font-weight:700;color:#fff;margin-bottom:4px}
-.hero-sub{font-size:13px;color:rgba(255,255,255,0.7)}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:5px;
-  background:rgba(255,255,255,0.15);border-radius:99px;
-  padding:4px 10px;font-size:12px;color:#fff;font-weight:600;
-  margin-top:12px;
-}
-
-/* Stats grid */
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.stat-card{
-  background:var(--bg2);border-radius:var(--r);
-  padding:14px 10px;text-align:center;
-  border:0.5px solid var(--border);
-  box-shadow:var(--shadow-sm);
-  cursor:default;
-}
-.stat-card.clickable{cursor:pointer;transition:transform .15s}
-.stat-card.clickable:active{transform:scale(.97)}
-.stat-val{font-size:26px;font-weight:800;line-height:1;letter-spacing:-.5px}
-.stat-lbl{font-size:10px;color:var(--text3);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-
-/* Streak card */
-.streak-card{
-  background:var(--bg2);border-radius:var(--r);
-  padding:16px 18px;margin-bottom:16px;
-  border:0.5px solid var(--border);
-  box-shadow:var(--shadow-sm);
-  display:flex;align-items:center;gap:14px;
-}
-.streak-fire{font-size:36px;line-height:1}
-.streak-info{flex:1}
-.streak-n{font-size:28px;font-weight:800;color:var(--brand);line-height:1;letter-spacing:-.5px}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.7)}
+.hero-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);
+  border-radius:99px;padding:4px 10px;font-size:12px;color:#fff;font-weight:600;margin-top:10px}
+.stats-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.stat-pill{background:var(--bg2);border:0.5px solid var(--border);border-radius:99px;
+  padding:7px 11px;font-size:11px;font-weight:500;color:var(--text2);
+  box-shadow:var(--shadow-sm);white-space:nowrap}
+.stat-pill.clickable{cursor:pointer}
+.stat-pill-n{font-size:15px;font-weight:800;color:var(--text);margin-right:3px}
+.streak-card{background:var(--bg2);border-radius:var(--r);padding:14px 16px;
+  margin-bottom:14px;border:0.5px solid var(--border);box-shadow:var(--shadow-sm);
+  display:flex;align-items:center;gap:10px}
+.streak-fire{font-size:32px;line-height:1;flex-shrink:0}
+.streak-info{flex:1;min-width:0}
+.streak-n{font-size:26px;font-weight:800;color:var(--brand);line-height:1;letter-spacing:-.5px}
 .streak-l{font-size:12px;color:var(--text2);margin-top:2px;font-weight:500}
-.streak-dots{display:flex;gap:5px;margin-top:10px}
+.streak-dots{display:flex;gap:5px;margin-top:8px}
 .sdot{width:28px;height:5px;border-radius:99px;background:var(--bg3)}
 .sdot.done{background:var(--brand)}
-.sdot.today{background:var(--brand-mid);box-shadow:0 0 8px rgba(27,44,193,.4)}
-
-/* Progress bar */
-.prog-card{
-  background:var(--bg2);border-radius:var(--r);
-  padding:14px 16px;margin-bottom:16px;
-  border:0.5px solid var(--border);box-shadow:var(--shadow-sm);
-}
+.sdot.today{background:var(--brand-mid)}
+.streak-today{flex-shrink:0;text-align:right;min-width:60px}
+.streak-today-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.streak-today-n{font-size:18px;font-weight:800;line-height:1.2}
+.streak-today-bar{margin-top:4px}
+.prog-card{background:var(--bg2);border-radius:var(--r);padding:14px 16px;
+  margin-bottom:14px;border:0.5px solid var(--border);box-shadow:var(--shadow-sm)}
 .prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .prog-label{font-size:13px;font-weight:600;color:var(--text)}
 .prog-val{font-size:13px;font-weight:700;color:var(--brand)}
 .prog-bar{background:var(--bg3);border-radius:99px;height:6px;overflow:hidden}
-.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--brand),var(--brand-mid));transition:width .4s ease}
-.prog-sub{font-size:11px;color:var(--text3);margin-top:7px}
-
-/* Notif banner */
-.notif-banner{
-  background:var(--brand-light);border:0.5px solid var(--border2);
-  border-radius:var(--r);padding:13px 15px;margin-bottom:16px;
-  display:flex;align-items:center;gap:12px;
-}
-.notif-text{flex:1;font-size:13px;color:var(--brand);font-weight:500}
-.notif-btn{
-  background:var(--brand);color:#fff;border:none;
-  border-radius:var(--rsm);padding:7px 13px;
-  font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;
-}
-
-/* Mode badge */
-.mode-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--gold-light);border-radius:99px;
-  padding:5px 12px;font-size:12px;font-weight:700;color:var(--gold-dark);
-  border:0.5px solid rgba(245,158,11,.2);
-}
-
-/* Mastered detail */
-.stats-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;max-width:100%;}
-.stat-pill{background:var(--bg2);border:0.5px solid var(--border);border-radius:99px;padding:7px 11px;font-size:11px;font-weight:500;color:var(--text2);box-shadow:var(--shadow-sm);white-space:nowrap;}
-.stat-pill.clickable{cursor:pointer;transition:background .15s}
-.stat-pill.clickable:active{background:var(--bg3)}
-.stat-pill-n{font-size:15px;font-weight:800;color:var(--text);margin-right:3px}
-.mastered-panel{
-  background:var(--bg2);border-radius:var(--r);
-  padding:16px;margin-bottom:16px;
-  border:0.5px solid var(--border);box-shadow:var(--shadow-sm);
-}
-.mastered-row{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:9px 0;border-bottom:0.5px solid var(--border);
-}
+.prog-fill{height:100%;border-radius:99px;
+  background:linear-gradient(90deg,var(--brand),var(--brand-mid));transition:width .4s}
+.mastered-panel{background:var(--bg2);border-radius:var(--r);padding:16px;
+  margin-bottom:14px;border:0.5px solid var(--border);box-shadow:var(--shadow-sm)}
+.mastered-row{display:flex;justify-content:space-between;align-items:center;
+  padding:9px 0;border-bottom:0.5px solid var(--border)}
 .mastered-row:last-child{border-bottom:none}
-.mastered-cat{font-size:13px;color:var(--text2)}
-.mastered-n{font-size:14px;font-weight:700;color:var(--brand)}
 
-/* ─── TRAIN SCREEN ────────────────────────────────────────── */
-.train-wrap{padding:20px}
-
-/* Mode selector */
-.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
-.mode-card{
-  background:var(--bg2);border-radius:var(--r);
-  padding:16px 14px;cursor:pointer;
-  border:1.5px solid var(--border);
-  box-shadow:var(--shadow-sm);
-  transition:all .15s;
-  position:relative;overflow:hidden;
-}
+/* TRAIN */
+.train-wrap{padding:20px 18px}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.mode-card{background:var(--bg2);border-radius:var(--r);padding:16px 14px;cursor:pointer;
+  border:1.5px solid var(--border);box-shadow:var(--shadow-sm);transition:all .15s;
+  position:relative;overflow:hidden}
 .mode-card:active{transform:scale(.97)}
 .mode-card.active{border-color:var(--brand);background:var(--brand-light)}
 .mode-card.active .mode-card-name{color:var(--brand)}
-.mode-card.active .mode-card-desc{color:var(--brand)}
 .mode-card.disabled{opacity:.45;pointer-events:none}
-.mode-card-icon{font-size:24px;margin-bottom:8px}
+.mode-card-icon{font-size:24px;margin-bottom:8px;line-height:1}
 .mode-card-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
 .mode-card-desc{font-size:11px;color:var(--text3);line-height:1.4}
-.mode-card-badge{
-  position:absolute;top:10px;right:10px;
-  background:var(--gold);color:#fff;
-  font-size:9px;font-weight:700;
-  padding:2px 6px;border-radius:99px;
-  text-transform:uppercase;letter-spacing:.04em;
-}
-.mode-coming{
-  position:absolute;top:10px;right:10px;
-  background:var(--bg3);color:var(--text3);
-  font-size:9px;font-weight:600;
-  padding:2px 6px;border-radius:99px;
-}
+.mode-card-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:#fff;
+  font-size:9px;font-weight:700;padding:2px 6px;border-radius:99px}
+.mode-coming{position:absolute;top:10px;right:10px;background:var(--bg3);
+  color:var(--text3);font-size:9px;font-weight:600;padding:2px 6px;border-radius:99px}
 
-/* Source selector */
-.source-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-.src-btn{
-  background:var(--bg2);border:1.5px solid var(--border);
-  border-radius:99px;padding:7px 14px;
-  font-size:12px;font-weight:600;color:var(--text2);
-  cursor:pointer;transition:all .15s;white-space:nowrap;
-}
-.src-btn.active{background:var(--brand);color:#fff;border-color:var(--brand)}
-.src-btn:active{opacity:.8}
-
-/* Quiz area */
+/* QUIZ */
 .quiz-stats{display:flex;gap:8px;margin-bottom:14px}
-.qs{
-  background:var(--bg2);border-radius:var(--rsm);
-  padding:10px;flex:1;text-align:center;
-  border:0.5px solid var(--border);box-shadow:var(--shadow-sm);
-}
+.qs{background:var(--bg2);border-radius:var(--rsm);padding:10px;flex:1;text-align:center;
+  border:0.5px solid var(--border);box-shadow:var(--shadow-sm)}
 .qs-n{font-size:20px;font-weight:800;letter-spacing:-.3px}
 .qs-l{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;font-weight:600}
-
-.qprog{background:var(--bg3);border-radius:99px;height:3px;margin-bottom:18px;overflow:hidden}
+.qprog{background:var(--bg3);border-radius:99px;height:3px;margin-bottom:16px;overflow:hidden}
 .qprog-fill{height:100%;background:linear-gradient(90deg,var(--brand),var(--brand-mid));border-radius:99px;transition:width .3s}
-
-.quiz-card{
-  background:var(--bg2);border-radius:var(--r);
-  padding:28px 22px;text-align:center;
-  min-height:220px;display:flex;flex-direction:column;
-  justify-content:center;align-items:center;gap:14px;
-  margin-bottom:14px;
-  border:0.5px solid var(--border);box-shadow:var(--shadow);
-}
-.quiz-dir{
-  font-size:10px;color:var(--text3);
-  text-transform:uppercase;letter-spacing:.08em;font-weight:700;
-}
-.quiz-q{
-  font-size:22px;font-weight:700;line-height:1.4;
-  color:var(--text);letter-spacing:-.2px;
-}
-.quiz-ans{
-  font-size:20px;font-weight:600;color:var(--brand);
-  line-height:1.4;
-}
-.quiz-ctx{
-  font-size:12px;color:var(--text2);font-style:italic;
-  padding:0 1rem;line-height:1.6;
-}
-.disc-badge{
-  background:var(--gold-light);color:var(--gold-dark);
-  border-radius:99px;font-size:10px;font-weight:700;
-  padding:3px 9px;letter-spacing:.04em;
-}
-.audio-btn{
-  background:var(--bg3);border:none;border-radius:99px;
-  padding:7px 16px;font-size:12px;color:var(--text2);
-  cursor:pointer;display:flex;align-items:center;gap:6px;
-  font-weight:600;transition:background .15s;
-}
-.audio-btn:active{background:var(--border2)}
-
-/* Write input */
+.quiz-card{background:var(--bg2);border-radius:var(--r);padding:26px 20px;
+  text-align:center;min-height:200px;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;gap:12px;margin-bottom:12px;
+  border:0.5px solid var(--border);box-shadow:var(--shadow)}
+.quiz-dir{font-size:10px;color:var(--text3);text-transform:uppercase;
+  letter-spacing:.08em;font-weight:700;width:100%;display:flex;
+  align-items:center;justify-content:space-between}
+.quiz-q{font-size:22px;font-weight:700;line-height:1.4;color:var(--text);letter-spacing:-.2px}
+.quiz-ans{font-size:20px;font-weight:600;color:var(--brand);line-height:1.4}
+.quiz-ctx{font-size:12px;color:var(--text2);font-style:italic;line-height:1.6}
+.audio-btn{background:var(--bg3);border:none;border-radius:99px;
+  padding:7px 16px;font-size:12px;color:var(--text2);cursor:pointer;font-weight:600}
 .write-wrap{width:100%;display:flex;gap:8px;margin-top:4px}
-.write-input{
-  flex:1;font-size:16px;padding:13px 14px;
-  background:var(--bg2);border:1.5px solid var(--border2);
-  border-radius:var(--rsm);color:var(--text);outline:none;
-  font-family:inherit;text-align:center;
-  transition:border-color .15s;box-shadow:var(--shadow-sm);
-}
+.write-input{flex:1;font-size:16px;padding:13px 14px;background:var(--bg2);
+  border:1.5px solid var(--border2);border-radius:var(--rsm);color:var(--text);
+  outline:none;font-family:inherit;text-align:center;transition:border-color .15s}
 .write-input:focus{border-color:var(--brand)}
-.mic-btn{
-  width:46px;height:46px;border-radius:50%;
-  background:var(--bg2);border:1.5px solid var(--border2);
-  font-size:18px;cursor:pointer;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .15s;box-shadow:var(--shadow-sm);
-}
+.mic-btn{width:46px;height:46px;border-radius:50%;background:var(--bg2);
+  border:1.5px solid var(--border2);font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm)}
 .mic-btn.recording{background:var(--red);border-color:var(--red)}
-
-/* Write compare */
-.compare-box{
-  background:var(--bg3);border-radius:var(--rsm);
-  padding:12px 16px;margin-top:10px;width:100%;text-align:left;
-}
+.compare-box{background:var(--bg3);border-radius:var(--rsm);padding:12px 16px;margin-top:10px;width:100%;text-align:left}
 .compare-yours{font-size:13px;color:var(--text2);margin-bottom:5px}
 .compare-correct{font-size:13px;color:var(--brand);font-weight:600}
-
-/* Score grid */
 .score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
-.score-btn{
-  border-radius:var(--rsm);padding:11px 3px;
-  font-size:15px;font-weight:800;cursor:pointer;border:none;
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  transition:transform .1s;
-}
+.score-btn{border-radius:var(--rsm);padding:11px 3px;font-size:15px;font-weight:800;
+  cursor:pointer;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;transition:transform .1s}
 .score-btn:active{transform:scale(.93)}
 .score-sub{font-size:9px;font-weight:600;opacity:.8}
 .sc1{background:var(--redbg);color:var(--red)}
@@ -384,461 +191,185 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);ove
 .sc4{background:var(--greenbg);color:var(--green)}
 .sc5{background:#f0fdf4;color:#15803d}
 .score-hint{font-size:12px;color:var(--text2);margin-bottom:10px;text-align:center;font-weight:500}
-
-/* Result */
+.disc-badge{display:inline-block;background:var(--redbg);color:var(--red);
+  border-radius:99px;font-size:10px;font-weight:700;padding:3px 9px}
 .result{text-align:center;padding:40px 20px}
 .result-emoji{font-size:56px;margin-bottom:12px}
 .result-score{font-size:64px;font-weight:900;color:var(--brand);letter-spacing:-2px;line-height:1}
 .result-sub{font-size:15px;color:var(--text2);margin:8px 0 24px;font-weight:500}
-
-/* ─── EXPLORE SCREEN ──────────────────────────────────────── */
-.explore-wrap{padding:20px}
-
-.exp-tabs{
-  display:flex;gap:0;margin-bottom:20px;
-  background:var(--bg3);border-radius:var(--r);padding:4px;
-}
-.exp-tab{
-  flex:1;border:none;background:none;padding:10px;
-  font-size:13px;font-weight:700;cursor:pointer;
-  border-radius:calc(var(--r) - 3px);color:var(--text3);
-  transition:all .2s;
-}
-.exp-tab.active{
-  background:var(--bg2);color:var(--brand);
-  box-shadow:var(--shadow-sm);
-}
-
-.meta-list{display:flex;flex-direction:column;gap:10px}
-.meta-card{
-  background:var(--bg2);border-radius:var(--r);
-  padding:16px 18px;cursor:pointer;
-  border:0.5px solid var(--border);
-  box-shadow:var(--shadow-sm);
-  display:flex;align-items:center;gap:14px;
-  transition:transform .15s,box-shadow .15s;
-}
-.meta-card:active{transform:scale(.98);box-shadow:none}
-.meta-icon-wrap{
-  width:44px;height:44px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px;flex-shrink:0;
-}
-.meta-info{flex:1;min-width:0}
-.meta-name{font-size:15px;font-weight:700;color:var(--text)}
-.meta-sub{font-size:12px;color:var(--text3);margin-top:2px}
-.meta-arrow{color:var(--text3);font-size:16px;flex-shrink:0}
-
-.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.cat-card{
-  border-radius:var(--r);padding:14px;cursor:pointer;
-  text-align:left;transition:transform .15s,box-shadow .15s;
-  box-shadow:var(--shadow-sm);background:var(--bg2);
-  border:0.5px solid var(--border);
-  position:relative;overflow:hidden;
-}
-.cat-card::before{
-  content:'';position:absolute;top:0;left:0;bottom:0;
-  width:3px;border-radius:3px 0 0 3px;
-}
-.cat-card:active{transform:scale(.97)}
-.cat-icon{font-size:20px;margin-bottom:6px;line-height:1}
-.cat-name{font-size:12px;font-weight:700;line-height:1.3;color:var(--text)}
-.cat-sub{font-size:10px;color:var(--text3);margin-top:3px}
-
-/* Bank items */
-.level-badge{
-  display:inline-block;font-size:10px;padding:3px 10px;
-  border-radius:99px;font-weight:700;margin-bottom:12px;
-  text-transform:uppercase;letter-spacing:.06em;
-}
-.lv1{background:#EFF6FF;color:#1D4ED8}
-.lv2{background:#FFFBEB;color:#B45309}
-.lv3{background:#FDF4FF;color:#7E22CE}
-
-.bank-item{
-  background:var(--bg2);border-radius:var(--rsm);
-  padding:13px 14px;margin-bottom:8px;
-  border:0.5px solid var(--border);position:relative;
-  box-shadow:var(--shadow-sm);
-}
-.bank-en{font-size:14px;font-weight:600;padding-right:54px;line-height:1.4;color:var(--text)}
-.bank-fr{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.4}
-.bank-note{font-size:11px;color:var(--text3);margin-top:6px;font-style:italic;line-height:1.4}
-.add-btn{
-  position:absolute;top:12px;right:12px;
-  background:var(--brand);color:#fff;border:none;
-  border-radius:99px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;
-  transition:background .15s;
-}
-.add-btn:active{background:var(--brand-deep)}
-.add-btn.done{background:var(--bg3);color:var(--text3);cursor:default}
-.cat-card-wrap{}
-.cat-quick-add-old{
-  position:absolute;bottom:0;left:0;right:0;
-  background:var(--bg3);border:none;border-top:0.5px solid var(--border);
-  padding:6px;font-size:10px;font-weight:700;cursor:pointer;
-  text-align:center;letter-spacing:.02em;
-  transition:background .15s;
-}
-.cat-quick-add:active{background:var(--border2)}
-.cat-done-badge{
-  position:absolute;bottom:0;left:0;right:0;
-  text-align:center;padding:5px;font-size:10px;font-weight:700;
-  color:var(--green);background:var(--greenbg);
-  border-top:0.5px solid var(--border);
-}
-.cat-quick-add-ctx{
-  width:100%;border:none;border-top:0.5px solid var(--border);
-  background:var(--brand-light);color:var(--brand);
-  padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;
-  text-align:left;letter-spacing:.01em;
-  transition:background .15s;
-}
-.cat-quick-add-ctx:active{background:var(--brand);color:#fff}
-.cat-quick-add-inline{
-  background:none;border:none;cursor:pointer;
-  font-size:16px;font-weight:800;padding:0 2px;
-  line-height:1;transition:transform .1s;
-}
-.cat-quick-add-inline:active{transform:scale(.85)}
-.locked-item{filter:blur(3px);pointer-events:none;user-select:none;opacity:.5}
-.locked-section{
-  text-align:center;padding:16px;background:var(--bg2);
-  border-radius:var(--r);border:1px dashed var(--border2);
-  margin-top:10px;font-size:13px;color:var(--text3);
-}
-
-/* Explore intro */
-.explore-intro{
-  background:var(--brand-light);border-radius:var(--r);
-  padding:14px 16px;margin-bottom:20px;
-  border:0.5px solid var(--border2);
-  font-size:13px;color:var(--brand);line-height:1.6;font-weight:500;
-}
-
-/* ─── MY WORDS SCREEN ─────────────────────────────────────── */
-.words-wrap{padding:20px}
-
-.theme-list{display:flex;flex-direction:column;gap:8px}
-.theme-item{
-  background:var(--bg2);border-radius:var(--r);
-  padding:14px 16px;cursor:pointer;
-  border:0.5px solid var(--border);box-shadow:var(--shadow-sm);
-  display:flex;align-items:center;gap:13px;
-  transition:transform .15s;
-}
-.theme-item:active{transform:scale(.98)}
-.theme-emoji{
-  width:40px;height:40px;border-radius:11px;
-  background:var(--bg3);display:flex;align-items:center;
-  justify-content:center;font-size:18px;flex-shrink:0;
-}
-.theme-info{flex:1;min-width:0}
-.theme-name{font-size:14px;font-weight:700;color:var(--text)}
-.theme-meta{font-size:12px;color:var(--text3);margin-top:2px}
-.theme-right{text-align:right;flex-shrink:0}
-.due-chip{
-  display:inline-block;font-size:10px;padding:3px 8px;
-  border-radius:99px;background:var(--redbg);color:var(--red);font-weight:700;
-}
-.ok-chip{
-  display:inline-block;font-size:10px;padding:3px 8px;
-  border-radius:99px;background:var(--greenbg);color:var(--green);font-weight:700;
-}
-.add-theme-btn{
-  background:none;border:1.5px dashed var(--border2);
-  border-radius:var(--r);padding:14px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;color:var(--text3);width:100%;
-  font-weight:600;gap:8px;
-  transition:border-color .15s,color .15s;
-}
-.add-theme-btn:active{border-color:var(--brand);color:var(--brand)}
-
-/* Cards list */
-.card-list{display:flex;flex-direction:column;gap:7px}
-.card-item{
-  background:var(--bg2);border-radius:var(--rsm);
-  padding:12px 14px;display:flex;align-items:center;gap:10px;
-  border:0.5px solid var(--border);box-shadow:var(--shadow-sm);
-}
-.card-texts{flex:1;min-width:0}
-.card-a{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-b{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-.card-ctx{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-style:italic}
-.card-right{text-align:right;white-space:nowrap;flex-shrink:0}
-.card-due{font-size:10px;color:var(--text3);margin-top:3px}
-.del-btn{background:none;border:none;font-size:13px;color:var(--text3);padding:5px;cursor:pointer;flex-shrink:0}
-.type-chip{
-  display:inline-block;font-size:9px;padding:2px 7px;border-radius:99px;
-  margin-top:3px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
-}
+.type-chip{display:inline-block;font-size:9px;padding:2px 7px;border-radius:99px;font-weight:700;text-transform:uppercase}
 .tc-phrase{background:var(--brand-light);color:var(--brand)}
 .tc-mot{background:var(--orangebg);color:var(--orange)}
 .tc-explore{background:var(--greenbg);color:var(--green)}
 
-/* Search */
-.search-box{
-  width:100%;font-size:14px;padding:10px 14px 10px 38px;
-  background:var(--bg2);border:0.5px solid var(--border);
-  border-radius:var(--r);color:var(--text);outline:none;
-  font-family:inherit;margin-bottom:12px;
-  box-shadow:var(--shadow-sm);position:relative;
-  transition:border-color .15s;
-}
-.search-box:focus{border-color:var(--brand)}
-.search-wrap{position:relative}
-.search-icon{
-  position:absolute;left:12px;top:50%;transform:translateY(-50%);
-  font-size:14px;pointer-events:none;color:var(--text3);
-}
-.section-summary{
-  display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;
-}
-.sum-chip{
-  font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;
-}
+/* DEFI IA */
+.composed-card{background:linear-gradient(135deg,var(--brand-light),rgba(245,158,11,.08));
+  border:1.5px solid var(--brand);border-radius:var(--r);padding:20px;margin-bottom:14px}
+.composed-badge{display:inline-flex;align-items:center;gap:5px;background:var(--brand);
+  color:#fff;border-radius:99px;padding:3px 10px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.composed-scenario{font-size:15px;line-height:1.7;color:var(--text);font-weight:500;margin-bottom:12px}
+.composed-words{display:flex;flex-wrap:wrap;gap:6px}
+.composed-word-chip{background:var(--bg2);border:0.5px solid var(--border2);
+  border-radius:99px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--text2)}
+.composed-loader{text-align:center;padding:32px 20px;color:var(--text2);font-size:14px}
+@keyframes dotPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
+.dot-anim{display:inline-flex;gap:5px;margin-top:10px}
+.dot-anim span{width:7px;height:7px;border-radius:50%;background:var(--brand);
+  opacity:.3;animation:dotPulse 1.2s infinite}
+.dot-anim span:nth-child(2){animation-delay:.2s}
+.dot-anim span:nth-child(3){animation-delay:.4s}
 
-/* Add card form */
-.form-box{
-  background:var(--bg2);border-radius:var(--r);
-  padding:18px;margin-bottom:16px;
+/* EXPLORE */
+.explore-wrap{padding:20px 18px}
+.exp-tabs{display:flex;gap:0;margin-bottom:20px;background:var(--bg3);
+  border-radius:var(--r);padding:4px}
+.exp-tab{flex:1;border:none;background:none;padding:10px;font-size:13px;
+  font-weight:700;cursor:pointer;border-radius:calc(var(--r) - 3px);color:var(--text3);transition:all .2s}
+.exp-tab.active{background:var(--bg2);color:var(--brand);box-shadow:var(--shadow-sm)}
+.meta-list{display:flex;flex-direction:column;gap:10px}
+.meta-card{background:var(--bg2);border-radius:var(--r);cursor:pointer;
+  border:0.5px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden;transition:transform .15s}
+.meta-card:active{transform:scale(.98)}
+.meta-card-top{display:flex;align-items:center;gap:14px;padding:14px 16px}
+.meta-icon-wrap{width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.meta-info{flex:1;min-width:0}
+.meta-name{font-size:15px;font-weight:700;color:var(--text)}
+.meta-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.meta-arrow{color:var(--text3);font-size:16px;flex-shrink:0}
+.meta-add-btn{width:100%;border:none;border-top:0.5px solid var(--border);
+  background:var(--brand-light);color:var(--brand);padding:9px 16px;
+  font-size:12px;font-weight:700;cursor:pointer;text-align:left}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.cat-card{border-radius:var(--r);padding:14px;cursor:pointer;
+  background:var(--bg2);border:0.5px solid var(--border);
+  box-shadow:var(--shadow-sm);transition:transform .15s;position:relative;overflow:hidden}
+.cat-card:active{transform:scale(.97)}
+.cat-card-inner{padding-bottom:30px}
+.cat-icon{font-size:20px;margin-bottom:6px;line-height:1}
+.cat-name{font-size:12px;font-weight:700;color:var(--text);line-height:1.3}
+.cat-sub{font-size:10px;color:var(--text3);margin-top:3px}
+.cat-accent{position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+.cat-quick-btn{position:absolute;bottom:0;left:0;right:0;background:var(--bg3);
+  border:none;border-top:0.5px solid var(--border);padding:6px;
+  font-size:10px;font-weight:700;cursor:pointer;text-align:center}
+.cat-done-lbl{position:absolute;bottom:0;left:0;right:0;background:var(--greenbg);
+  padding:5px;font-size:10px;font-weight:700;color:var(--green);text-align:center;
+  border-top:0.5px solid var(--border)}
+.level-badge{display:inline-block;font-size:10px;padding:3px 10px;border-radius:99px;
+  font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em}
+.lv1{background:#EFF6FF;color:#1D4ED8}.lv2{background:#FFFBEB;color:#B45309}.lv3{background:#FDF4FF;color:#7E22CE}
+.bank-item{background:var(--bg2);border-radius:var(--rsm);padding:13px 14px;
+  margin-bottom:8px;border:0.5px solid var(--border);position:relative;box-shadow:var(--shadow-sm)}
+.bank-en{font-size:14px;font-weight:600;padding-right:54px;line-height:1.4;color:var(--text)}
+.bank-fr{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.4}
+.bank-note{font-size:11px;color:var(--text3);margin-top:6px;font-style:italic;line-height:1.4}
+.add-btn{position:absolute;top:12px;right:12px;background:var(--brand);color:#fff;
+  border:none;border-radius:99px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer}
+.add-btn.done{background:var(--bg3);color:var(--text3);cursor:default}
+.locked-item{filter:blur(3px);pointer-events:none;opacity:.5}
+.locked-section{text-align:center;padding:16px;background:var(--bg2);
+  border-radius:var(--r);border:1px dashed var(--border2);margin-top:10px;
+  font-size:13px;color:var(--text3)}
+
+/* MY WORDS */
+.words-wrap{padding:20px 18px}
+.theme-list{display:flex;flex-direction:column;gap:8px}
+.theme-item{background:var(--bg2);border-radius:var(--r);padding:14px 16px;cursor:pointer;
   border:0.5px solid var(--border);box-shadow:var(--shadow-sm);
-}
-.form-title{font-size:13px;font-weight:700;margin-bottom:14px;
-  color:var(--text);text-transform:uppercase;letter-spacing:.05em}
+  display:flex;align-items:center;gap:13px;transition:transform .15s}
+.theme-item:active{transform:scale(.98)}
+.theme-emoji{width:40px;height:40px;border-radius:11px;background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.theme-info{flex:1;min-width:0}
+.theme-name{font-size:14px;font-weight:700;color:var(--text)}
+.theme-meta{font-size:12px;color:var(--text3);margin-top:2px}
+.due-chip{display:inline-block;font-size:10px;padding:3px 8px;border-radius:99px;
+  background:var(--redbg);color:var(--red);font-weight:700}
+.ok-chip{display:inline-block;font-size:10px;padding:3px 8px;border-radius:99px;
+  background:var(--greenbg);color:var(--green);font-weight:700}
+.add-theme-btn{background:none;border:1.5px dashed var(--border2);border-radius:var(--r);
+  padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:var(--text3);width:100%;font-weight:600;gap:8px}
+.card-list{display:flex;flex-direction:column;gap:7px}
+.card-item{background:var(--bg2);border-radius:var(--rsm);padding:12px 14px;
+  display:flex;align-items:center;gap:10px;border:0.5px solid var(--border);box-shadow:var(--shadow-sm)}
+.card-texts{flex:1;min-width:0}
+.card-a{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-b{font-size:12px;color:var(--text2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-due{font-size:10px;color:var(--text3);margin-top:3px}
+.del-btn{background:none;border:none;font-size:13px;color:var(--text3);padding:5px;cursor:pointer;flex-shrink:0}
+.search-wrap{position:relative;margin-bottom:12px}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--text3);pointer-events:none}
+.search-box{width:100%;font-size:14px;padding:10px 14px 10px 38px;background:var(--bg2);
+  border:0.5px solid var(--border);border-radius:var(--r);color:var(--text);outline:none;font-family:inherit}
+.search-box:focus{border-color:var(--brand)}
+.form-box{background:var(--bg2);border-radius:var(--r);padding:18px;margin-bottom:16px;
+  border:0.5px solid var(--border);box-shadow:var(--shadow-sm)}
+.form-title{font-size:13px;font-weight:700;margin-bottom:14px;text-transform:uppercase;letter-spacing:.05em}
 .form-row{margin-bottom:12px}
-.form-row label{
-  display:block;font-size:11px;color:var(--text3);
-  margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;
-}
-.form-row input,.form-row select,.form-row textarea{
-  width:100%;font-size:15px;padding:11px 13px;
-  background:var(--bg);border:1px solid var(--border2);
-  border-radius:var(--rsm);color:var(--text);outline:none;
-  -webkit-appearance:none;font-family:inherit;
-  transition:border-color .15s;
-}
+.form-row label{display:block;font-size:11px;color:var(--text3);margin-bottom:5px;
+  text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.form-row input,.form-row select,.form-row textarea{width:100%;font-size:15px;
+  padding:11px 13px;background:var(--bg);border:1px solid var(--border2);
+  border-radius:var(--rsm);color:var(--text);outline:none;-webkit-appearance:none;font-family:inherit}
 .form-row textarea{height:56px;resize:none}
 .form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:var(--brand)}
-
-/* Translator row */
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
 .trans-row{display:flex;align-items:center;gap:8px}
 .trans-row input{flex:1}
-.trans-btn{
-  background:var(--brand-light);color:var(--brand);border:1px solid var(--border2);
-  border-radius:var(--rsm);padding:11px 12px;font-size:12px;font-weight:700;
-  cursor:pointer;white-space:nowrap;flex-shrink:0;
-  transition:background .15s;
-}
-.trans-btn:active{background:var(--brand);color:#fff}
-.trans-result{
-  font-size:12px;color:var(--brand);font-weight:600;
-  padding:6px 10px;background:var(--brand-light);
-  border-radius:var(--rxs);margin-top:5px;
-}
+.trans-btn{background:var(--brand-light);color:var(--brand);border:1px solid var(--border2);
+  border-radius:var(--rsm);padding:11px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.trans-result{font-size:12px;color:var(--brand);font-weight:600;padding:6px 10px;
+  background:var(--brand-light);border-radius:var(--rxs);margin-top:5px;display:none}
+.sum-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.sum-chip{font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px}
+.section-label{font-size:11px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.08em;margin:16px 0 8px;
+  display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:.5px;background:var(--border2)}
 
-.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+/* FAB */
+.fab{position:fixed;bottom:calc(var(--sab) + 72px);right:18px;
+  width:52px;height:52px;border-radius:50%;background:var(--brand);color:#fff;
+  font-size:26px;border:none;cursor:pointer;
+  box-shadow:0 4px 20px rgba(27,44,193,.35);
+  display:flex;align-items:center;justify-content:center;z-index:100;
+  transition:transform .15s}
+.fab:active{transform:scale(.92)}
 
-/* ─── SHARED COMPONENTS ───────────────────────────────────── */
-.btn-primary{
-  width:100%;background:var(--brand);color:#fff;border:none;
-  border-radius:var(--r);padding:15px;font-size:15px;font-weight:700;
-  cursor:pointer;margin-bottom:10px;letter-spacing:-.1px;
-  box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;
-}
-.btn-primary:active{transform:scale(.98);box-shadow:var(--shadow-sm)}
-.btn-secondary{
-  width:100%;background:var(--bg2);color:var(--text);
-  border:0.5px solid var(--border2);border-radius:var(--r);
-  padding:13px;font-size:14px;font-weight:600;cursor:pointer;
-  margin-bottom:8px;transition:background .15s;
-}
-.btn-secondary:active{background:var(--bg3)}
-.btn{border:none;border-radius:var(--rsm);padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer}
-.btn-p{background:var(--brand);color:#fff}
-.btn-g{background:var(--bg3);color:var(--text2)}
-.btn-sm{
-  border:none;border-radius:var(--rsm);padding:7px 13px;
-  font-size:12px;font-weight:700;cursor:pointer;
-  background:var(--bg3);color:var(--text2);
-}
-
-.pill-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
-.pill{
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:99px;padding:7px 14px;font-size:12px;
-  color:var(--text2);cursor:pointer;white-space:nowrap;font-weight:600;
-  transition:all .15s;
-}
-.pill.active{background:var(--brand);color:#fff;border-color:var(--brand)}
-
-.back-btn{
-  background:none;border:none;font-size:13px;color:var(--text2);
-  cursor:pointer;margin-bottom:16px;padding:0;
-  display:flex;align-items:center;gap:6px;font-weight:600;
-}
-.empty{text-align:center;padding:48px 16px;color:var(--text3);font-size:14px}
-.empty-icon{font-size:40px;margin-bottom:12px;opacity:.4}
-
-/* Stars */
-.stars span{font-size:11px}
-
-/* Plus one animation */
-.fab{
-  position:fixed;
-  bottom:calc(var(--sab) + 72px);
-  right:18px;
-  width:52px;height:52px;
-  border-radius:50%;
-  background:var(--brand);
-  color:#fff;
-  font-size:26px;
-  border:none;cursor:pointer;
-  box-shadow:0 4px 20px rgba(27,44,193,0.35);
-  display:flex;align-items:center;justify-content:center;
-  z-index:100;
-  transition:transform .15s,box-shadow .15s;
-  line-height:1;
-}
-.fab:active{transform:scale(.92);box-shadow:0 2px 8px rgba(27,44,193,0.3)}
-
-.qc-sheet{
-  position:fixed;inset:0;z-index:200;
-  display:flex;flex-direction:column;justify-content:flex-end;
-}
-.qc-backdrop{
-  position:absolute;inset:0;
-  background:rgba(0,0,0,0.5);
-  backdrop-filter:blur(4px);
-  -webkit-backdrop-filter:blur(4px);
-}
-.qc-panel{
-  position:relative;
-  background:var(--bg2);
-  border-radius:24px 24px 0 0;
-  padding:20px 20px calc(20px + var(--sab));
-  box-shadow:0 -8px 40px rgba(0,0,0,0.2);
-  animation:slideUp .25s ease;
-}
-@keyframes slideUp{
-  from{transform:translateY(100%)}
-  to{transform:translateY(0)}
-}
-.qc-handle{
-  width:36px;height:4px;
-  background:var(--border2);border-radius:99px;
-  margin:0 auto 18px;
-}
-.qc-title{
-  font-size:17px;font-weight:800;
-  margin-bottom:16px;letter-spacing:-.3px;
-}
-.qc-dir-row{
-  display:flex;gap:8px;margin-bottom:14px;
-}
-.qc-dir-btn{
-  flex:1;border:1.5px solid var(--border2);
-  border-radius:var(--rsm);padding:9px;
-  font-size:13px;font-weight:700;
-  background:var(--bg3);color:var(--text2);
-  cursor:pointer;text-align:center;
-  transition:all .15s;
-}
-.qc-dir-btn.active{
-  background:var(--brand-light);
-  border-color:var(--brand);
-  color:var(--brand);
-}
-.qc-field{
-  width:100%;font-size:16px;
-  padding:13px 14px;
-  background:var(--bg);
-  border:1.5px solid var(--border2);
-  border-radius:var(--rsm);
-  color:var(--text);outline:none;
-  font-family:inherit;
-  margin-bottom:10px;
-  transition:border-color .15s;
-}
+/* QUICK CAPTURE SHEET */
+.qc-sheet{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;justify-content:flex-end}
+.qc-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px)}
+.qc-panel{position:relative;background:var(--bg2);border-radius:24px 24px 0 0;
+  padding:20px 20px calc(20px + var(--sab));animation:slideUp .25s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.qc-handle{width:36px;height:4px;background:var(--border2);border-radius:99px;margin:0 auto 18px}
+.qc-title{font-size:17px;font-weight:800;margin-bottom:16px;letter-spacing:-.3px}
+.qc-dir-row{display:flex;gap:8px;margin-bottom:14px}
+.qc-dir-btn{flex:1;border:1.5px solid var(--border2);border-radius:var(--rsm);padding:9px;
+  font-size:13px;font-weight:700;background:var(--bg3);color:var(--text2);cursor:pointer;text-align:center}
+.qc-dir-btn.active{background:var(--brand-light);border-color:var(--brand);color:var(--brand)}
+.qc-field{width:100%;font-size:16px;padding:13px 14px;background:var(--bg);
+  border:1.5px solid var(--border2);border-radius:var(--rsm);color:var(--text);
+  outline:none;font-family:inherit;margin-bottom:10px}
 .qc-field:focus{border-color:var(--brand)}
-.qc-trans-result{
-  font-size:13px;color:var(--brand);
-  font-weight:600;padding:8px 12px;
-  background:var(--brand-light);
-  border-radius:var(--rsm);
-  margin-bottom:12px;
-  display:none;
-}
+.qc-trans-result{font-size:13px;color:var(--brand);font-weight:600;padding:8px 12px;
+  background:var(--brand-light);border-radius:var(--rsm);margin-bottom:12px;display:none}
 .qc-actions{display:flex;gap:8px}
-.qc-btn-add{
-  flex:1;background:var(--brand);color:#fff;
-  border:none;border-radius:var(--rsm);
-  padding:14px;font-size:15px;font-weight:700;
-  cursor:pointer;
-  transition:transform .1s;
-}
-.qc-btn-add:active{transform:scale(.97)}
-.qc-btn-cancel{
-  background:var(--bg3);color:var(--text2);
-  border:none;border-radius:var(--rsm);
-  padding:14px 18px;font-size:14px;font-weight:600;
-  cursor:pointer;
-}
-.composed-card{
-  background:linear-gradient(135deg,var(--brand-light) 0%,rgba(245,158,11,0.08) 100%);
-  border:1.5px solid var(--brand);
-  border-radius:var(--r);padding:20px;margin-bottom:14px;
-}
-.composed-badge{
-  display:inline-flex;align-items:center;gap:5px;
-  background:var(--brand);color:#fff;
-  border-radius:99px;padding:3px 10px;
-  font-size:10px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.06em;
-  margin-bottom:10px;
-}
-.composed-scenario{
-  font-size:15px;line-height:1.7;color:var(--text);
-  font-weight:500;margin-bottom:12px;
-}
-.composed-words{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
-.composed-word-chip{
-  background:var(--bg2);border:0.5px solid var(--border2);
-  border-radius:99px;padding:3px 10px;
-  font-size:11px;font-weight:600;color:var(--text2);
-}
-@keyframes dotPulse{
-  0%,100%{opacity:.3;transform:scale(1)}
-  50%{opacity:1;transform:scale(1.2)}
-}
-.plus-one{
-  position:fixed;font-size:18px;font-weight:800;
-  color:var(--brand);pointer-events:none;z-index:9999;
-  animation:floatUp .8s ease forwards;
-}
-@keyframes floatUp{
-  0%{opacity:1;transform:translateY(0) scale(1)}
-  100%{opacity:0;transform:translateY(-70px) scale(1.4)}
-}
+.qc-btn-add{flex:1;background:var(--brand);color:#fff;border:none;border-radius:var(--rsm);
+  padding:14px;font-size:15px;font-weight:700;cursor:pointer}
+.qc-btn-cancel{background:var(--bg3);color:var(--text2);border:none;
+  border-radius:var(--rsm);padding:14px 18px;font-size:14px;font-weight:600;cursor:pointer}
 
-/* Settings rows */
-.settings-section{margin-bottom:20px}
-.settings-title{font-size:11px;font-weight:700;color:var(--text3);
-  text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
-.settings-row{
-  background:var(--bg2);border-radius:var(--rsm);
-  padding:13px 15px;margin-bottom:6px;
-  display:flex;align-items:center;justify-content:space-between;
-  border:0.5px solid var(--border);box-shadow:var(--shadow-sm);
-}
-.settings-lbl{font-size:14px;font-weight:600}
-.settings-sub{font-size:12px;color:var(--text3);margin-top:2px}
+/* PLUS ONE ANIM */
+.plus-one{position:fixed;font-size:18px;font-weight:800;color:var(--brand);
+  pointer-events:none;z-index:9999;animation:floatUp .8s ease forwards}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-70px) scale(1.4)}}
 
-/* Skeleton loader */
-.skeleton{background:linear-gradient(90deg,var(--bg3) 25%,var(--border) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--rsm)}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* STARS */
+.stars span{font-size:11px}
 </style>
 </head>
 <body>
@@ -849,25 +380,21 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);ove
     <div id="s-explore" class="screen"></div>
     <div id="s-words" class="screen"></div>
   </div>
-  <button class="fab" onclick="openQC()" id="fab">＋</button>
-<div id="qc-overlay" style="display:none"></div>
-<nav class="nav">
-    <button class="nb active" onclick="T('home')" id="n-home">
-      <div class="nb-icon">🏠</div>
-      <span>Accueil</span>
+  <button class="fab" id="fab-btn">+</button>
+  <div id="qc-overlay" style="display:none"></div>
+  <nav class="nav">
+    <button class="nb active" id="n-home">
+      <div class="nb-icon">&#127968;</div><span>Accueil</span>
     </button>
-    <button class="nb" onclick="T('train')" id="n-train">
-      <div class="nb-icon">⚡</div>
-      <span>S'entraîner</span>
+    <button class="nb" id="n-train">
+      <div class="nb-icon">&#9889;</div><span>S'entraîner</span>
       <div class="nb-dot" id="train-dot"></div>
     </button>
-    <button class="nb" onclick="T('explore')" id="n-explore">
-      <div class="nb-icon">🗺️</div>
-      <span>Explorer</span>
+    <button class="nb" id="n-explore">
+      <div class="nb-icon">&#128506;</div><span>Explorer</span>
     </button>
-    <button class="nb" onclick="T('words')" id="n-words">
-      <div class="nb-icon">📚</div>
-      <span>Mes mots</span>
+    <button class="nb" id="n-words">
+      <div class="nb-icon">&#128218;</div><span>Mes mots</span>
     </button>
   </nav>
 </div>
@@ -1652,6 +1179,9 @@ grammar:{label:'Grammaire en contexte',icon:'🧠',color:'#F0F8FF',tc:'#1a3a6a',
 ]}
 };
 
+const totalEntries=Object.values(BANK).reduce(function(s,c){return s+c.cards.length;},0);
+const CAT_KEYS=Object.keys(BANK);
+
 const META={
   pro:{label:'Pro & Business',icon:'💼',color:'#EAF2FF',tc:'#1a3a5c',cats:['pro','emails','collocations','business_phrases']},
   expression:{label:'Expression & Style',icon:'💬',color:'#FEF9E7',tc:'#7d6608',cats:['natural','nuances','connectors','phrasal']},
@@ -1659,9 +1189,8 @@ const META={
   pieges:{label:'Pièges & Vocabulaire',icon:'⚠️',color:'#FDF0EF',tc:'#8b2020',cats:['faux','vocab_daily','idioms']},
   interets:{label:'Centres d\'intérêt',icon:'🎯',color:'#F0EAF8',tc:'#4a1a7a',cats:['travel','finance']}
 };
-const META_KEYS=Object.keys(META);
+const META_KEYS=Object.keys(META)
 
-// OXFORD 3000 Bank
 const OXFORD={
 verbs:{label:'Verbes & actions',icon:'▶️',color:'#E8F0FF',tc:'#1a2a6a',cards:[
 {en:'angry',fr:'En colère / fâché',ctx:'"He was angry about the last-minute change."',lv:1},
@@ -3519,94 +3048,120 @@ technology:{label:'Technologie & digital',icon:'💻',color:'#E8F0FF',tc:'#1a2a6
 {en:'welcome',fr:'Bienvenue / accueillir',ctx:'"Welcome feedback — it makes you better."',lv:1},
   ]},
 };
-const OXFORD_KEYS=Object.keys(OXFORD);
+const OXFORD_KEYS=Object.keys(OXFORD)
 
+// ─── CONSTANTS ───────────────────────────────────────────────
 const SK='myenglish_v4';
-const DAILY_GOAL=10;
+const DAILY_GOAL=20;
 const EXPLORE_DECK_ID=9999;
-const IV_FLASH={1:600000,2:1800000,3:7200000,4:21600000,5:43200000};
-const IV_MID={1:1800000,2:7200000,3:21600000,4:64800000,5:129600000};
-const IV_NORM={1:3600000,2:10800000,3:28800000,4:86400000,5:172800000};
-const IL_FLASH={1:'10min',2:'30min',3:'2h',4:'6h',5:'12h'};
-const IL_MID={1:'30min',2:'2h',3:'6h',4:'18h',5:'36h'};
-const IL_NORM={1:'1h',2:'3h',3:'8h',4:'1j',5:'2j'};
-const totalEntries=Object.values(BANK).reduce((s,c)=>s+c.cards.length,0);
-const CAT_KEYS=Object.keys(BANK);
+const ANTHROPIC_KEY='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';
 
-// ─── DATA ────────────────────────────────────────────────────
-function defaultData(){return{
-  decks:[
-    {id:1,name:'Yellowstone',dir:'en-fr',type:'phrase'},
-    {id:2,name:'Quotidien',dir:'fr-en',type:'mixed'},
-    {id:3,name:'Vocabulaire',dir:'both',type:'mot'},
-    {id:EXPLORE_DECK_ID,name:'Explore',dir:'en-fr',type:'mixed',isExplore:true}
-  ],
-  cards:[
-    {id:1,deckId:1,a:"You're gonna regret that.",b:"Tu vas le regretter.",ctx:'',type:'phrase',dir:'en-fr',score:0,mult:1,due:0},
-    {id:2,deckId:1,a:"I'm not built for this.",b:"Je ne suis pas fait pour ça.",ctx:'',type:'phrase',dir:'en-fr',score:0,mult:1,due:0},
-    {id:3,deckId:2,a:"Je ne suis pas sûr de ça.",b:"I'm not sure about that.",ctx:'',type:'phrase',dir:'fr-en',score:0,mult:1,due:0},
-  ],
-  nextDeckId:4,nextCardId:4,streak:0,lastSession:0,
-  newToday:0,lastNewDay:'',
-  reviewedToday:0,lastReviewDay:'',
-  bankAdded:{},notifTime:'20:00',notifEnabled:false,totalReviewed:0,maxNew:20
-};}
+// SM-2 intervals
+const BASE_IV={1:5*60000,2:30*60000,3:12*3600000,4:86400000,5:3*86400000};
+const BASE_IL={1:'5min',2:'30min',3:'12h',4:'1j',5:'3j'};
 
+// ─── DEFAULT DATA ────────────────────────────────────────────
+function defaultData(){
+  return{
+    decks:[
+      {id:1,name:'Yellowstone',dir:'en-fr',type:'phrase'},
+      {id:2,name:'Quotidien',dir:'fr-en',type:'mixed'},
+      {id:EXPLORE_DECK_ID,name:'Explore',dir:'en-fr',type:'mixed',isExplore:true}
+    ],
+    cards:[
+      {id:1,deckId:1,a:"You're gonna regret that.",b:"Tu vas le regretter.",ctx:'',type:'phrase',dir:'en-fr',score:0,mult:1,due:0},
+      {id:2,deckId:2,a:"Je ne suis pas sûr de ça.",b:"I'm not sure about that.",ctx:'',type:'phrase',dir:'fr-en',score:0,mult:1,due:0},
+    ],
+    nextDeckId:3,nextCardId:3,
+    streak:0,lastSession:0,
+    newToday:0,lastNewDay:'',
+    reviewedToday:0,lastReviewDay:'',
+    bankAdded:{},
+    notifTime:'20:00',notifEnabled:false,notifDismissed:false,
+    totalReviewed:0,maxNew:20,
+    composed:[]
+  };
+}
+
+// ─── LOAD DATA ───────────────────────────────────────────────
 let D;
-try{D=JSON.parse(localStorage.getItem(SK))||defaultData();}catch(e){D=defaultData();}
+try{D=JSON.parse(localStorage.getItem(SK))||defaultData();}
+catch(e){D=defaultData();}
+// Migrations
 if(!D.bankAdded)D.bankAdded={};
 if(!D.notifTime)D.notifTime='20:00';
 if(D.reviewedToday===undefined)D.reviewedToday=0;
 if(!D.lastReviewDay)D.lastReviewDay='';
 if(!D.totalReviewed)D.totalReviewed=0;
 if(!D.maxNew)D.maxNew=20;
+if(!D.composed)D.composed=[];
+if(!D.notifDismissed)D.notifDismissed=false;
 if(!D.decks.find(d=>d.id===EXPLORE_DECK_ID))
   {D.decks.push({id:EXPLORE_DECK_ID,name:'Explore',dir:'en-fr',type:'mixed',isExplore:true});sv();}
 
 // ─── STATE ───────────────────────────────────────────────────
-let curTab='home',trainMode='review',qDeck=null,qMode='all',qExploreCat=null;
-let qCards=[],qIdx=0,qScores=[],newDeckForm=false;
-let bankCat=null,exploreTab='context',exploreMeta=null;
-let showMastered=false,ficheSearch='',aDeck=null,EV=null;
+let curTab='home';
+let trainMode='review';
+let qMode='all';
+let qDeck=null;
+let qExploreCat=null;
+let qCards=[];
+let qIdx=0;
+let qScores=[];
+let composedQueue=[];
+let composedGenPending=false;
+let bankCat=null;
+let exploreTab='context';
+let exploreMeta=null;
+let showMastered=false;
+let ficheSearch='';
+let aDeck=null;
+let newDeckForm=false;
+let qcDir='fr-en';
 let recognition=null;
+let EV=null;
 
 // ─── UTILS ───────────────────────────────────────────────────
 function sv(){try{localStorage.setItem(SK,JSON.stringify(D));}catch(e){}}
 function now(){return Date.now();}
 function tod(){return new Date().toDateString();}
+
 function resetDaily(){
   let ch=false;
   if(D.lastNewDay!==tod()){D.newToday=0;D.lastNewDay=tod();ch=true;}
   if(D.lastReviewDay!==tod()){D.reviewedToday=0;D.lastReviewDay=tod();ch=true;}
   if(ch)sv();
 }
-function getMode(){const t=D.totalReviewed||0;return t<30?'flash':t<100?'mid':'norm';}
-const BASE_IV={1:5*60000,2:30*60000,3:12*3600000,4:24*3600000,5:3*24*3600000};
-const BASE_IL={1:'5min',2:'30min',3:'12h',4:'1j',5:'3j'};
+
 function getIV(s,card){
-  if(!card||!card.totalRatings)return Math.min(BASE_IV[s],BASE_IV[3]);
-  if(s>=4)return BASE_IV[s]*(card.mult||1);
-  return BASE_IV[s];
+  const base=BASE_IV[s];
+  if(!card||!card.totalRatings)return Math.min(base,BASE_IV[3]);
+  if(s>=4)return base*(card.mult||1);
+  return base;
 }
 function getIL(s,card){
-  if(!card||!card.totalRatings){return s>=4?'12h (1ère vue)':BASE_IL[s];}
+  if(!card||!card.totalRatings)return s>=4?'12h (1ère vue)':BASE_IL[s];
   if(s>=4){
     const ms=BASE_IV[s]*(card.mult||1);
     const dy=Math.round(ms/86400000);
-    if(dy>=1)return dy+'j';
-    return Math.round(ms/3600000)+'h';
+    return dy>=1?dy+'j':Math.round(ms/3600000)+'h';
   }
   return BASE_IL[s];
 }
 
 function fdue(due){
-  const d=due-now();if(d<=0)return'<span style="color:var(--red)">à revoir</span>';
+  const d=due-now();
+  if(d<=0)return '<span style="color:var(--red)">à revoir</span>';
   const m=Math.floor(d/60000),h=Math.floor(d/3600000),dy=Math.floor(d/86400000);
-  if(dy>=1)return'dans '+dy+'j';if(h>=1)return'dans '+h+'h';if(m>=1)return'dans '+m+'min';return'bientôt';
+  if(dy>=1)return 'dans '+dy+'j';
+  if(h>=1)return 'dans '+h+'h';
+  if(m>=1)return 'dans '+m+'min';
+  return 'bientôt';
 }
+
 function stars(s){
   const c=s===0?'var(--text3)':s<=2?'var(--red)':s===3?'var(--orange)':s===4?'var(--green)':'#15803d';
-  return`<span class="stars" style="color:${c}">${'★'.repeat(s)+'☆'.repeat(5-s)}</span>`;
+  return '<span class="stars" style="color:'+c+'">'+('★'.repeat(s)+'☆'.repeat(5-s))+'</span>';
 }
 
 // ─── AUDIO ───────────────────────────────────────────────────
@@ -3614,50 +3169,24 @@ function iV(){
   if(!window.speechSynthesis)return;
   function p(){const vs=window.speechSynthesis.getVoices();
     EV=vs.find(v=>v.lang==='en-US'&&v.name.includes('Samantha'))||vs.find(v=>v.lang==='en-US')||vs.find(v=>v.lang.startsWith('en'));}
-  p();window.speechSynthesis.onvoiceschanged=p;
-}iV();
-function spk(t){if(!window.speechSynthesis)return;window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.88;if(EV)u.voice=EV;window.speechSynthesis.speak(u);}
-function spkCtx(ctx){
-  if(!ctx)return;
-  const q=ctx.match(/[""]([^""]+)[""]/);if(q){spk(q[1]);return;}
-  const q2=ctx.match(/'([^']{10,})'/);if(q2){spk(q2[1]);return;}
-  spk(ctx.split(/[≠→]|= /)[0].trim());
+  p();
+  if(window.speechSynthesis.onvoiceschanged!==undefined)window.speechSynthesis.onvoiceschanged=p;
 }
+iV();
 
-// ─── NOTIFICATIONS ───────────────────────────────────────────
-function canNotify(){return 'Notification' in window;}
-async function requestNotif(){
-  if(!canNotify())return false;
-  const p=await Notification.requestPermission();
-  D.notifEnabled=p==='granted';sv();return p==='granted';
-}
-function scheduleDaily(){
-  if(!D.notifEnabled||Notification.permission!=='granted')return;
-  const[h,m]=D.notifTime.split(':').map(Number);
-  const target=new Date();target.setHours(h,m,0,0);
-  if(target<=new Date())target.setDate(target.getDate()+1);
-  setTimeout(()=>{
-    const last=D.lastSession?new Date(D.lastSession):null;
-    if(!last||last<new Date(now()-86400000))
-      new Notification('MyEnglish 📚',{body:'Ouvre MyEnglish pour continuer ta progression 🎯'});
-  },target-new Date());
-}
-function checkDueNotif(){
-  if(!D.notifEnabled||Notification.permission!=='granted')return;
-  const due=D.cards.filter(c=>c.due<=now()).length;
-  if(due>=10)new Notification('MyEnglish 📚',{body:`${due} fiches t\'attendent !`});
-}
-async function enableNotifs(){
-  const ok=await requestNotif();
-  if(ok){scheduleDaily();rHome();}
-  else alert('Active les notifications dans Réglages iPhone → Safari → Notifications.');
+function spk(t){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t);
+  u.lang='en-US';u.rate=0.88;
+  if(EV)u.voice=EV;
+  window.speechSynthesis.speak(u);
 }
 
 // ─── NAV ─────────────────────────────────────────────────────
 function T(tab){
   curTab=tab;
-  ['home','train','explore','words'].forEach(t=>{
+  ['home','train','explore','words'].forEach(function(t){
     document.getElementById('s-'+t).classList.toggle('active',t===tab);
     document.getElementById('n-'+t).classList.toggle('active',t===tab);
   });
@@ -3665,878 +3194,1004 @@ function T(tab){
   if(tab==='home')rHome();
   if(tab==='train'){trainMode='review';rTrain();}
   if(tab==='explore'){bankCat=null;exploreMeta=null;rExplore();}
-  if(tab==='words'){aDeck=aDeck||null;rWords();}
+  if(tab==='words')rWords();
 }
+
 function updateDot(){
-  const due=D.cards.filter(c=>c.due<=now()).length;
-  document.getElementById('train-dot').style.opacity=due>=1?'1':'0';
+  var due=D.cards.filter(function(c){return c.due<=now();}).length;
+  var dot=document.getElementById('train-dot');
+  if(dot)dot.className='nb-dot'+(due>=1?' show':'');
 }
+
+// Wire nav buttons
+document.getElementById('n-home').onclick=function(){T('home');};
+document.getElementById('n-train').onclick=function(){T('train');};
+document.getElementById('n-explore').onclick=function(){T('explore');};
+document.getElementById('n-words').onclick=function(){T('words');};
+document.getElementById('fab-btn').onclick=function(){openQC();};
 
 // ─── HOME ─────────────────────────────────────────────────────
 function rHome(){
   resetDaily();updateDot();
-  const el=document.getElementById('s-home');
-  const due=D.cards.filter(c=>c.due<=now()).length;
-  const total=D.cards.length;
-  const mastered=D.cards.filter(c=>c.score>=4).length;
-  const streak=D.streak||0;
-  const dg=D.maxNew||20;
-  const revPct=Math.min(100,Math.round((Math.min(D.reviewedToday,dg)/dg)*100));
-  const addedOx=OXFORD_KEYS.reduce((s,k)=>s+OXFORD[k].cards.filter((_,i)=>D.bankAdded['ox_'+k+'-'+i]).length,0);
-  const addedCtx=CAT_KEYS.reduce((s,k)=>s+BANK[k].cards.filter((_,i)=>D.bankAdded[k+'-'+i]).length,0);
-  const addedTotal=addedOx+addedCtx;
-  const globalPct=Math.round((addedTotal/totalEntries)*100);
-  const mode=getMode();
-  const modeName=mode==='flash'?'Flash':mode==='mid'?'Intermédiaire':'Normal';
-  const showNotif=canNotify()&&!D.notifEnabled&&!D.notifDismissed;
-  const notifBanner=showNotif?`<div class="notif-banner"><span class="notif-text">🔔 Active les rappels quotidiens</span><button class="notif-btn" onclick="enableNotifs()">Activer</button><button onclick="D.notifDismissed=true;sv();rHome()" style="background:none;border:none;padding:4px 8px;color:var(--text3);cursor:pointer;font-size:13px">✕</button></div>`:'';
-  const heroLabel=due>0?'Reprendre':'Tout est à jour';
-  const heroMain=due>0?`${due} fiche${due>1?'s':''} à réviser`:total===0?'Commence à explorer':'Continue ta progression';
-  const heroSub=due>0?`Session du jour · ${modeName}`:total===0?'Explore la banque Oxford 3000':'Belle discipline 🎉';
-  const dots=Array.from({length:7},(_,i)=>{
-    if(i<Math.min(streak,6))return'<div class="sdot done"></div>';
-    if(i===Math.min(streak,6)&&streak>0)return'<div class="sdot today"></div>';
-    return'<div class="sdot"></div>';
-  }).join('');
-  const masteredSection=showMastered?`<div class="mastered-panel" style="margin-bottom:14px">${buildMastered()}<button class="btn-secondary" onclick="showMastered=false;rHome()" style="margin-top:10px">Fermer</button></div>`:'';
-  const totalCtx=CAT_KEYS.reduce((s,k)=>s+BANK[k].cards.length,0);
-  const totalOxN=OXFORD_KEYS.reduce((s,k)=>s+OXFORD[k].cards.length,0);
-  el.innerHTML=`<div class="home-wrap">
-    <div class="home-header">
-      <div><div class="home-greeting">Bonjour 👋</div><div class="home-title">My<span>English</span></div></div>
-      <div class="home-avatar" onclick="showSettings()" style="cursor:pointer;font-size:16px;background:var(--bg3)">⚙️</div>
-    </div>
-    ${notifBanner}
-    <div class="hero-cta" onclick="T('train')">
-      <div class="hero-label">${heroLabel}</div>
-      <div class="hero-main">${heroMain}</div>
-      <div class="hero-sub">${heroSub}</div>
-      <div class="hero-badge">▶ Commencer</div>
-    </div>
-    <div class="stats-row">
-      <div class="stat-pill" style="color:${due>0?'var(--red)':'var(--green)'}"><span class="stat-pill-n">${due}</span> à revoir</div>
-      <div class="stat-pill"><span class="stat-pill-n">${total}</span> fiches</div>
-      <div class="stat-pill clickable" onclick="toggleMastered()"><span class="stat-pill-n" style="color:var(--green)">${mastered}</span> maîtrisées ↗</div>
-    </div>
-    ${masteredSection}
-    <div class="streak-card">
-      <div class="streak-fire">🔥</div>
-      <div class="streak-info">
-        <div class="streak-n">${streak} jour${streak!==1?'s':''}</div>
-        <div class="streak-l">de streak</div>
-        <div class="streak-dots">${dots}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;padding-right:2px"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;font-weight:700">Auj.</div><div style="font-size:15px;font-weight:800;color:${D.reviewedToday>=dg?'var(--green)':'var(--brand)'};line-height:1;white-space:nowrap">${Math.min(D.reviewedToday,dg)}<span style="font-size:10px;color:var(--text3);font-weight:500">/${dg}</span></div><div class="prog-bar" style="width:54px"><div class="prog-fill" style="width:${revPct}%"></div></div></div>
-    </div>
-    <div class="prog-card">
-      <div class="prog-top"><span class="prog-label">Progression globale</span><span class="prog-val">${globalPct}%</span></div>
-      <div class="prog-bar"><div class="prog-fill" style="width:${globalPct}%"></div></div>
-      <div style="display:flex;justify-content:space-between;margin-top:8px">
-        <span style="font-size:11px;color:var(--text3)">📘 Contexte <strong style="color:var(--text2)">${addedCtx}/${totalCtx}</strong></span>
-        <span style="font-size:11px;color:var(--text3)">🔤 Oxford <strong style="color:var(--text2)">${addedOx}/${totalOxN}</strong></span>
-      </div>
-    </div>
-    <div style="height:20px"></div>
-  </div>`;
-}
-function toggleMastered(){showMastered=!showMastered;rHome();}
-function buildMastered(){
-  const rows=[];
-  D.decks.filter(d=>!d.isExplore).forEach(d=>{
-    const m=D.cards.filter(c=>c.deckId===d.id&&c.score>=4).length;
-    if(m>0)rows.push(`<div class="mastered-row"><span class="mastered-cat">${d.name}</span><span class="mastered-n">${m}</span></div>`);
-  });
-  CAT_KEYS.forEach(k=>{
-    const m=D.cards.filter(c=>c.exploreKey&&c.exploreKey.startsWith(k+'-')&&c.score>=4).length;
-    if(m>0)rows.push(`<div class="mastered-row"><span class="mastered-cat">${BANK[k].icon} ${BANK[k].label}</span><span class="mastered-n">${m}</span></div>`);
-  });
-  OXFORD_KEYS.forEach(k=>{
-    const m=D.cards.filter(c=>c.exploreKey&&c.exploreKey.startsWith('ox_'+k+'-')&&c.score>=4).length;
-    if(m>0)rows.push(`<div class="mastered-row"><span class="mastered-cat">${OXFORD[k].icon} ${OXFORD[k].label}</span><span class="mastered-n">${m}</span></div>`);
-  });
-  return rows.length?rows.join(''):'<div class="empty"><div class="empty-icon">⭐</div>Aucune fiche maîtrisée pour l\'instant.</div>';
+  var el=document.getElementById('s-home');
+  var due=D.cards.filter(function(c){return c.due<=now();}).length;
+  var total=D.cards.length;
+  var mastered=D.cards.filter(function(c){return c.score>=4;}).length;
+  var streak=D.streak||0;
+  var dg=D.maxNew||20;
+  var revPct=Math.min(100,Math.round((Math.min(D.reviewedToday,dg)/dg)*100));
+  var addedOx=OXFORD_KEYS.reduce(function(s,k){return s+OXFORD[k].cards.filter(function(_,i){return D.bankAdded['ox_'+k+'-'+i];}).length;},0);
+  var addedCtx=CAT_KEYS.reduce(function(s,k){return s+BANK[k].cards.filter(function(_,i){return D.bankAdded[k+'-'+i];}).length;},0);
+  var globalPct=Math.round(((addedOx+addedCtx)/totalEntries)*100);
+  var totalCtxN=CAT_KEYS.reduce(function(s,k){return s+BANK[k].cards.length;},0);
+  var totalOxN=OXFORD_KEYS.reduce(function(s,k){return s+OXFORD[k].cards.length;},0);
+
+  var heroLabel=due>0?'Reprendre':'Tout est à jour';
+  var heroMain=due>0?(due+' fiche'+(due>1?'s':'')+' à réviser'):total===0?'Commence à explorer':'Continue ta progression';
+  var heroSub=due>0?'Lance une session':'Belle discipline';
+
+  var dots='';
+  for(var i=0;i<7;i++){
+    if(i<Math.min(streak,6))dots+='<div class="sdot done"></div>';
+    else if(i===Math.min(streak,6)&&streak>0)dots+='<div class="sdot today"></div>';
+    else dots+='<div class="sdot"></div>';
+  }
+
+  var notifBanner='';
+  if(typeof Notification!=='undefined'&&!D.notifEnabled&&!D.notifDismissed){
+    notifBanner='<div style="background:var(--brand-light);border:0.5px solid var(--border2);border-radius:var(--r);padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px"><span style="flex:1;font-size:13px;color:var(--brand);font-weight:500">Activer les rappels quotidiens</span><button onclick="enableNotifs()" style="background:var(--brand);color:#fff;border:none;border-radius:var(--rsm);padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer">Activer</button><button onclick="D.notifDismissed=true;sv();rHome()" style="background:none;border:none;padding:4px 8px;color:var(--text3);cursor:pointer;font-size:13px">x</button></div>';
+  }
+
+  var masteredHTML='';
+  if(showMastered){
+    var rows='';
+    D.decks.filter(function(d){return !d.isExplore;}).forEach(function(d){
+      var m=D.cards.filter(function(c){return c.deckId===d.id&&c.score>=4;}).length;
+      if(m>0)rows+='<div class="mastered-row"><span style="font-size:13px;color:var(--text2)">'+d.name+'</span><span style="font-size:14px;font-weight:700;color:var(--brand)">'+m+'</span></div>';
+    });
+    masteredHTML='<div class="mastered-panel" style="margin-bottom:14px">'+(rows||'<div style="font-size:13px;color:var(--text3);padding:8px 0">Aucune fiche maitrisée pour l\'instant.</div>')+'<button onclick="showMastered=false;rHome()" class="btn-secondary" style="margin-top:10px">Fermer</button></div>';
+  }
+
+  el.innerHTML='<div class="page-wrap">'
+    +'<div class="home-header">'
+      +'<div><div style="font-size:13px;color:var(--text3);font-weight:500">Bonjour</div><div class="home-title">My<span>English</span></div></div>'
+      +'<div class="home-avatar" id="btn-settings">⚙️</div>'
+    +'</div>'
+    +notifBanner
+    +'<div class="hero-cta" id="hero-btn">'
+      +'<div class="hero-label">'+heroLabel+'</div>'
+      +'<div class="hero-main">'+heroMain+'</div>'
+      +'<div class="hero-sub">'+heroSub+'</div>'
+      +'<div class="hero-badge">Commencer</div>'
+    +'</div>'
+    +'<div class="stats-row">'
+      +'<div class="stat-pill" style="color:'+(due>0?'var(--red)':'var(--green)')+'"><span class="stat-pill-n">'+due+'</span> à revoir</div>'
+      +'<div class="stat-pill"><span class="stat-pill-n">'+total+'</span> fiches</div>'
+      +'<div class="stat-pill clickable" id="btn-mastered"><span class="stat-pill-n" style="color:var(--green)">'+mastered+'</span> maitrisées</div>'
+    +'</div>'
+    +masteredHTML
+    +'<div class="streak-card">'
+      +'<div class="streak-fire">🔥</div>'
+      +'<div class="streak-info">'
+        +'<div class="streak-n">'+streak+'</div>'
+        +'<div class="streak-l">jour'+(streak!==1?'s':'')+' de streak</div>'
+        +'<div class="streak-dots">'+dots+'</div>'
+      +'</div>'
+      +'<div class="streak-today">'
+        +'<div class="streak-today-label">Auj.</div>'
+        +'<div class="streak-today-n" style="color:'+(D.reviewedToday>=dg?'var(--green)':'var(--brand)')+'">'+Math.min(D.reviewedToday,dg)+'<span style="font-size:11px;color:var(--text3);font-weight:500">/'+dg+'</span></div>'
+        +'<div class="prog-bar streak-today-bar"><div class="prog-fill" style="width:'+revPct+'%"></div></div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="prog-card">'
+      +'<div class="prog-top"><span class="prog-label">Progression globale</span><span class="prog-val">'+globalPct+'%</span></div>'
+      +'<div class="prog-bar"><div class="prog-fill" style="width:'+globalPct+'%"></div></div>'
+      +'<div style="display:flex;justify-content:space-between;margin-top:8px">'
+        +'<span style="font-size:11px;color:var(--text3)">Contexte <strong style="color:var(--text2)">'+addedCtx+'/'+totalCtxN+'</strong></span>'
+        +'<span style="font-size:11px;color:var(--text3)">Oxford <strong style="color:var(--text2)">'+addedOx+'/'+totalOxN+'</strong></span>'
+      +'</div>'
+    +'</div>'
+    +'<div style="height:20px"></div>'
+  +'</div>';
+
+  document.getElementById('hero-btn').onclick=function(){T('train');};
+  document.getElementById('btn-settings').onclick=function(){showSettings();};
+  document.getElementById('btn-mastered').onclick=function(){showMastered=!showMastered;rHome();};
 }
 
 function showSettings(){
-  const el=document.getElementById('s-home');
-  el.innerHTML=`<div class="home-wrap">
-    <button class="back-btn" onclick="showMastered=false;rHome()">← Accueil</button>
-    <div class="page-title">Paramètres</div>
-    <div class="settings-section">
-      <div class="settings-title">Notifications</div>
-      <div class="settings-row"><div><div class="settings-lbl">Rappel quotidien</div><div class="settings-sub">Heure du rappel si pas ouvert depuis 24h</div></div><input type="time" value="${D.notifTime}" onchange="D.notifTime=this.value;sv();scheduleDaily()" style="border:1px solid var(--border2);border-radius:var(--rsm);padding:7px 10px;background:var(--bg);color:var(--text);font-size:13px"/></div>
-      <div class="settings-row"><div><div class="settings-lbl">Notifications ${D.notifEnabled?'activées ✓':'désactivées'}</div></div><button class="btn-sm" onclick="enableNotifs()">${D.notifEnabled?'Désactiver':'Activer'}</button></div>
-    </div>
-    <div class="settings-section">
-      <div class="settings-title">Apprentissage</div>
-      <div class="settings-row"><div><div class="settings-lbl">Nouvelles fiches / jour</div><div class="settings-sub">Actuellement : ${D.maxNew||15}</div></div><div style="display:flex;align-items:center;gap:8px"><input type="range" min="5" max="30" step="5" value="${D.maxNew||15}" oninput="this.nextElementSibling.textContent=this.value;D.maxNew=parseInt(this.value);sv()" style="width:80px"/><span style="font-size:13px;font-weight:700;min-width:22px">${D.maxNew||15}</span></div></div>
-      <div class="settings-row"><div><div class="settings-lbl">Mode ${getMode()==='flash'?'Flash ⚡':getMode()==='mid'?'Intermédiaire 🔥':'Normal 📚'}</div><div class="settings-sub">${D.totalReviewed||0} révisions · Flash &lt;30 · Intermédiaire 30–100 · Normal 100+</div></div></div>
-    </div>
-    <div class="settings-section">
-      <div class="settings-title">Données</div>
-      <div class="settings-row"><div><div class="settings-lbl">Exporter mes données</div><div class="settings-sub">Fichier de sauvegarde JSON</div></div><button class="btn-sm" onclick="exportData()">Exporter</button></div>
-      <div class="settings-row"><div><div class="settings-lbl">Importer des données</div></div><button class="btn-sm" onclick="document.getElementById('impFile').click()">Importer</button></div>
-      <input type="file" id="impFile" accept=".json" style="display:none" onchange="importData(event)"/>
-    </div>
-    <div style="height:20px"></div>
-  </div>`;
+  var el=document.getElementById('s-home');
+  el.innerHTML='<div class="page-wrap">'
+    +'<button class="back-btn" id="btn-back-settings">← Accueil</button>'
+    +'<div class="page-title">Paramètres</div>'
+    +'<div style="background:var(--bg2);border-radius:var(--rsm);padding:13px 15px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;border:0.5px solid var(--border)">'
+      +'<div><div style="font-size:14px;font-weight:600">Nouvelles fiches / jour</div><div style="font-size:12px;color:var(--text3);margin-top:2px">Actuellement : '+(D.maxNew||20)+'</div></div>'
+      +'<div style="display:flex;align-items:center;gap:8px">'
+        +'<input type="range" min="5" max="30" step="5" value="'+(D.maxNew||20)+'" id="range-max" style="width:80px"/>'
+        +'<span id="range-val" style="font-size:13px;font-weight:700;min-width:22px">'+(D.maxNew||20)+'</span>'
+      +'</div>'
+    +'</div>'
+    +'<div style="background:var(--bg2);border-radius:var(--rsm);padding:13px 15px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;border:0.5px solid var(--border)">'
+      +'<div><div style="font-size:14px;font-weight:600">Exporter mes données</div></div>'
+      +'<button class="btn-sm" id="btn-export">Exporter</button>'
+    +'</div>'
+    +'<div style="background:var(--bg2);border-radius:var(--rsm);padding:13px 15px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;border:0.5px solid var(--border)">'
+      +'<div><div style="font-size:14px;font-weight:600">Importer des données</div></div>'
+      +'<button class="btn-sm" id="btn-import">Importer</button>'
+    +'</div>'
+    +'<input type="file" id="imp-file" accept=".json" style="display:none"/>'
+    +'<div style="height:20px"></div>'
+  +'</div>';
+  document.getElementById('btn-back-settings').onclick=function(){rHome();};
+  document.getElementById('range-max').oninput=function(){document.getElementById('range-val').textContent=this.value;D.maxNew=parseInt(this.value);sv();};
+  document.getElementById('btn-export').onclick=exportData;
+  document.getElementById('btn-import').onclick=function(){document.getElementById('imp-file').click();};
+  document.getElementById('imp-file').onchange=importData;
 }
-function exportData(){const b=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='myenglish-backup-'+new Date().toISOString().split('T')[0]+'.json';a.click();URL.revokeObjectURL(u);}
-function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const i=JSON.parse(ev.target.result);if(!i.cards||!i.decks)throw new Error('Format invalide');D=i;sv();alert('Import réussi — '+D.cards.length+' fiches restaurées.');rHome();}catch(err){alert('Erreur : '+err.message);}};r.readAsText(f);}
 
-// ─── TRAIN ────────────────────────────────────────────────────
-function renderExplorePills(){
-  const added=D.cards.filter(c=>c.fromBank);
-  if(!added.length)return '<p style="font-size:13px;color:var(--text3);padding:4px 0 8px">Aucune fiche Explore ajoutée — va dans Explorer pour commencer !</p>';
-  // No subcategory filter — just launch directly
-  return '';
+function exportData(){
+  var b=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  var u=URL.createObjectURL(b);
+  var a=document.createElement('a');
+  a.href=u;a.download='myenglish-backup.json';a.click();
+  URL.revokeObjectURL(u);
 }
-function rTrain(){
-  const el=document.getElementById('s-train');
-  const due=D.cards.filter(c=>c.due<=now()).length;
-  const srcBtns=`
-    <div class="pill-row">
-      <button class="pill ${qMode==='all'?'active':''}" onclick="setQMode('all')">⚡ Toutes</button>
-      <button class="pill ${qMode==='themes'?'active':''}" onclick="setQMode('themes')">📚 Thèmes</button>
-      <button class="pill ${qMode==='explore'?'active':''}" onclick="setQMode('explore')">🗺️ Explore</button>
-    </div>
+function importData(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    try{var i=JSON.parse(ev.target.result);if(!i.cards||!i.decks)throw new Error('Format invalide');D=i;sv();alert('Import réussi - '+D.cards.length+' fiches restaurées.');rHome();}
+    catch(err){alert('Erreur : '+err.message);}
+  };
+  r.readAsText(f);
+}
 
-    ${qMode==='explore'?renderExplorePills():''}
-  `;
-  el.innerHTML=`<div class="train-wrap">
-    <div class="page-title">S'entraîner</div>
-    <div class="mode-grid">
-      <div class="mode-card ${trainMode==='review'?'active':''}" onclick="setTrainMode('review')">
-        <div class="mode-card-icon">&#128257;</div>
-        <div class="mode-card-name">Révision</div>
-        <div class="mode-card-desc">Répétition espacée · ${due} fiche${due!==1?'s':''} due${due!==1?'s':''}</div>
-        ${due>0?'<div class="mode-card-badge">'+due+'</div>':''}
-      </div>
-      <div class="mode-card ${trainMode==='composed'?'active':''}" onclick="setTrainMode('composed')">
-        <div class="mode-card-icon">&#129302;</div>
-        <div class="mode-card-name">Défi IA</div>
-        <div class="mode-card-desc">${getComposedDesc()}</div>
-        ${getComposedBadge()}
-      </div>
-      <div class="mode-card disabled">
-        <div class="mode-card-icon">&#128066;</div>
-        <div class="mode-card-name">Écoute</div>
-        <div class="mode-card-desc">Entends et transcris</div>
-        <div class="mode-coming">Bientôt</div>
-      </div>
-      <div class="mode-card disabled">
-        <div class="mode-card-icon">&#9889;</div>
-        <div class="mode-card-name">Vitesse</div>
-        <div class="mode-card-desc">10 mots · 60 secondes</div>
-        <div class="mode-coming">Bientôt</div>
-      </div>
-    </div>
-    ${srcBtns}
-    <div id="qa"></div>
-  </div>`;
-  startSession();
+// ─── NOTIFICATIONS ───────────────────────────────────────────
+function canNotify(){return typeof Notification!=='undefined';}
+function enableNotifs(){
+  if(!canNotify())return;
+  Notification.requestPermission().then(function(p){
+    D.notifEnabled=p==='granted';sv();rHome();
+  });
 }
+
+// ─── COMPOSED PHRASE HELPERS ─────────────────────────────────
 function getEligiblePool(){
-  const now_=now();
-  return D.cards.filter(c=>{
+  var now_=now();
+  return D.cards.filter(function(c){
     if(!c.totalRatings||c.totalRatings<3)return false;
     if(c.score<3)return false;
     if(c.due<now_-7*86400000)return false;
     return true;
   });
 }
+function getComposedDue(){
+  return D.composed.filter(function(c){return c.due<=now();});
+}
+function shouldGenerateComposed(){
+  var pool=getEligiblePool();
+  if(pool.length<2)return false;
+  var pending=D.composed.filter(function(c){return c.due>now();}).length;
+  return pending<3;
+}
 function getComposedDesc(){
-  const pool=getEligiblePool();
+  var pool=getEligiblePool();
   if(pool.length<2)return 'Valide plus de mots pour débloquer';
-  const due=getComposedDue().length;
-  const pending=(D.composed||[]).filter(c=>c.due>now()).length;
-  if(due>0)return due+' défi'+( due>1?'s':'')+' disponible'+(due>1?'s':'');
+  var due=getComposedDue().length;
+  var pending=D.composed.filter(function(c){return c.due>now();}).length;
+  if(due>0)return due+' défi'+(due>1?'s':'')+' disponible'+(due>1?'s':'');
   if(pending>0)return pending+' défi'+(pending>1?'s':'')+' en attente';
   return 'Génération au démarrage';
 }
 function getComposedBadge(){
-  const pool=getEligiblePool();
+  var pool=getEligiblePool();
   if(pool.length<2)return '<div class="mode-coming">Pool insuffisant</div>';
-  const due=getComposedDue().length;
+  var due=getComposedDue().length;
   if(due>0)return '<div class="mode-card-badge">'+due+'</div>';
   return '';
 }
-function setTrainMode(m){trainMode=m;rTrain();}
-function setQMode(m){qMode=m;if(m!=='themes')qDeck=null;if(m!=='explore')qExploreCat=null;rTrain();}
-function setQTheme(id){qDeck=id;rTrain();}
-function setQCat(k){qExploreCat=k;rTrain();}
+
+async function generateComposed(){
+  var pool=getEligiblePool();
+  if(pool.length<2)return null;
+  var level=pool.length>=50?3:pool.length>=20?2:1;
+  var count=level===1?2:level===2?3:4;
+  // Pick items mixing Oxford and Contexte
+  var ox=pool.filter(function(c){return c.exploreKey&&c.exploreKey.startsWith('ox_');});
+  var ctx=pool.filter(function(c){return c.exploreKey&&!c.exploreKey.startsWith('ox_');});
+  var pers=pool.filter(function(c){return !c.exploreKey;});
+  var picked=[];
+  if(ox.length&&ctx.length){
+    picked.push(ox[Math.floor(Math.random()*ox.length)]);
+    picked.push(ctx[Math.floor(Math.random()*ctx.length)]);
+    var rest=ox.concat(ctx).concat(pers).filter(function(c){return picked.indexOf(c)<0;});
+    while(picked.length<count&&rest.length){var i=Math.floor(Math.random()*rest.length);picked.push(rest.splice(i,1)[0]);}
+  } else {
+    var sh=pool.slice().sort(function(){return Math.random()-.5;});
+    picked=sh.slice(0,count);
+  }
+  var wordList=picked.map(function(c){return '- "'+c.a+'" ('+c.b+')';}).join('\n');
+  var levelStr=level===1?'une phrase courte (1-2 propositions)':level===2?'une phrase professionnelle (2-3 propositions)':'un mini-scénario professionnel (3-4 propositions)';
+  var prompt='Tu es un assistant pour apprendre l anglais professionnel.\n\nMots a utiliser :\n'+wordList+'\n\nGenere '+levelStr+' ENTIEREMENT EN FRANCAIS que l utilisateur devra traduire en anglais. La traduction doit naturellement utiliser ces mots. Contexte professionnel.\n\nReponds UNIQUEMENT en JSON sans markdown :\n{"fr":"phrase en francais","en":"traduction anglaise"}';
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,messages:[{role:'user',content:prompt}]})
+    });
+    var data=await resp.json();
+    var text=(data.content&&data.content[0]&&data.content[0].text)||'';
+    var clean=text.replace(/```json|```/g,'').trim();
+    var parsed=JSON.parse(clean);
+    if(!parsed.fr||!parsed.en)return null;
+    var cp={id:'cp_'+Date.now(),fr:parsed.fr,en:parsed.en,words:picked.map(function(c){return {en:c.a,fr:c.b};}),level:level,score:0,mult:1,due:0,totalRatings:0};
+    D.composed.push(cp);sv();
+    return cp;
+  }catch(e){console.error('Composed error:',e);return null;}
+}
+
+function rateComposed(id,s){
+  var c=D.composed.find(function(x){return x.id===id;});
+  if(!c)return;
+  c.totalRatings=(c.totalRatings||0)+1;c.score=s;
+  var iv={1:10*60000,2:3600000,3:6*3600000,4:86400000,5:3*86400000};
+  c.due=now()+iv[s]*(s>=4?(c.mult||1):1);
+  if(s>=4)c.mult=Math.min((c.mult||1)*1.4,8);else c.mult=1;
+  if(s<=2){
+    c.words.forEach(function(w){
+      var card=D.cards.find(function(x){return x.a===w.en;});
+      if(card)card.due=Math.min(card.due,now()+30*60000);
+    });
+  }
+  D.reviewedToday=(D.reviewedToday||0)+1;D.totalReviewed=(D.totalReviewed||0)+1;
+  sv();updateDot();
+}
+
+// ─── TRAIN ───────────────────────────────────────────────────
+function rTrain(){
+  var el=document.getElementById('s-train');
+  if(!el)return;
+  var due=D.cards.filter(function(c){return c.due<=now();}).length;
+  var cd='Valide plus de mots pour débloquer';
+  var cb='';
+  try{cd=getComposedDesc();cb=getComposedBadge();}catch(e){}
+
+  var html='<div class="train-wrap">'
+    +'<div class="page-title">S\'entraîner</div>'
+    +'<div class="mode-grid">'
+      +'<div class="mode-card'+(trainMode==='review'?' active':'')+'" id="m-review">'
+        +'<div class="mode-card-icon">&#128257;</div>'
+        +'<div class="mode-card-name">Révision</div>'
+        +'<div class="mode-card-desc">Répétition espacée · '+due+' fiche'+(due!==1?'s':'')+' due'+(due!==1?'s':'')+'</div>'
+        +(due>0?'<div class="mode-card-badge">'+due+'</div>':'')
+      +'</div>'
+      +'<div class="mode-card'+(trainMode==='composed'?' active':'')+'" id="m-composed">'
+        +'<div class="mode-card-icon">&#129302;</div>'
+        +'<div class="mode-card-name">Défi IA</div>'
+        +'<div class="mode-card-desc">'+cd+'</div>'
+        +cb
+      +'</div>'
+      +'<div class="mode-card disabled">'
+        +'<div class="mode-card-icon">&#128066;</div>'
+        +'<div class="mode-card-name">Écoute</div>'
+        +'<div class="mode-card-desc">Entends et transcris</div>'
+        +'<div class="mode-coming">Bientôt</div>'
+      +'</div>'
+      +'<div class="mode-card disabled">'
+        +'<div class="mode-card-icon">&#9889;</div>'
+        +'<div class="mode-card-name">Vitesse</div>'
+        +'<div class="mode-card-desc">10 mots · 60 secondes</div>'
+        +'<div class="mode-coming">Bientôt</div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="pill-row">'
+      +'<button class="pill'+(qMode==='all'?' active':'')+'" id="pq-all">Toutes</button>'
+      +'<button class="pill'+(qMode==='themes'?' active':'')+'" id="pq-themes">Mes thèmes</button>'
+      +'<button class="pill'+(qMode==='explore'?' active':'')+'" id="pq-explore">Explore</button>'
+    +'</div>'
+    +'<div id="qa"></div>'
+  +'</div>';
+
+  el.innerHTML=html;
+
+  document.getElementById('m-review').onclick=function(){trainMode='review';rTrain();};
+  document.getElementById('m-composed').onclick=function(){trainMode='composed';rTrain();};
+  document.getElementById('pq-all').onclick=function(){qMode='all';qDeck=null;qExploreCat=null;rTrain();};
+  document.getElementById('pq-themes').onclick=function(){qMode='themes';qExploreCat=null;rTrain();};
+  document.getElementById('pq-explore').onclick=function(){qMode='explore';qDeck=null;rTrain();};
+
+  startSession();
+}
 
 function getQuizCards(){
-  if(qMode==='all')return D.cards;
-  if(qMode==='themes')return qDeck?D.cards.filter(c=>c.deckId===qDeck):D.cards.filter(c=>!c.fromBank);
-  if(qMode==='explore'){
-    if(qExploreCat){
-      if(qExploreCat.startsWith('meta_')){
-        const mk=qExploreCat.slice(5);
-        const cats=META[mk]?.cats||[];
-        return D.cards.filter(c=>c.exploreKey&&cats.some(k=>c.exploreKey.startsWith(k+'-')));
-      }
-      if(qExploreCat.startsWith('ox_')){
-        const k=qExploreCat.slice(3);
-        return D.cards.filter(c=>c.exploreKey&&c.exploreKey.startsWith('ox_'+k+'-'));
-      }
-      return D.cards.filter(c=>c.exploreKey&&c.exploreKey.startsWith(qExploreCat+'-')&&!c.exploreKey.startsWith('ox_'));
-    }
-    return D.cards.filter(c=>c.fromBank);
-  }
+  if(qMode==='themes')return qDeck?D.cards.filter(function(c){return c.deckId===qDeck;}):D.cards.filter(function(c){return !c.fromBank;});
+  if(qMode==='explore')return D.cards.filter(function(c){return c.fromBank;});
   return D.cards;
 }
 
-let composedQueue=[];
-let composedGenPending=false;
 async function startSession(){
-  // Composed-only mode
+  var qa=document.getElementById('qa');
+  if(!qa)return;
+
   if(trainMode==='composed'){
     qCards=[];qIdx=0;qScores=[];
     composedQueue=getComposedDue();
-    if(composedQueue.length===0&&shouldGenerateComposed()){
-      // Show loading state
-      const qa=document.getElementById('qa');
-      if(qa)qa.innerHTML='<div class="composed-loader"><div style="font-size:32px;margin-bottom:8px">&#129302;</div><div>Génération de ton Défi IA...</div><div class="composed-loader-dots"><span></span><span></span><span></span></div></div>';
+    if(composedQueue.length===0&&shouldGenerateComposed()&&!composedGenPending){
+      qa.innerHTML='<div class="composed-loader"><div style="font-size:32px;margin-bottom:8px">&#129302;</div><div>Génération de ton Défi IA...</div><div class="dot-anim"><span></span><span></span><span></span></div></div>';
       composedGenPending=true;
       await generateComposed();
       composedGenPending=false;
       composedQueue=getComposedDue();
     }
     if(composedQueue.length===0){
-      const qa=document.getElementById('qa');
-      if(qa)qa.innerHTML='<div class="empty"><div class="empty-icon">&#129302;</div>Aucun Défi IA disponible.<br><br>Valide plus de fiches en révision pour générer des défis !</div>';
+      qa.innerHTML='<div class="empty"><div class="empty-icon">&#129302;</div>Pas encore de Défi IA.<br><br>Valide plus de fiches en révision pour en générer !</div>';
       return;
     }
     rQCard();
     return;
   }
-  // Normal revision mode
-  const all=getQuizCards();
-  if(!all.length){document.getElementById('qa').innerHTML='<div class="empty"><div class="empty-icon">&#128219;</div>Aucune fiche dans cette sélection.</div>';return;}
-  const due=all.filter(c=>c.due<=now()).sort(()=>Math.random()-.5);
-  const nd=all.filter(c=>c.due>now()).sort((a,b)=>a.score-b.score);
-  qCards=[...due,...nd.slice(0,Math.max(3,10-due.length))];
+
+  // Normal revision
+  var all=getQuizCards();
+  if(!all.length){
+    qa.innerHTML='<div class="empty"><div class="empty-icon">📭</div>Aucune fiche dans cette sélection.</div>';
+    return;
+  }
+  var due=all.filter(function(c){return c.due<=now();}).sort(function(){return Math.random()-.5;});
+  var nd=all.filter(function(c){return c.due>now();}).sort(function(a,b){return a.score-b.score;});
+  qCards=due.concat(nd.slice(0,Math.max(3,10-due.length)));
   qIdx=0;qScores=[];
+
   composedQueue=getComposedDue();
   if(shouldGenerateComposed()&&!composedGenPending){
     composedGenPending=true;
-    generateComposed().then(()=>{composedGenPending=false;composedQueue=getComposedDue();});
+    generateComposed().then(function(){composedGenPending=false;composedQueue=getComposedDue();});
   }
   rQCard();
 }
-function enTxt(c){return c.dir==='fr-en'?c.b:c.a;}
 
 function getCatBadge(card){
-  // Oxford or Contexte explore card — show category icon
   if(card.exploreKey){
-    if(card.exploreKey.startsWith('ox_')){
-      const k=card.exploreKey.split('-')[0].slice(3);
-      return{type:'icon',val:OXFORD[k]?.icon||''};
-    }
-    const k=card.exploreKey.split('-')[0];
-    return{type:'icon',val:BANK[k]?.icon||''};
+    if(card.exploreKey.startsWith('ox_')){var k=card.exploreKey.split('-')[0].slice(3);return {type:'icon',val:(OXFORD[k]&&OXFORD[k].icon)||''};}
+    var k2=card.exploreKey.split('-')[0];return{type:'icon',val:(BANK[k2]&&BANK[k2].icon)||''};
   }
-  // Personal theme card — show theme name
-  const deck=D.decks.find(d=>d.id===card.deckId);
+  var deck=D.decks.find(function(d){return d.id===card.deckId;});
   if(deck&&!deck.isExplore)return{type:'name',val:deck.name};
   return{type:'',val:''};
 }
+
 function rQCard(){
-  const area=document.getElementById('qa');if(!area)return;
+  var qa=document.getElementById('qa');
+  if(!qa)return;
+
+  // Composed mode
   if(trainMode==='composed'){
-    if(composedQueue.length>0){const cp=composedQueue.shift();rComposedCard(area,cp);return;}
-    // All composed done - show result
-    const avg=qScores.length?(qScores.reduce((a,b)=>a+b,0)/qScores.length).toFixed(1):'0';
-    const emoji=parseFloat(avg)>=4?'&#127942;':parseFloat(avg)>=3?'&#128170;':'&#129302;';
-    area.innerHTML='<div class="result"><div class="result-emoji">'+emoji+'</div><div class="result-score">'+avg+'<span style="font-size:28px;font-weight:500">/5</span></div><div class="result-sub">'+qScores.length+' Défi'+(qScores.length!==1?'s':'')+' IA relevé'+(qScores.length!==1?'s':'')+'</div><button class="btn-primary" onclick="startSession()">Recommencer</button></div>';
+    if(composedQueue.length>0){rComposedCard(composedQueue.shift());return;}
+    var avg=qScores.length?(qScores.reduce(function(a,b){return a+b;},0)/qScores.length).toFixed(1):'0';
+    qa.innerHTML='<div class="result"><div class="result-emoji">&#127942;</div><div class="result-score">'+avg+'<span style="font-size:28px;font-weight:500">/5</span></div><div class="result-sub">'+qScores.length+' Défi'+(qScores.length!==1?'s':'')+' IA relevé'+(qScores.length!==1?'s':'')+'</div><button class="btn-primary" id="btn-restart">Recommencer</button></div>';
+    document.getElementById('btn-restart').onclick=startSession;
     return;
   }
-  if(qIdx>0&&qIdx%5===0&&composedQueue.length>0){
-    const cp=composedQueue.shift();
-    rComposedCard(area,cp);return;
-  }
+
+  // Insert composed every 5 regular cards
+  if(qIdx>0&&qIdx%5===0&&composedQueue.length>0){rComposedCard(composedQueue.shift());return;}
+
   if(qIdx>=qCards.length){
-    if(composedQueue.length>0){const cp=composedQueue.shift();rComposedCard(area,cp);return;}
-    const avg=qScores.length?(qScores.reduce((a,b)=>a+b,0)/qScores.length).toFixed(1):'—';
-    const t=tod(),last=new Date(D.lastSession||0).toDateString(),yest=new Date(now()-86400000).toDateString();
+    if(composedQueue.length>0){rComposedCard(composedQueue.shift());return;}
+    var avg2=qScores.length?(qScores.reduce(function(a,b){return a+b;},0)/qScores.length).toFixed(1):'—';
+    var t=tod(),last=new Date(D.lastSession||0).toDateString(),yest=new Date(now()-86400000).toDateString();
     if(last!==t){D.streak=last===yest?(D.streak||0)+1:1;D.lastSession=now();sv();}
-    checkDueNotif();
-    const emoji=parseFloat(avg)>=4?'🏆':parseFloat(avg)>=3?'💪':'📖';
-    area.innerHTML=`<div class="result">
-      <div class="result-emoji">${emoji}</div>
-      <div class="result-score">${avg}<span style="font-size:28px;font-weight:500">/5</span></div>
-      <div class="result-sub">${qScores.length} fiche${qScores.length!==1?'s':''} révisée${qScores.length!==1?'s':''}</div>
-      <button class="btn-primary" onclick="startSession()">Recommencer</button>
-    </div>`;
+    var emoji=parseFloat(avg2)>=4?'🏆':parseFloat(avg2)>=3?'💪':'📖';
+    qa.innerHTML='<div class="result"><div class="result-emoji">'+emoji+'</div><div class="result-score">'+avg2+'<span style="font-size:28px;font-weight:500">/5</span></div><div class="result-sub">'+qScores.length+' fiche'+(qScores.length!==1?'s':'')+' révisée'+(qScores.length!==1?'s':'')+'</div><button class="btn-primary" id="btn-restart2">Recommencer</button></div>';
+    document.getElementById('btn-restart2').onclick=startSession;
     return;
   }
-  const card=qCards[qIdx],pct=Math.round((qIdx/qCards.length)*100);
-  const duc=qCards.filter(c=>c.due<=now()).length;
-  const isEF=card.dir!=='fr-en',q=isEF?card.a:card.b;
-  const safe=enTxt(card).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-  const tp=card.fromBank?'tc-explore':card.type==='mot'?'tc-mot':'tc-phrase';
-  const tpLabel=card.fromBank?'Explore':card.type;
-  const discBadge=card.isHard?`<div class="disc-badge" style="background:var(--redbg);color:var(--red)">🔁 Difficile</div>`:'';
 
-  const catBadge=getCatBadge(card);
-  const catBadgeHTML=catBadge.type==='icon'&&catBadge.val?`<span style="font-size:18px;opacity:.75">${catBadge.val}</span>`:catBadge.type==='name'&&catBadge.val?`<span style="font-size:10px;font-weight:700;color:var(--text3);background:var(--bg3);padding:2px 7px;border-radius:99px">${catBadge.val}</span>`:'';
-  area.innerHTML=`<div class="quiz-stats">
-    <div class="qs"><div class="qs-n">${qIdx}</div><div class="qs-l">Vues</div></div>
-    <div class="qs"><div class="qs-n">${qCards.length-qIdx}</div><div class="qs-l">Restantes</div></div>
-    <div class="qs"><div class="qs-n" style="color:${duc>0?'var(--red)':'var(--green)'}">${duc}</div><div class="qs-l">Dues</div></div>
-  </div>
-  <div class="qprog"><div class="qprog-fill" style="width:${pct}%"></div></div>
-  <div class="quiz-card">
-    <div class="quiz-dir" style="display:flex;align-items:center;justify-content:space-between;width:100%">
-      <span>${isEF?'EN → FR':'FR → EN'} · <span class="type-chip ${tp}">${tpLabel}</span></span>
-      <span style="display:flex;align-items:center;gap:5px">${discBadge}${catBadgeHTML}</span>
-    </div>
-    <div class="quiz-q">${q}</div>
-    <button class="audio-btn" onclick="spk('${safe}')">🔊 Écouter</button>
-    <div class="write-wrap">
-      <input class="write-input" id="wa" type="text" placeholder="Écris ta réponse…" autocomplete="off" autocapitalize="sentences" spellcheck="true"/>
-      <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎤</button>
-    </div>
-  </div>
-  <div id="qb" style="text-align:center;margin-top:4px">
-    <button class="btn-primary" style="max-width:240px;margin:0 auto" onclick="rvl()">Voir la réponse</button>
-  </div>`;
-  setTimeout(()=>document.getElementById('wa')?.focus(),100);
-  document.getElementById('wa')?.addEventListener('keydown',e=>{if(e.key==='Enter')rvl();});
-}
+  var card=qCards[qIdx];
+  var pct=Math.round((qIdx/qCards.length)*100);
+  var duc=qCards.filter(function(c){return c.due<=now();}).length;
+  var isEF=card.dir!=='fr-en';
+  var q=isEF?card.a:card.b;
+  var ans=isEF?card.b:card.a;
+  var safe=(card.dir!=='fr-en'?card.a:card.b).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  var tp=card.fromBank?'tc-explore':card.type==='mot'?'tc-mot':'tc-phrase';
+  var tpLabel=card.fromBank?'Explore':card.type;
+  var discBadge=card.isHard?'<div class="disc-badge">&#128257; Difficile</div>':'';
+  var badge=getCatBadge(card);
+  var badgeHTML=badge.type==='icon'&&badge.val?'<span style="font-size:18px;opacity:.75">'+badge.val+'</span>':badge.type==='name'&&badge.val?'<span style="font-size:10px;font-weight:700;color:var(--text3);background:var(--bg3);padding:2px 7px;border-radius:99px">'+badge.val+'</span>':'';
 
-function rComposedCard(area,cp){
-  const lvIcon='&#129302;';
-  const lvLabel=cp.level===1?'Défi IA':cp.level===2?'Défi IA+':'Défi IA++';
-  const chips=cp.words.map(w=>'<span class="composed-word-chip">'+w.en+'</span>').join('');
-  const cpId=cp.id;
-  area.innerHTML='<div class="quiz-stats"><div class="qs"><div class="qs-n">'+qIdx+'</div><div class="qs-l">Vues</div></div><div class="qs"><div class="qs-n" style="color:var(--gold)">'+getEligiblePool().length+'</div><div class="qs-l">Pool</div></div><div class="qs"><div class="qs-n">'+cp.level+'</div><div class="qs-l">Niveau</div></div></div>'
-    +'<div class="composed-card"><div class="composed-badge">'+lvIcon+' '+lvLabel+'</div>'
-    +'<div class="composed-scenario">'+cp.fr+'</div>'
-    +'<div class="composed-words">'+chips+'</div></div>'
-    +'<div class="write-wrap" style="margin-bottom:10px">'
-    +'<input class="write-input" id="wa" type="text" placeholder="Traduis en anglais..." autocomplete="off" autocapitalize="sentences"/>'
+  qa.innerHTML='<div class="quiz-stats">'
+    +'<div class="qs"><div class="qs-n">'+qIdx+'</div><div class="qs-l">Vues</div></div>'
+    +'<div class="qs"><div class="qs-n">'+(qCards.length-qIdx)+'</div><div class="qs-l">Restantes</div></div>'
+    +'<div class="qs"><div class="qs-n" style="color:'+(duc>0?'var(--red)':'var(--green)')+'">'+duc+'</div><div class="qs-l">Dues</div></div>'
     +'</div>'
-    +'<div id="qb" style="text-align:center">'
-    +'<button class="btn-primary" style="max-width:240px;margin:0 auto" id="btn-rvl-cp">Voir la réponse</button>'
+    +'<div class="qprog"><div class="qprog-fill" style="width:'+pct+'%"></div></div>'
+    +'<div class="quiz-card">'
+      +'<div class="quiz-dir">'
+        +'<span>'+(isEF?'EN → FR':'FR → EN')+' · <span class="type-chip '+tp+'">'+tpLabel+'</span></span>'
+        +'<span style="display:flex;align-items:center;gap:5px">'+discBadge+badgeHTML+'</span>'
+      +'</div>'
+      +'<div class="quiz-q">'+q+'</div>'
+      +'<button class="audio-btn" id="btn-audio">🔊 Écouter</button>'
+      +'<div class="write-wrap">'
+        +'<input class="write-input" id="wa" type="text" placeholder="Écris ta réponse…" autocomplete="off" autocapitalize="sentences" spellcheck="true"/>'
+        +'<button class="mic-btn" id="mic-btn">🎤</button>'
+      +'</div>'
+    +'</div>'
+    +'<div id="qb" style="text-align:center;margin-top:4px">'
+      +'<button class="btn-primary" style="max-width:240px;margin:0 auto" id="btn-show">Voir la réponse</button>'
     +'</div>';
-  setTimeout(()=>{
-    document.getElementById('wa')?.focus();
-    document.getElementById('btn-rvl-cp')?.addEventListener('click',()=>rvlComposed(cpId));
-  },100);
-  document.getElementById('wa')?.addEventListener('keydown',e=>{if(e.key==='Enter')rvlComposed(cpId);});
+
+  document.getElementById('btn-audio').onclick=function(){spk(safe);};
+  document.getElementById('btn-show').onclick=rvl;
+  document.getElementById('mic-btn').onclick=toggleMic;
+  var wa=document.getElementById('wa');
+  if(wa){
+    wa.focus();
+    wa.onkeydown=function(e){if(e.key==='Enter')rvl();};
+  }
 }
-function rvlComposed(id){
-  const cp=(D.composed||[]).find(x=>x.id===id);if(!cp)return;
-  const typed=document.getElementById('wa')?.value||'';
-  const scoreGrid=[1,2,3,4,5].map(s=>'<button class="score-btn sc'+s+'" id="cpsc'+s+'"><span>'+s+'</span></button>').join('');
-  document.getElementById('qb').innerHTML='<div class="quiz-card" style="min-height:auto;padding:18px 20px;gap:10px">'
-    +'<div class="composed-badge">Reference</div>'
-    +'<div class="quiz-ans">'+cp.en+'</div>'
-    +'<div class="compare-box">'
-    +'<div class="compare-yours">Ta version : <em style="color:var(--text)">'+(typed||'-')+'</em></div>'
-    +'<div class="compare-correct">Reference : '+cp.en+'</div>'
-    +'</div></div>'
-    +'<p class="score-hint" style="margin-top:14px">Comment tu ten es sorti ?</p>'
-    +'<div class="score-grid">'+scoreGrid+'</div>';
-  [1,2,3,4,5].forEach(s=>{
-    document.getElementById('cpsc'+s)?.addEventListener('click',()=>rateComposedAndNext(id,s));
-  });
-}
-function rateComposedAndNext(id,s){rateComposed(id,s);qScores.push(s);rQCard();}
+
 function rvl(){
-  const card=qCards[qIdx],isEF=card.dir!=='fr-en',ans=isEF?card.b:card.a;
-  const typed=document.getElementById('wa')?.value||'';
-  document.getElementById('qb').innerHTML=`<div class="quiz-card" style="min-height:auto;padding:18px 20px;gap:10px">
-    <div class="quiz-ans" id="btn-ans" style="cursor:pointer" onclick="">
-      ${ans} <button id="btn-ans-audio" style="background:none;border:none;cursor:pointer;font-size:13px;opacity:.7">🔊</button>
-    </div>
-    ${card.ctx?`<div class="quiz-ctx">${card.ctx} <button id="btn-ctx-audio" style="background:none;border:none;cursor:pointer;font-size:12px;opacity:.6">🔊</button></div>`:''}
-    <div class="compare-box">
-      <div class="compare-yours">Ta réponse : <em style="color:var(--text)">${typed||'—'}</em></div>
-      <div class="compare-correct">Correct : ${ans}</div>
-    </div>
-  </div>
-  <p class="score-hint" style="margin-top:14px">C'est acquis à quel niveau ?</p>
-  <div class="score-grid">${[1,2,3,4,5].map(s=>`<button class="score-btn sc${s}" onclick="rate(${s})"><span>${s}</span><span class="score-sub">${getIL(s,card)}</span></button>`).join('')}</div>`;
-  const ba=document.getElementById('btn-ans-audio');
-  if(ba)ba.onclick=()=>spk(ans);
-  const bc=document.getElementById('btn-ctx-audio');
-  if(bc)bc.onclick=()=>spkCtx(card.ctx||'');
+  var card=qCards[qIdx];
+  var isEF=card.dir!=='fr-en';
+  var ans=isEF?card.b:card.a;
+  var typed=(document.getElementById('wa')&&document.getElementById('wa').value)||'';
+  var safe2=(isEF?card.a:card.b).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+
+  document.getElementById('qb').innerHTML='<div class="quiz-card" style="min-height:auto;padding:18px 20px;gap:10px">'
+    +'<div class="quiz-ans">'+ans+' <button class="audio-btn" id="btn-audio2" style="font-size:12px;padding:4px 10px">🔊</button></div>'
+    +(card.ctx?'<div class="quiz-ctx">'+card.ctx+'</div>':'')
+    +'<div class="compare-box">'
+      +'<div class="compare-yours">Ta réponse : <em style="color:var(--text)">'+(typed||'—')+'</em></div>'
+      +'<div class="compare-correct">Correct : '+ans+'</div>'
+    +'</div>'
+    +'</div>'
+    +'<p class="score-hint" style="margin-top:14px">Niveau de maîtrise ?</p>'
+    +'<div class="score-grid">'
+      +(function(){var s='';for(var i=1;i<=5;i++)s+='<button class="score-btn sc'+i+'" id="sc'+i+'">'+i+'<span class="score-sub">'+getIL(i,card)+'</span></button>';return s;})()
+    +'</div>';
+
+  document.getElementById('btn-audio2').onclick=function(){spk(safe2);};
+  for(var i=1;i<=5;i++){
+    (function(score){document.getElementById('sc'+score).onclick=function(){rate(score);};})(i);
+  }
 }
 
 function rate(s){
-  const card=qCards[qIdx],real=D.cards.find(c=>c.id===card.id);
+  var card=qCards[qIdx];
+  var real=D.cards.find(function(c){return c.id===card.id;});
   if(real){
     real.totalRatings=(real.totalRatings||0)+1;
     real.score=s;
     real.due=now()+getIV(s,real);
     if(s>=4)real.mult=Math.min((real.mult||1)*1.5,16);
     else if(s<=2)real.mult=1;
-    if(s<=2)real.hardStreak=(real.hardStreak||0)+1;
-    else real.hardStreak=0;
+    if(s<=2)real.hardStreak=(real.hardStreak||0)+1;else real.hardStreak=0;
     real.isHard=(real.hardStreak||0)>=3;
   }
   qScores.push(s);D.reviewedToday=(D.reviewedToday||0)+1;D.totalReviewed=(D.totalReviewed||0)+1;
   sv();qIdx++;updateDot();rQCard();
 }
 
-// Mic
+// COMPOSED CARD
+function rComposedCard(cp){
+  var qa=document.getElementById('qa');
+  if(!qa||!cp)return;
+  var chips=cp.words.map(function(w){return '<span class="composed-word-chip">'+w.en+'</span>';}).join('');
+  var lvLabel=cp.level===1?'Défi IA':cp.level===2?'Défi IA+':'Défi IA++';
+
+  qa.innerHTML='<div class="quiz-stats">'
+    +'<div class="qs"><div class="qs-n">'+qIdx+'</div><div class="qs-l">Vues</div></div>'
+    +'<div class="qs"><div class="qs-n" style="color:var(--gold)">'+getEligiblePool().length+'</div><div class="qs-l">Pool</div></div>'
+    +'<div class="qs"><div class="qs-n">'+cp.level+'</div><div class="qs-l">Niveau</div></div>'
+    +'</div>'
+    +'<div class="composed-card">'
+      +'<div class="composed-badge">&#129302; '+lvLabel+'</div>'
+      +'<div class="composed-scenario">'+cp.fr+'</div>'
+      +'<div class="composed-words">'+chips+'</div>'
+    +'</div>'
+    +'<div class="write-wrap" style="margin-bottom:10px">'
+      +'<input class="write-input" id="wa-c" type="text" placeholder="Traduis en anglais…" autocomplete="off" autocapitalize="sentences"/>'
+    +'</div>'
+    +'<div id="qb-c" style="text-align:center">'
+      +'<button class="btn-primary" style="max-width:240px;margin:0 auto" id="btn-show-c">Voir la réponse</button>'
+    +'</div>';
+
+  var wac=document.getElementById('wa-c');
+  if(wac){wac.focus();wac.onkeydown=function(e){if(e.key==='Enter')rvlComposed(cp);};}
+  document.getElementById('btn-show-c').onclick=function(){rvlComposed(cp);};
+}
+
+function rvlComposed(cp){
+  var typed=(document.getElementById('wa-c')&&document.getElementById('wa-c').value)||'';
+  document.getElementById('qb-c').innerHTML='<div class="quiz-card" style="min-height:auto;padding:18px 20px;gap:10px">'
+    +'<div class="composed-badge">Référence</div>'
+    +'<div class="quiz-ans">'+cp.en+'</div>'
+    +'<div class="compare-box">'
+      +'<div class="compare-yours">Ta version : <em style="color:var(--text)">'+(typed||'—')+'</em></div>'
+      +'<div class="compare-correct">Référence : '+cp.en+'</div>'
+    +'</div>'
+    +'</div>'
+    +'<p class="score-hint" style="margin-top:14px">Comment tu t\'en es sorti ?</p>'
+    +'<div class="score-grid">'
+      +(function(){var s='';for(var i=1;i<=5;i++)s+='<button class="score-btn sc'+i+'" id="scc'+i+'">'+i+'</button>';return s;})()
+    +'</div>';
+  for(var i=1;i<=5;i++){
+    (function(score){document.getElementById('scc'+score).onclick=function(){rateComposed(cp.id,score);qScores.push(score);rQCard();};})(i);
+  }
+}
+
+// MIC
 function toggleMic(){
-  const btn=document.getElementById('mic-btn'),inp=document.getElementById('wa');
+  var btn=document.getElementById('mic-btn');
+  var inp=document.getElementById('wa');
   if(!btn||!inp)return;
   if(recognition){recognition.stop();recognition=null;btn.textContent='🎤';btn.classList.remove('recording');return;}
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){alert('Reconnaissance vocale non disponible.');return;}
   recognition=new SR();
-  recognition.lang=qCards[qIdx]?.dir==='fr-en'?'en-US':'fr-FR';
-  recognition.continuous=false;recognition.interimResults=true;
-  recognition.onstart=()=>{btn.textContent='⏹';btn.classList.add('recording');};
-  recognition.onresult=e=>{let t='';for(let r of e.results)t+=r[0].transcript;inp.value=t;};
-  recognition.onend=()=>{btn.textContent='🎤';btn.classList.remove('recording');recognition=null;};
-  recognition.onerror=e=>{btn.textContent='🎤';btn.classList.remove('recording');recognition=null;};
+  recognition.lang=qCards[qIdx]&&qCards[qIdx].dir==='fr-en'?'en-US':'fr-FR';
+  recognition.onstart=function(){btn.textContent='⏹';btn.classList.add('recording');};
+  recognition.onresult=function(e){var t='';for(var r of e.results)t+=r[0].transcript;inp.value=t;};
+  recognition.onend=function(){btn.textContent='🎤';btn.classList.remove('recording');recognition=null;};
   recognition.start();
 }
 
 // ─── EXPLORE ─────────────────────────────────────────────────
-function getUnlocked(catKey){
-  const cat=BANK[catKey];let u=1;
-  for(let i=0;i<cat.cards.length-1;i++){
-    const bk=catKey+'-'+i;
-    if(D.bankAdded[bk]){const c=D.cards.find(x=>x.exploreKey===bk);if(c&&c.score>=4)u=i+2;else break;}
+function getUnlocked(k){
+  var cat=BANK[k];var u=1;
+  for(var i=0;i<cat.cards.length-1;i++){
+    var bk=k+'-'+i;
+    if(D.bankAdded[bk]){var c=D.cards.find(function(x){return x.exploreKey===bk;});if(c&&c.score>=4)u=i+2;else break;}
     else break;
   }
   return Math.min(u,cat.cards.length);
 }
-function getUnlockedOx(key){
-  const cat=OXFORD[key];let u=1;
-  for(let i=0;i<cat.cards.length-1;i++){
-    const bk='ox_'+key+'-'+i;
-    if(D.bankAdded[bk]){const c=D.cards.find(x=>x.exploreKey===bk);if(c&&c.score>=4)u=i+2;else break;}
+function getUnlockedOx(k){
+  var cat=OXFORD[k];var u=1;
+  for(var i=0;i<cat.cards.length-1;i++){
+    var bk='ox_'+k+'-'+i;
+    if(D.bankAdded[bk]){var c=D.cards.find(function(x){return x.exploreKey===bk;});if(c&&c.score>=4)u=i+2;else break;}
     else break;
   }
   return Math.min(u,cat.cards.length);
 }
 
 function rExplore(){
-  const el=document.getElementById('s-explore');
+  var el=document.getElementById('s-explore');
   if(bankCat){
-    const isOx=OXFORD_KEYS.includes(bankCat);
-    isOx?rOxCat(el,bankCat):rCtxCat(el,bankCat);
+    OXFORD_KEYS.indexOf(bankCat)>=0?rOxCat(el,bankCat):rCtxCat(el,bankCat);
     return;
   }
   if(exploreMeta){rMeta(el,exploreMeta);return;}
 
-  const addedCtx=CAT_KEYS.reduce((s,k)=>s+BANK[k].cards.filter((_,i)=>D.bankAdded[k+'-'+i]).length,0);
-  const addedOx=OXFORD_KEYS.reduce((s,k)=>s+OXFORD[k].cards.filter((_,i)=>D.bankAdded['ox_'+k+'-'+i]).length,0);
-  const totalOx=OXFORD_KEYS.reduce((s,k)=>s+OXFORD[k].cards.length,0);
+  var addedCtx=CAT_KEYS.reduce(function(s,k){return s+BANK[k].cards.filter(function(_,i){return D.bankAdded[k+'-'+i];}).length;},0);
+  var addedOx=OXFORD_KEYS.reduce(function(s,k){return s+OXFORD[k].cards.filter(function(_,i){return D.bankAdded['ox_'+k+'-'+i];}).length;},0);
+  var totalOx=OXFORD_KEYS.reduce(function(s,k){return s+OXFORD[k].cards.length;},0);
 
-  el.innerHTML=`<div class="explore-wrap">
-    <div class="page-title">Explorer</div>
-    <div class="exp-tabs">
-      <button class="exp-tab ${exploreTab==='context'?'active':''}" onclick="exploreTab='context';rExplore()">📘 Contexte</button>
-      <button class="exp-tab ${exploreTab==='oxford'?'active':''}" onclick="exploreTab='oxford';rExplore()">🔤 Oxford 3000</button>
-    </div>
-    ${exploreTab==='context'?renderCtxTab(addedCtx):renderOxTab(addedOx,totalOx)}
-  </div>`;
+  var ctxTab=exploreTab==='context';
+  el.innerHTML='<div class="explore-wrap">'
+    +'<div class="page-title">Explorer</div>'
+    +'<div class="exp-tabs">'
+      +'<button class="exp-tab'+(ctxTab?' active':'')+'" id="tab-ctx">Contexte</button>'
+      +'<button class="exp-tab'+(!ctxTab?' active':'')+'" id="tab-ox">Oxford 3000</button>'
+    +'</div>'
+    +(ctxTab?renderCtxTab(addedCtx):renderOxTab(addedOx,totalOx))
+    +'</div>';
+
+  document.getElementById('tab-ctx').onclick=function(){exploreTab='context';rExplore();};
+  document.getElementById('tab-ox').onclick=function(){exploreTab='oxford';rExplore();};
+  // Wire quick add buttons
+  OXFORD_KEYS.forEach(function(k){var btn=document.getElementById('qadd-ox-'+k);if(btn)btn.onclick=function(e){e.stopPropagation();quickAddOx(k);};});
+  Object.keys(META).forEach(function(mk){var btn=document.getElementById('qadd-meta-'+mk);if(btn)btn.onclick=function(e){e.stopPropagation();quickAddMeta(mk);};});
+  // Wire cat cards
+  OXFORD_KEYS.forEach(function(k){var el2=document.getElementById('catcard-ox-'+k);if(el2)el2.onclick=function(){bankCat=k;rExplore();};});
+  Object.keys(META).forEach(function(mk){var el2=document.getElementById('metacard-'+mk);if(el2)el2.onclick=function(){exploreMeta=mk;rExplore();};});
 }
 
 function renderCtxTab(added){
-  const html=Object.keys(META).map(mk=>{
-    const m=META[mk];
-    const total=m.cats.reduce((s,k)=>s+(BANK[k]?BANK[k].cards.length:0),0);
-    const a=m.cats.reduce((s,k)=>s+(BANK[k]?BANK[k].cards.filter((_,i)=>D.bankAdded[k+'-'+i]).length:0),0);
-    const names=m.cats.filter(k=>BANK[k]).map(k=>BANK[k].label).join(', ');
-    // Find next available across all cats in meta
-    let nextCat=null,nextIdx=-1;
-    for(const k of m.cats.filter(c=>BANK[c])){
-      const u=getUnlocked(k);
-      const i=BANK[k].cards.findIndex((_,j)=>!D.bankAdded[k+'-'+j]&&j<u);
-      if(i>=0){nextCat=k;nextIdx=i;break;}
+  var html='';
+  Object.keys(META).forEach(function(mk){
+    var m=META[mk];
+    var total=m.cats.reduce(function(s,k){return s+(BANK[k]?BANK[k].cards.length:0);},0);
+    var a=m.cats.reduce(function(s,k){return s+(BANK[k]?BANK[k].cards.filter(function(_,i){return D.bankAdded[k+'-'+i];}).length:0);},0);
+    var hasNext=false;
+    for(var ki=0;ki<m.cats.length;ki++){
+      var catK=m.cats[ki];if(!BANK[catK])continue;
+      var u=getUnlocked(catK);
+      for(var ii=0;ii<u;ii++){if(!D.bankAdded[catK+'-'+ii]){hasNext=true;break;}}
+      if(hasNext)break;
     }
-    const hasNext=nextCat!==null;
-    return`<div class="meta-card" onclick="exploreMeta='${mk}';rExplore()" style="flex-direction:column;align-items:flex-start;gap:0;padding:0;overflow:hidden">
-      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;width:100%">
-        <div class="meta-icon-wrap" style="background:${m.color}">${m.icon}</div>
-        <div class="meta-info"><div class="meta-name">${m.label}</div><div class="meta-sub">${a}/${total}</div></div>
-        <div class="meta-arrow">›</div>
-      </div>
-      ${hasNext?`<button class="cat-quick-add-ctx" onclick="event.stopPropagation();quickAddCtx('${nextCat}',${nextIdx})">+ Ajouter la prochaine fiche</button>`:a>=total?`<div style="padding:8px 16px 12px;font-size:11px;color:var(--green);font-weight:600">✓ Tout ajouté</div>`:''}
-    </div>`;
-  }).join('');
-  return`<div class="meta-list">${html}</div><p style="font-size:12px;color:var(--text3);text-align:center;margin-top:12px">${added} / ${totalEntries} entrées ajoutées</p>`;
+    html+='<div class="meta-card" id="metacard-'+mk+'">'
+      +'<div class="meta-card-top">'
+        +'<div class="meta-icon-wrap" style="background:'+m.color+'">'+m.icon+'</div>'
+        +'<div class="meta-info"><div class="meta-name">'+m.label+'</div><div class="meta-sub">'+a+'/'+total+'</div></div>'
+        +'<div class="meta-arrow">›</div>'
+      +'</div>'
+      +(hasNext?'<button class="meta-add-btn" id="qadd-meta-'+mk+'">+ Ajouter la prochaine fiche</button>':'')
+    +'</div>';
+  });
+  return '<div class="meta-list">'+html+'</div><p style="font-size:12px;color:var(--text3);text-align:center;margin-top:12px">'+added+' / '+totalEntries+' entrées ajoutées</p>';
 }
 
 function renderOxTab(added,totalOx){
-  const html=OXFORD_KEYS.map(key=>{
-    const cat=OXFORD[key];
-    const a=cat.cards.filter((_,i)=>D.bankAdded['ox_'+key+'-'+i]).length;
-    const u=getUnlockedOx(key);
-    const nextIdx=cat.cards.findIndex((_,i)=>!D.bankAdded['ox_'+key+'-'+i]&&i<u);
-    const hasNext=nextIdx>=0;
-    return`<div class="cat-card-wrap">
-      <div class="cat-card" onclick="bankCat='${key}';rExplore()">
-        <div style="position:absolute;top:0;left:0;bottom:0;width:3px;background:${cat.tc};border-radius:3px 0 0 3px"></div>
-        <div class="cat-icon">${cat.icon}</div>
-        <div class="cat-name">${cat.label}</div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px">
-          <span class="cat-sub">${a}/${cat.cards.length}</span>
-          ${hasNext?`<button class="cat-quick-add-inline" style="color:${cat.tc}" onclick="event.stopPropagation();quickAddOx('${key}')">+</button>`:`<span style="font-size:10px;color:var(--green);font-weight:700">✓</span>`}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-  return`<div class="cat-grid">${html}</div><p style="font-size:12px;color:var(--text3);text-align:center;margin-top:4px">${added} / ${totalOx} mots Oxford ajoutés</p>`;
+  var html='';
+  OXFORD_KEYS.forEach(function(k){
+    var cat=OXFORD[k];
+    var a=cat.cards.filter(function(_,i){return D.bankAdded['ox_'+k+'-'+i];}).length;
+    var u=getUnlockedOx(k);
+    var nextIdx=-1;
+    for(var i=0;i<u;i++){if(!D.bankAdded['ox_'+k+'-'+i]){nextIdx=i;break;}}
+    var hasNext=nextIdx>=0;
+    html+='<div class="cat-card" id="catcard-ox-'+k+'" style="cursor:pointer">'
+      +'<div class="cat-accent" style="background:'+cat.tc+'"></div>'
+      +'<div class="cat-card-inner">'
+        +'<div class="cat-icon">'+cat.icon+'</div>'
+        +'<div class="cat-name">'+cat.label+'</div>'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px">'
+          +'<span class="cat-sub">'+a+'/'+cat.cards.length+'</span>'
+          +(hasNext?'<button class="btn-sm" id="qadd-ox-'+k+'" style="font-size:10px;padding:3px 8px;color:'+cat.tc+'">+</button>':'<span style="font-size:10px;color:var(--green);font-weight:700">✓</span>')
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  });
+  return '<div class="cat-grid">'+html+'</div><p style="font-size:12px;color:var(--text3);text-align:center">'+added+' / '+totalOx+' mots Oxford ajoutés</p>';
 }
 
 function rMeta(el,mk){
-  const m=META[mk];
-  const html=m.cats.filter(k=>BANK[k]).map(key=>{
-    const cat=BANK[key];
-    const a=cat.cards.filter((_,i)=>D.bankAdded[key+'-'+i]).length;
-    const u=getUnlocked(key),locked=cat.cards.length-u;
-    return`<div class="cat-card" style="background:${cat.color};color:${cat.tc}" onclick="bankCat='${key}';rExplore()">
-      <div class="cat-icon">${cat.icon}</div>
-      <div class="cat-name">${cat.label}</div>
-      <div class="cat-sub">${a}/${cat.cards.length} · ${locked>0?locked+' verr.':'✓'}</div>
-    </div>`;
-  }).join('');
-  el.innerHTML=`<div class="explore-wrap">
-    <button class="back-btn" onclick="exploreMeta=null;rExplore()">← Explorer</button>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-      <span style="font-size:26px">${m.icon}</span>
-      <span style="font-size:18px;font-weight:800;color:var(--text)">${m.label}</span>
-    </div>
-    <div class="cat-grid">${html}</div>
-  </div>`;
+  var m=META[mk];
+  var html='';
+  m.cats.filter(function(k){return !!BANK[k];}).forEach(function(k){
+    var cat=BANK[k];
+    var a=cat.cards.filter(function(_,i){return D.bankAdded[k+'-'+i];}).length;
+    var u=getUnlocked(k);
+    html+='<div class="cat-card" id="catcard-ctx-'+k+'" style="cursor:pointer">'
+      +'<div class="cat-accent" style="background:'+cat.color+'"></div>'
+      +'<div class="cat-card-inner">'
+        +'<div class="cat-icon">'+cat.icon+'</div>'
+        +'<div class="cat-name">'+cat.label+'</div>'
+        +'<div class="cat-sub">'+a+'/'+cat.cards.length+'</div>'
+      +'</div>'
+    +'</div>';
+  });
+  el.innerHTML='<div class="explore-wrap">'
+    +'<button class="back-btn" id="btn-back-meta">← Explorer</button>'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><span style="font-size:26px">'+m.icon+'</span><span style="font-size:18px;font-weight:800">'+m.label+'</span></div>'
+    +'<div class="cat-grid">'+html+'</div>'
+    +'</div>';
+  document.getElementById('btn-back-meta').onclick=function(){exploreMeta=null;rExplore();};
+  m.cats.filter(function(k){return !!BANK[k];}).forEach(function(k){
+    var el2=document.getElementById('catcard-ctx-'+k);
+    if(el2)el2.onclick=function(){bankCat=k;rExplore();};
+  });
 }
 
 function rCtxCat(el,key){
-  const cat=BANK[key];const unlocked=getUnlocked(key);
-  const lvL={1:'Niveau 1 — Fondations',2:'Niveau 2 — Intermédiaire',3:'Niveau 3 — Niveau natif'};
-  let lastLv=0;
-  const uHTML=cat.cards.slice(0,unlocked).map((c,i)=>{
-    const bk=key+'-'+i,done=!!D.bankAdded[bk];
-    const es=c.en.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    let lvH='';if(c.lv!==lastLv){lastLv=c.lv;lvH=`<div style="margin:${i>0?'16px':'2px'} 0 10px"><span class="level-badge ${c.lv===1?'lv1':c.lv===2?'lv2':'lv3'}">${lvL[c.lv]}</span></div>`;}
-    return lvH+`<div class="bank-item"><button class="add-btn ${done?'done':''}" onclick="addBCard('${key}',${i})" ${done?'disabled':''}>${done?'✓':'+'}</button><div class="bank-en">${c.en} <button onclick="spk('${es}')" style="background:none;border:none;cursor:pointer;font-size:12px;opacity:.7">🔊</button></div><div class="bank-fr">${c.fr}</div>${c.ctx?`<div class="bank-note">${c.ctx}</div>`:''}</div>`;
-  }).join('');
-  const locked=cat.cards.slice(unlocked);
-  const lHTML=locked.length?locked.map(c=>`<div class="bank-item locked-item"><div class="bank-en">${c.en}</div><div class="bank-fr">${c.fr}</div></div>`).join('')+`<div class="locked-section">🔒 ${locked.length} fiche${locked.length>1?'s':''} verrouillée${locked.length>1?'s':''} — note ≥ 4 pour débloquer</div>`:'';
-  el.innerHTML=`<div class="explore-wrap">
-    <button class="back-btn" onclick="bankCat=null;exploreMeta?rMeta(document.getElementById('s-explore'),exploreMeta):rExplore()">← Retour</button>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="font-size:24px">${cat.icon}</span><span style="font-size:17px;font-weight:800">${cat.label}</span></div>
-    <p style="font-size:12px;color:var(--text2);margin-bottom:16px">${unlocked} / ${cat.cards.length} débloquées · ajout automatique dans Explore</p>
-    ${uHTML}${lHTML}
-  </div>`;
+  var cat=BANK[key];var unlocked=getUnlocked(key);
+  var lvL={1:'Niveau 1 — Fondations',2:'Niveau 2 — Intermédiaire',3:'Niveau 3 — Avancé'};
+  var lastLv=0;var html='';
+  cat.cards.slice(0,unlocked).forEach(function(c,i){
+    var bk=key+'-'+i,done=!!D.bankAdded[bk];
+    var es=c.en.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    if(c.lv!==lastLv){lastLv=c.lv;html+='<div style="margin:'+(i>0?'16px':'2px')+' 0 10px"><span class="level-badge lv'+c.lv+'">'+lvL[c.lv]+'</span></div>';}
+    html+='<div class="bank-item"><button class="add-btn'+(done?' done':'')+'" id="badd-'+key+'-'+i+'"'+(done?' disabled':'')+'>'+( done?'✓':'+')+'</button>'
+      +'<div class="bank-en">'+c.en+' <button id="bspk-'+key+'-'+i+'" style="background:none;border:none;cursor:pointer;font-size:12px;opacity:.7">🔊</button></div>'
+      +'<div class="bank-fr">'+c.fr+'</div>'
+      +(c.ctx?'<div class="bank-note">'+c.ctx+'</div>':'')
+    +'</div>';
+  });
+  var locked=cat.cards.slice(unlocked);
+  if(locked.length>0){
+    locked.forEach(function(c){html+='<div class="bank-item locked-item"><div class="bank-en">'+c.en+'</div><div class="bank-fr">'+c.fr+'</div></div>';});
+    html+='<div class="locked-section">&#128274; '+locked.length+' fiche'+(locked.length>1?'s':'')+' verrouillée'+(locked.length>1?'s':'')+' — note ≥ 4 pour débloquer</div>';
+  }
+  el.innerHTML='<div class="explore-wrap"><button class="back-btn" id="btn-back-cat">← Retour</button>'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="font-size:24px">'+cat.icon+'</span><span style="font-size:17px;font-weight:800">'+cat.label+'</span></div>'
+    +'<p style="font-size:12px;color:var(--text2);margin-bottom:16px">'+unlocked+' / '+cat.cards.length+' débloquées</p>'
+    +html+'</div>';
+  document.getElementById('btn-back-cat').onclick=function(){bankCat=null;exploreMeta?rMeta(el,exploreMeta):rExplore();};
+  cat.cards.slice(0,unlocked).forEach(function(c,i){
+    var btn=document.getElementById('badd-'+key+'-'+i);
+    if(btn&&!D.bankAdded[key+'-'+i])btn.onclick=function(){addBCard(key,i);};
+    var spkBtn=document.getElementById('bspk-'+key+'-'+i);
+    var es2=c.en.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    if(spkBtn)spkBtn.onclick=function(){spk(es2);};
+  });
 }
 
 function rOxCat(el,key){
-  const cat=OXFORD[key];const unlocked=getUnlockedOx(key);
-  const lvL={1:'A1/A2 — Fondations',2:'B1 — Intermédiaire',3:'B2 — Avancé'};
-  let lastLv=0;
-  const uHTML=cat.cards.slice(0,unlocked).map((c,i)=>{
-    const bk='ox_'+key+'-'+i,done=!!D.bankAdded[bk];
-    const es=c.en.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    let lvH='';if(c.lv!==lastLv){lastLv=c.lv;lvH=`<div style="margin:${i>0?'16px':'2px'} 0 10px"><span class="level-badge ${c.lv===1?'lv1':c.lv===2?'lv2':'lv3'}">${lvL[c.lv]}</span></div>`;}
-    return lvH+`<div class="bank-item"><button class="add-btn ${done?'done':''}" onclick="addOxCard('${key}',${i})" ${done?'disabled':''}>${done?'✓':'+'}</button><div class="bank-en">${c.en} <button onclick="spk('${es}')" style="background:none;border:none;cursor:pointer;font-size:12px;opacity:.7">🔊</button></div><div class="bank-fr">${c.fr}</div>${c.ctx?`<div class="bank-note">${c.ctx}</div>`:''}</div>`;
-  }).join('');
-  const locked=cat.cards.slice(unlocked);
-  const lHTML=locked.length?locked.map(c=>`<div class="bank-item locked-item"><div class="bank-en">${c.en}</div><div class="bank-fr">${c.fr}</div></div>`).join('')+`<div class="locked-section">🔒 ${locked.length} mot${locked.length>1?'s':''} verrouillé${locked.length>1?'s':''}</div>`:'';
-  el.innerHTML=`<div class="explore-wrap">
-    <button class="back-btn" onclick="bankCat=null;rExplore()">← Explorer</button>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="font-size:24px">${cat.icon}</span><span style="font-size:17px;font-weight:800">${cat.label}</span></div>
-    <p style="font-size:12px;color:var(--text2);margin-bottom:16px">${unlocked} / ${cat.cards.length} débloqués · Oxford 3000</p>
-    ${uHTML}${lHTML}
-  </div>`;
+  var cat=OXFORD[key];var unlocked=getUnlockedOx(key);
+  var lvL={1:'A1/A2 — Fondations',2:'B1 — Intermédiaire',3:'B2 — Avancé'};
+  var lastLv=0;var html='';
+  cat.cards.slice(0,unlocked).forEach(function(c,i){
+    var bk='ox_'+key+'-'+i,done=!!D.bankAdded[bk];
+    var es=c.en.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    if(c.lv!==lastLv){lastLv=c.lv;html+='<div style="margin:'+(i>0?'16px':'2px')+' 0 10px"><span class="level-badge lv'+c.lv+'">'+lvL[c.lv]+'</span></div>';}
+    html+='<div class="bank-item"><button class="add-btn'+(done?' done':'')+'" id="oadd-'+key+'-'+i+'"'+(done?' disabled':'')+'>'+( done?'✓':'+')+'</button>'
+      +'<div class="bank-en">'+c.en+' <button id="ospk-'+key+'-'+i+'" style="background:none;border:none;cursor:pointer;font-size:12px;opacity:.7">🔊</button></div>'
+      +'<div class="bank-fr">'+c.fr+'</div>'
+      +(c.ctx?'<div class="bank-note">'+c.ctx+'</div>':'')
+    +'</div>';
+  });
+  var locked=cat.cards.slice(unlocked);
+  if(locked.length>0){
+    locked.forEach(function(c){html+='<div class="bank-item locked-item"><div class="bank-en">'+c.en+'</div><div class="bank-fr">'+c.fr+'</div></div>';});
+    html+='<div class="locked-section">&#128274; '+locked.length+' mot'+(locked.length>1?'s':'')+' verrouillé'+(locked.length>1?'s':'')+'</div>';
+  }
+  el.innerHTML='<div class="explore-wrap"><button class="back-btn" id="btn-back-ox">← Explorer</button>'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="font-size:24px">'+cat.icon+'</span><span style="font-size:17px;font-weight:800">'+cat.label+'</span></div>'
+    +'<p style="font-size:12px;color:var(--text2);margin-bottom:16px">'+unlocked+' / '+cat.cards.length+' débloqués</p>'
+    +html+'</div>';
+  document.getElementById('btn-back-ox').onclick=function(){bankCat=null;rExplore();};
+  cat.cards.slice(0,unlocked).forEach(function(c,i){
+    var btn=document.getElementById('oadd-'+key+'-'+i);
+    if(btn&&!D.bankAdded['ox_'+key+'-'+i])btn.onclick=function(){addOxCard(key,i);};
+    var spkBtn=document.getElementById('ospk-'+key+'-'+i);
+    var es2=c.en.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    if(spkBtn)spkBtn.onclick=function(){spk(es2);};
+  });
 }
 
 function animatePlus(){
-  const nb=document.getElementById('n-home');const rect=nb.getBoundingClientRect();
-  const el=document.createElement('div');el.className='plus-one';el.textContent='+1';
-  el.style.left=(rect.left+rect.width/2-15)+'px';el.style.top=(rect.top-10)+'px';
-  document.body.appendChild(el);setTimeout(()=>el.remove(),900);
+  var nb=document.getElementById('n-home');var rect=nb.getBoundingClientRect();
+  var div=document.createElement('div');div.className='plus-one';div.textContent='+1';
+  div.style.left=(rect.left+rect.width/2-15)+'px';div.style.top=(rect.top-10)+'px';
+  document.body.appendChild(div);setTimeout(function(){div.remove();},900);
 }
+
 function addBCard(catKey,idx){
-  resetDaily();const mx=D.maxNew||15;if(D.newToday>=mx){alert('Limite de '+mx+' nouvelles fiches atteinte.');return;}
-  const c=BANK[catKey].cards[idx],bk=catKey+'-'+idx;if(D.bankAdded[bk])return;
+  resetDaily();var mx=D.maxNew||20;
+  if(D.newToday>=mx){alert('Limite de '+mx+' nouvelles fiches atteinte.');return;}
+  var c=BANK[catKey].cards[idx],bk=catKey+'-'+idx;if(D.bankAdded[bk])return;
   D.cards.push({id:D.nextCardId++,deckId:EXPLORE_DECK_ID,a:c.en,b:c.fr,ctx:c.ctx||'',
     type:c.en.split(' ').length<=3?'mot':'phrase',dir:'en-fr',score:0,mult:1,due:0,fromBank:true,exploreKey:bk});
   D.bankAdded[bk]=true;D.newToday++;sv();animatePlus();updateDot();
   rCtxCat(document.getElementById('s-explore'),bankCat);
 }
+
 function addOxCard(catKey,idx){
-  resetDaily();const mx=D.maxNew||15;if(D.newToday>=mx){alert('Limite de '+mx+' nouvelles fiches atteinte.');return;}
-  const c=OXFORD[catKey].cards[idx],bk='ox_'+catKey+'-'+idx;if(D.bankAdded[bk])return;
+  resetDaily();var mx=D.maxNew||20;
+  if(D.newToday>=mx){alert('Limite de '+mx+' nouvelles fiches atteinte.');return;}
+  var c=OXFORD[catKey].cards[idx],bk='ox_'+catKey+'-'+idx;if(D.bankAdded[bk])return;
   D.cards.push({id:D.nextCardId++,deckId:EXPLORE_DECK_ID,a:c.en,b:c.fr,ctx:c.ctx||'',
     type:'mot',dir:'en-fr',score:0,mult:1,due:0,fromBank:true,exploreKey:bk});
   D.bankAdded[bk]=true;D.newToday++;sv();animatePlus();updateDot();
   rOxCat(document.getElementById('s-explore'),bankCat);
 }
 
-// ─── MY WORDS ─────────────────────────────────────────────────
-function rWords(){
-  const el=document.getElementById('s-words');
-  if(aDeck!==null){rDeckView(el,aDeck);return;}
-  const ICONS=['📺','🗓️','📖','💼','🎵','🎬','📝','🌍','🎭','🏋️'];
-  const html=D.decks.filter(d=>!d.isExplore).map((d,i)=>{
-    const tot=D.cards.filter(c=>c.deckId===d.id).length;
-    const due=D.cards.filter(c=>c.deckId===d.id&&c.due<=now()).length;
-    const dl=d.dir==='en-fr'?'EN→FR':d.dir==='fr-en'?'FR→EN':'Les deux';
-    return`<div class="theme-item" onclick="aDeck=${d.id};rWords()">
-      <div class="theme-emoji">${ICONS[i%ICONS.length]}</div>
-      <div class="theme-info"><div class="theme-name">${d.name}</div><div class="theme-meta">${tot} fiche${tot!==1?'s':''} · ${dl}</div></div>
-      <div class="theme-right">${due>0?`<span class="due-chip">${due} dues</span>`:`<span class="ok-chip">À jour</span>`}</div>
-    </div>`;
-  }).join('');
-  const form=newDeckForm?`<div class="form-box">
-    <div class="form-title">Nouveau thème</div>
-    <div class="form-row"><label>Nom</label><input type="text" id="dni" placeholder="ex. Peaky Blinders, Finance…"/></div>
-    <div class="form-row"><label>Direction</label><select id="ddi"><option value="en-fr">Anglais → Français</option><option value="fr-en">Français → Anglais</option><option value="both">Les deux</option></select></div>
-    <div class="form-row"><label>Type</label><select id="dti"><option value="phrase">Phrases</option><option value="mot">Vocabulaire</option><option value="mixed">Les deux</option></select></div>
-    <div class="form-actions"><button class="btn btn-g" onclick="newDeckForm=false;rWords()">Annuler</button><button class="btn btn-p" onclick="mkDeck()">Créer</button></div>
-  </div>`:'';
-  el.innerHTML=`<div class="words-wrap">
-    <div class="page-title">Mes thèmes</div>
-    <div class="theme-list">
-      ${html}
-      <div class="add-theme-btn" onclick="newDeckForm=true;rWords()">+ Nouveau thème</div>
-    </div>
-    ${form}
-    <div style="height:20px"></div>
-  </div>`;
-  if(newDeckForm)setTimeout(()=>document.getElementById('dni')?.focus(),80);
+function quickAddOx(k){
+  resetDaily();var mx=D.maxNew||20;
+  if(D.newToday>=mx){alert('Limite de '+mx+' nouvelles fiches atteinte.');return;}
+  var cat=OXFORD[k];var u=getUnlockedOx(k);
+  for(var i=0;i<u;i++){
+    if(!D.bankAdded['ox_'+k+'-'+i]){addOxCard(k,i);rExplore();return;}
+  }
 }
+
+function quickAddMeta(mk){
+  resetDaily();var mx=D.maxNew||20;
+  if(D.newToday>=mx){alert('Limite de '+mx+' nouvelles fiches atteinte.');return;}
+  var m=META[mk];
+  for(var ki=0;ki<m.cats.length;ki++){
+    var catK=m.cats[ki];if(!BANK[catK])continue;
+    var u=getUnlocked(catK);
+    for(var i=0;i<u;i++){
+      if(!D.bankAdded[catK+'-'+i]){addBCard(catK,i);rExplore();return;}
+    }
+  }
+}
+
+// ─── MY WORDS ─────────────────────────────────────────────────
+var ICONS=['📺','🗓️','📖','💼','🎵','🎬','📝','🌍','🎭','🏋️'];
+
+function rWords(){
+  var el=document.getElementById('s-words');
+  if(aDeck!==null){rDeckView(el,aDeck);return;}
+  var html='';
+  D.decks.filter(function(d){return !d.isExplore;}).forEach(function(d,i){
+    var tot=D.cards.filter(function(c){return c.deckId===d.id;}).length;
+    var due=D.cards.filter(function(c){return c.deckId===d.id&&c.due<=now();}).length;
+    html+='<div class="theme-item" id="theme-'+d.id+'">'
+      +'<div class="theme-emoji">'+ICONS[i%ICONS.length]+'</div>'
+      +'<div class="theme-info"><div class="theme-name">'+d.name+'</div><div class="theme-meta">'+tot+' fiche'+(tot!==1?'s':'')+'</div></div>'
+      +'<div>'+(due>0?'<span class="due-chip">'+due+' dues</span>':'<span class="ok-chip">A jour</span>')+'</div>'
+    +'</div>';
+  });
+  var formHTML=newDeckForm?'<div class="form-box">'
+    +'<div class="form-title">Nouveau thème</div>'
+    +'<div class="form-row"><label>Nom</label><input type="text" id="dni" placeholder="ex. Réunions, Finance…"/></div>'
+    +'<div class="form-row"><label>Direction</label><select id="ddi"><option value="en-fr">Anglais → Français</option><option value="fr-en">Français → Anglais</option><option value="both">Les deux</option></select></div>'
+    +'<div class="form-row"><label>Type</label><select id="dti"><option value="phrase">Phrases</option><option value="mot">Mots</option><option value="mixed">Les deux</option></select></div>'
+    +'<div class="form-actions"><button class="btn-sm" id="btn-cancel-deck">Annuler</button><button class="btn-sm" style="background:var(--brand);color:#fff" id="btn-mk-deck">Créer</button></div>'
+    +'</div>':'';
+
+  el.innerHTML='<div class="words-wrap">'
+    +'<div class="page-title">Mes thèmes</div>'
+    +'<div class="theme-list">'+html+'<div class="add-theme-btn" id="btn-add-theme">+ Nouveau thème</div></div>'
+    +formHTML
+    +'<div style="height:20px"></div></div>';
+
+  D.decks.filter(function(d){return !d.isExplore;}).forEach(function(d){
+    var el2=document.getElementById('theme-'+d.id);
+    if(el2)el2.onclick=function(){aDeck=d.id;rWords();};
+  });
+  document.getElementById('btn-add-theme').onclick=function(){newDeckForm=true;rWords();};
+  if(newDeckForm){
+    document.getElementById('btn-cancel-deck').onclick=function(){newDeckForm=false;rWords();};
+    document.getElementById('btn-mk-deck').onclick=mkDeck;
+    setTimeout(function(){var el2=document.getElementById('dni');if(el2)el2.focus();},80);
+  }
+}
+
 function mkDeck(){
-  const name=document.getElementById('dni')?.value.trim();if(!name)return;
-  D.decks.push({id:D.nextDeckId++,name,dir:document.getElementById('ddi').value,type:document.getElementById('dti').value});
+  var name=document.getElementById('dni').value.trim();if(!name)return;
+  D.decks.push({id:D.nextDeckId++,name:name,dir:document.getElementById('ddi').value,type:document.getElementById('dti').value});
   sv();newDeckForm=false;rWords();
 }
 
 function rDeckView(el,deckId){
-  const deck=D.decks.find(d=>d.id===deckId);
-  const all=D.cards.filter(c=>c.deckId===deckId);
-  const filtered=ficheSearch?all.filter(c=>c.a.toLowerCase().includes(ficheSearch.toLowerCase())||c.b.toLowerCase().includes(ficheSearch.toLowerCase())):all;
-  const personal=filtered.filter(c=>!c.fromBank);
-  const explore=filtered.filter(c=>c.fromBank);
-  const due=all.filter(c=>c.due<=now()).length;
-  const mastered=all.filter(c=>c.score>=4).length;
+  var deck=D.decks.find(function(d){return d.id===deckId;});
+  var all=D.cards.filter(function(c){return c.deckId===deckId;});
+  var filtered=ficheSearch?all.filter(function(c){return c.a.toLowerCase().includes(ficheSearch.toLowerCase())||c.b.toLowerCase().includes(ficheSearch.toLowerCase());}):all;
+  var due=all.filter(function(c){return c.due<=now();}).length;
+  var mastered=all.filter(function(c){return c.score>=4;}).length;
 
-  const dirOpts=!deck||deck.dir==='both'?'<option value="en-fr">EN→FR</option><option value="fr-en">FR→EN</option>':deck.dir==='en-fr'?'<option value="en-fr">EN→FR</option>':'<option value="fr-en">FR→EN</option>';
-  const typeOpts=!deck||deck.type==='mixed'?'<option value="phrase">Phrase</option><option value="mot">Mot</option>':deck.type==='mot'?'<option value="mot">Mot</option>':'<option value="phrase">Phrase</option>';
+  function cHTML(c){
+    return '<div class="card-item">'
+      +'<div class="card-texts"><div class="card-a">'+c.a+'</div><div class="card-b">'+c.b+'</div><div class="card-due">'+fdue(c.due)+'</div></div>'
+      +'<div style="text-align:right;flex-shrink:0"><div>'+stars(c.score)+'</div></div>'
+      +'<button class="del-btn" id="del-'+c.id+'">x</button>'
+    +'</div>';
+  }
 
-  function cHTML(c){return`<div class="card-item">
-    <div class="card-texts">
-      <div class="card-a">${c.a}</div><div class="card-b">${c.b}</div>
-      ${c.ctx?`<div class="card-ctx">${c.ctx}</div>`:''}
-      <span class="type-chip ${c.fromBank?'tc-explore':c.type==='mot'?'tc-mot':'tc-phrase'}">${c.fromBank?'Explore':c.type}</span>
-    </div>
-    <div class="card-right"><div>${stars(c.score)}</div><div class="card-due">${fdue(c.due)}</div></div>
-    <button class="del-btn" onclick="delCard(${c.id})">✕</button>
-  </div>`;}
+  var dirOpts=deck&&deck.dir==='en-fr'?'<option value="en-fr">EN→FR</option>':deck&&deck.dir==='fr-en'?'<option value="fr-en">FR→EN</option>':'<option value="en-fr">EN→FR</option><option value="fr-en">FR→EN</option>';
+  var typeOpts=deck&&deck.type==='mot'?'<option value="mot">Mot</option>':deck&&deck.type==='phrase'?'<option value="phrase">Phrase</option>':'<option value="phrase">Phrase</option><option value="mot">Mot</option>';
 
-  el.innerHTML=`<div class="words-wrap">
-    <button class="back-btn" onclick="aDeck=null;ficheSearch='';rWords()">← Mes thèmes</button>
-    <div style="font-size:20px;font-weight:800;margin-bottom:4px">${deck?.name}</div>
-    <div class="section-summary">
-      <span class="sum-chip" style="background:var(--redbg);color:var(--red)">${due} à revoir</span>
-      <span class="sum-chip" style="background:var(--greenbg);color:var(--green)">${mastered} maîtrisées</span>
-      <span class="sum-chip" style="background:var(--bg3);color:var(--text3)">${all.length} total</span>
-    </div>
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input class="search-box" type="text" placeholder="Rechercher…" value="${ficheSearch}" oninput="ficheSearch=this.value;rDeckView(document.getElementById('s-words'),${deckId})"/>
-    </div>
-    <div class="section-label">Mes fiches (${personal.length})</div>
-    <div class="card-list">${personal.length?personal.map(cHTML).join(''):'<div style="font-size:13px;color:var(--text3);padding:8px 0">Aucune fiche personnelle.</div>'}</div>
-    ${explore.length?`<div class="section-label">Explore (${explore.length})</div><div class="card-list">${explore.map(cHTML).join('')}</div>`:''}
-    <div class="form-box">
-      <div class="form-title">Ajouter une fiche</div>
-      <div class="form-row"><label>Direction</label><select id="idir" onchange="uLbls()">${dirOpts}</select></div>
-      <div class="form-row"><label id="la">Anglais</label>
-        <div class="trans-row">
-          <input type="text" id="ia" placeholder="ex. Overwhelming"/>
-          <button class="trans-btn" onclick="autoTranslate()">🔄 Traduire</button>
-        </div>
-        <div id="trans-result" style="display:none" class="trans-result"></div>
-      </div>
-      <div class="form-row"><label id="lb">Français</label><input type="text" id="ib" placeholder="ex. Écrasant"/></div>
-      <div class="form-row"><label>Contexte <span style="font-weight:400;text-transform:none">(optionnel)</span></label><textarea id="ictx" placeholder="ex. Used in formal emails."></textarea></div>
-      <div class="form-row"><label>Type</label><select id="ityp">${typeOpts}</select></div>
-      <div class="form-actions"><button class="btn btn-p" onclick="addCard(${deckId})">Ajouter</button></div>
-    </div>
-    <div style="height:20px"></div>
-  </div>`;
-  uLbls();
-}
+  el.innerHTML='<div class="words-wrap">'
+    +'<button class="back-btn" id="btn-back-deck">← Mes thèmes</button>'
+    +'<div style="font-size:20px;font-weight:800;margin-bottom:6px">'+(deck?deck.name:'')+'</div>'
+    +'<div class="sum-row">'
+      +'<span class="sum-chip" style="background:var(--redbg);color:var(--red)">'+due+' à revoir</span>'
+      +'<span class="sum-chip" style="background:var(--greenbg);color:var(--green)">'+mastered+' maitrisées</span>'
+      +'<span class="sum-chip" style="background:var(--bg3);color:var(--text3)">'+all.length+' total</span>'
+    +'</div>'
+    +'<div class="search-wrap"><span class="search-icon">🔍</span><input class="search-box" type="text" placeholder="Rechercher…" id="search-box" value="'+ficheSearch+'"/></div>'
+    +'<div class="section-label">Fiches ('+filtered.length+')</div>'
+    +'<div class="card-list">'+(filtered.length?filtered.map(cHTML).join(''):'<div style="font-size:13px;color:var(--text3);padding:8px 0">Aucune fiche.</div>')+'</div>'
+    +'<div class="form-box">'
+      +'<div class="form-title">Ajouter une fiche</div>'
+      +'<div class="form-row"><label id="la-lbl">Anglais</label>'
+        +'<div class="trans-row"><input type="text" id="ia" placeholder="ex. Overwhelming"/>'
+        +'<button class="trans-btn" id="btn-trans">Traduire</button></div>'
+        +'<div class="trans-result" id="trans-result"></div>'
+      +'</div>'
+      +'<div class="form-row"><label id="lb-lbl">Français</label><input type="text" id="ib" placeholder="ex. Écrasant"/></div>'
+      +'<div class="form-row"><label>Contexte</label><textarea id="ictx" placeholder="Optionnel…"></textarea></div>'
+      +'<div class="form-row"><label>Direction</label><select id="idir">'+dirOpts+'</select></div>'
+      +'<div class="form-row"><label>Type</label><select id="ityp">'+typeOpts+'</select></div>'
+      +'<div class="form-actions"><button class="btn-sm" style="background:var(--brand);color:#fff" id="btn-add-card">Ajouter</button></div>'
+    +'</div>'
+    +'<div style="height:20px"></div>'
+  +'</div>';
 
-function uLbls(){
-  const dir=document.getElementById('idir')?.value||'en-fr';
-  const la=document.getElementById('la'),lb=document.getElementById('lb');
-  const ia=document.getElementById('ia'),ib=document.getElementById('ib');
-  if(dir==='en-fr'){if(la)la.textContent='Anglais';if(lb)lb.textContent='Français';if(ia)ia.placeholder='ex. Overwhelming';if(ib)ib.placeholder='ex. Écrasant';}
-  else{if(la)la.textContent='Français';if(lb)lb.textContent='Anglais';if(ia)ia.placeholder='ex. Je rentre tard.';if(ib)ib.placeholder='ex. I\'m coming home late.';}
+  document.getElementById('btn-back-deck').onclick=function(){aDeck=null;ficheSearch='';rWords();};
+  document.getElementById('search-box').oninput=function(){ficheSearch=this.value;rDeckView(el,deckId);};
+  document.getElementById('btn-trans').onclick=autoTranslate;
+  document.getElementById('btn-add-card').onclick=function(){addCard(deckId);};
+  document.getElementById('idir').onchange=function(){
+    var d=this.value;
+    document.getElementById('la-lbl').textContent=d==='fr-en'?'Français':'Anglais';
+    document.getElementById('lb-lbl').textContent=d==='fr-en'?'Anglais':'Français';
+  };
+  filtered.forEach(function(c){
+    var btn=document.getElementById('del-'+c.id);
+    if(btn)btn.onclick=function(){if(confirm('Supprimer ?')){D.cards=D.cards.filter(function(x){return x.id!==c.id;});sv();rDeckView(el,deckId);}};
+  });
 }
 
 async function autoTranslate(){
-  const inp=document.getElementById('ia');if(!inp?.value.trim())return;
-  const dir=document.getElementById('idir')?.value||'en-fr';
-  const langpair=dir==='fr-en'?'fr|en':'en|fr';
-  const res=document.getElementById('trans-result');
-  if(res){res.style.display='block';res.textContent='⏳ Traduction…';}
+  var inp=document.getElementById('ia');if(!inp||!inp.value.trim())return;
+  var dir=document.getElementById('idir').value;
+  var langpair=dir==='fr-en'?'fr|en':'en|fr';
+  var res=document.getElementById('trans-result');
+  if(res){res.style.display='block';res.textContent='Traduction...';}
   try{
-    const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(inp.value.trim())}&langpair=${langpair}&de=myenglish@app.fr`);
-    const d=await r.json();
-    const t=d.responseData?.translatedText;
+    var r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(inp.value.trim())+'&langpair='+langpair+'&de=myenglish@app.fr');
+    var d=await r.json();
+    var t=d.responseData&&d.responseData.translatedText;
     if(t&&t!=='NO QUERY SPECIFIED'&&res){
-      res.style.display='block';res.textContent='→ '+t;
-      const ib=document.getElementById('ib');if(ib&&!ib.value)ib.value=t;
+      res.textContent='→ '+t;
+      var ib=document.getElementById('ib');if(ib&&!ib.value)ib.value=t;
     } else if(res)res.style.display='none';
   }catch(e){if(res)res.style.display='none';}
 }
 
 function addCard(deckId){
-  resetDaily();const mx=D.maxNew||15;
-  if(D.newToday>=mx){alert('Limite de '+mx+' nouvelles fiches atteinte. Change-la dans Paramètres.');return;}
-  const a=document.getElementById('ia')?.value.trim(),b=document.getElementById('ib')?.value.trim();
-  const ctx=document.getElementById('ictx')?.value.trim()||'';
-  const type=document.getElementById('ityp')?.value||'phrase';
-  const dir=document.getElementById('idir')?.value||'en-fr';
+  resetDaily();var mx=D.maxNew||20;
+  if(D.newToday>=mx){alert('Limite atteinte — '+mx+' nouvelles fiches/jour (modifiable dans Paramètres).');return;}
+  var a=document.getElementById('ia').value.trim();
+  var b=document.getElementById('ib').value.trim();
+  var ctx=document.getElementById('ictx').value.trim()||'';
+  var type=document.getElementById('ityp').value||'phrase';
+  var dir=document.getElementById('idir').value||'en-fr';
   if(!a||!b)return;
-  D.cards.push({id:D.nextCardId++,deckId,a,b,ctx,type,dir,score:0,mult:1,due:0});
-  D.newToday++;sv();rDeckView(document.getElementById('s-words'),deckId);
-}
-function delCard(id){
-  if(!confirm('Supprimer cette fiche ?'))return;
-  D.cards=D.cards.filter(c=>c.id!==id);sv();
-  rDeckView(document.getElementById('s-words'),aDeck);
-}
-
-function quickAddOx(key){
-  resetDaily();const mx=D.maxNew||20;if(D.newToday>=mx){alert('Limite de '+mx+' nouvelles fiches atteinte.');return;}
-  const cat=OXFORD[key];
-  const u=getUnlockedOx(key);
-  const idx=cat.cards.findIndex((_,i)=>!D.bankAdded['ox_'+key+'-'+i]&&i<u);
-  if(idx<0)return;
-  const c=cat.cards[idx],bk='ox_'+key+'-'+idx;
-  D.cards.push({id:D.nextCardId++,deckId:EXPLORE_DECK_ID,a:c.en,b:c.fr,ctx:c.ctx||'',
-    type:'mot',dir:'en-fr',score:0,mult:1,due:0,fromBank:true,exploreKey:bk});
-  D.bankAdded[bk]=true;D.newToday++;sv();animatePlus();updateDot();
-  rExplore();
-}
-function quickAddCtx(catKey,idx){
-  resetDaily();const mx=D.maxNew||20;if(D.newToday>=mx){alert('Limite de '+mx+' nouvelles fiches atteinte.');return;}
-  const c=BANK[catKey].cards[idx],bk=catKey+'-'+idx;if(D.bankAdded[bk])return;
-  D.cards.push({id:D.nextCardId++,deckId:EXPLORE_DECK_ID,a:c.en,b:c.fr,ctx:c.ctx||'',
-    type:c.en.split(' ').length<=3?'mot':'phrase',dir:'en-fr',score:0,mult:1,due:0,fromBank:true,exploreKey:bk});
-  D.bankAdded[bk]=true;D.newToday++;sv();animatePlus();updateDot();
-  rExplore();
+  D.cards.push({id:D.nextCardId++,deckId:deckId,a:a,b:b,ctx:ctx,type:type,dir:dir,score:0,mult:1,due:0});
+  D.newToday++;sv();
+  rDeckView(document.getElementById('s-words'),deckId);
 }
 
 // ─── QUICK CAPTURE ───────────────────────────────────────────
-let qcDir='fr-en'; // default FR→EN
-
 function openQC(){
-  const overlay=document.getElementById('qc-overlay');
+  var overlay=document.getElementById('qc-overlay');
   overlay.style.display='block';
-  overlay.innerHTML=`<div class="qc-sheet">
-    <div class="qc-backdrop" onclick="closeQC()"></div>
-    <div class="qc-panel">
-      <div class="qc-handle"></div>
-      <div class="qc-title">Capture rapide ⚡</div>
-      <div class="qc-dir-row">
-        <button class="qc-dir-btn ${qcDir==='fr-en'?'active':''}" onclick="setQcDir('fr-en')">FR → EN</button>
-        <button class="qc-dir-btn ${qcDir==='en-fr'?'active':''}" onclick="setQcDir('en-fr')">EN → FR</button>
-      </div>
-      <input class="qc-field" id="qc-a" type="text"
-        placeholder="${qcDir==='fr-en'?'Ta phrase en français…':'Your phrase in English…'}"
-        autocapitalize="sentences" autocomplete="off"
-        oninput="qcClearTrans()"
-        onkeydown="if(event.key==='Enter')qcTranslate()"/>
-      <div class="qc-trans-result" id="qc-tr"></div>
-      <input class="qc-field" id="qc-b" type="text"
-        placeholder="${qcDir==='fr-en'?'Traduction anglaise…':'Traduction française…'}"
-        autocapitalize="sentences" autocomplete="off"/>
-      <div class="qc-actions">
-        <button class="qc-btn-cancel" onclick="closeQC()">Annuler</button>
-        <button class="qc-btn-add" onclick="qcTranslate()">🔄 Traduire</button>
-        <button class="qc-btn-add" onclick="qcSave()" style="background:var(--green)">✓ Ajouter</button>
-      </div>
-    </div>
-  </div>`;
-  setTimeout(()=>document.getElementById('qc-a')?.focus(),100);
+  overlay.innerHTML='<div class="qc-sheet">'
+    +'<div class="qc-backdrop" id="qc-back"></div>'
+    +'<div class="qc-panel">'
+      +'<div class="qc-handle"></div>'
+      +'<div class="qc-title">Capture rapide ⚡</div>'
+      +'<div class="qc-dir-row">'
+        +'<button class="qc-dir-btn'+(qcDir==='fr-en'?' active':'')+'" id="qc-fr">FR → EN</button>'
+        +'<button class="qc-dir-btn'+(qcDir==='en-fr'?' active':'')+'" id="qc-en">EN → FR</button>'
+      +'</div>'
+      +'<input class="qc-field" id="qc-a" type="text" placeholder="'+(qcDir==='fr-en'?'Ta phrase en français…':'Your phrase in English…')+'" autocapitalize="sentences" autocomplete="off"/>'
+      +'<div class="qc-trans-result" id="qc-tr"></div>'
+      +'<input class="qc-field" id="qc-b" type="text" placeholder="'+(qcDir==='fr-en'?'Traduction anglaise…':'Traduction française…')+'" autocapitalize="sentences" autocomplete="off"/>'
+      +'<div class="qc-actions">'
+        +'<button class="qc-btn-cancel" id="qc-cancel">Annuler</button>'
+        +'<button class="qc-btn-add" id="qc-trans" style="background:var(--brand-mid)">Traduire</button>'
+        +'<button class="qc-btn-add" id="qc-save" style="background:var(--green)">Ajouter</button>'
+      +'</div>'
+    +'</div>'
+  +'</div>';
+  document.getElementById('qc-back').onclick=closeQC;
+  document.getElementById('qc-cancel').onclick=closeQC;
+  document.getElementById('qc-fr').onclick=function(){qcDir='fr-en';openQC();};
+  document.getElementById('qc-en').onclick=function(){qcDir='en-fr';openQC();};
+  document.getElementById('qc-trans').onclick=qcTranslate;
+  document.getElementById('qc-save').onclick=qcSave;
+  setTimeout(function(){var el=document.getElementById('qc-a');if(el)el.focus();},100);
 }
 
 function closeQC(){
-  const overlay=document.getElementById('qc-overlay');
-  overlay.style.display='none';
-  overlay.innerHTML='';
-}
-
-function setQcDir(dir){
-  qcDir=dir;openQC();
-}
-
-function qcClearTrans(){
-  const tr=document.getElementById('qc-tr');
-  if(tr){tr.style.display='none';tr.textContent='';}
+  var o=document.getElementById('qc-overlay');
+  o.style.display='none';o.innerHTML='';
 }
 
 async function qcTranslate(){
-  const a=document.getElementById('qc-a')?.value.trim();
-  if(!a)return;
-  const tr=document.getElementById('qc-tr');
-  if(tr){tr.style.display='block';tr.textContent='⏳ Traduction…';}
-  const langpair=qcDir==='fr-en'?'fr|en':'en|fr';
+  var inp=document.getElementById('qc-a');if(!inp||!inp.value.trim())return;
+  var tr=document.getElementById('qc-tr');
+  if(tr){tr.style.display='block';tr.textContent='Traduction...';}
+  var langpair=qcDir==='fr-en'?'fr|en':'en|fr';
   try{
-    const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(a)}&langpair=${langpair}&de=myenglish@app.fr`);
-    const d=await r.json();
-    const t=d.responseData?.translatedText;
+    var r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(inp.value.trim())+'&langpair='+langpair+'&de=myenglish@app.fr');
+    var d=await r.json();
+    var t=d.responseData&&d.responseData.translatedText;
     if(t&&t!=='NO QUERY SPECIFIED'){
       if(tr){tr.style.display='block';tr.textContent='→ '+t;}
-      const b=document.getElementById('qc-b');
-      if(b&&!b.value)b.value=t;
+      var b=document.getElementById('qc-b');if(b&&!b.value)b.value=t;
     } else if(tr)tr.style.display='none';
   }catch(e){if(tr)tr.style.display='none';}
 }
 
 function qcSave(){
-  resetDaily();
-  const mx=D.maxNew||20;
+  resetDaily();var mx=D.maxNew||20;
   if(D.newToday>=mx){alert('Limite de '+mx+' nouvelles fiches atteinte.');return;}
-  const a=document.getElementById('qc-a')?.value.trim();
-  const b=document.getElementById('qc-b')?.value.trim();
+  var a=document.getElementById('qc-a').value.trim();
+  var b=document.getElementById('qc-b').value.trim();
   if(!a||!b){alert('Remplis les deux champs.');return;}
-  // Find or create "Capture" deck
-  let deck=D.decks.find(d=>d.name==='Capture' && !d.isExplore);
-  if(!deck){
-    deck={id:D.nextDeckId++,name:'Capture',dir:'both',type:'mixed'};
-    D.decks.push(deck);
-  }
-  D.cards.push({
-    id:D.nextCardId++,
-    deckId:deck.id,
-    a:qcDir==='fr-en'?b:a,   // always store EN as 'a'
-    b:qcDir==='fr-en'?a:b,   // always store FR as 'b'
-    ctx:'',type:'phrase',
-    dir:qcDir,
-    score:0,mult:1,due:0,
-    captured:true
-  });
-  D.newToday++;sv();
-  animatePlus();updateDot();
-  closeQC();
-  // Refresh current tab
+  var deck=D.decks.find(function(d){return d.name==='Capture'&&!d.isExplore;});
+  if(!deck){deck={id:D.nextDeckId++,name:'Capture',dir:'both',type:'mixed'};D.decks.push(deck);}
+  D.cards.push({id:D.nextCardId++,deckId:deck.id,
+    a:qcDir==='fr-en'?b:a,b:qcDir==='fr-en'?a:b,
+    ctx:'',type:'phrase',dir:qcDir,score:0,mult:1,due:0,captured:true});
+  D.newToday++;sv();animatePlus();updateDot();closeQC();
   if(curTab==='home')rHome();
 }
 
-// ─── INIT ─────────────────────────────────────────────────────
-// Force clean init — fix display bug on reopen
-document.addEventListener('visibilitychange',()=>{
-  if(!document.hidden){resetDaily();updateDot();if(curTab==='home')rHome();}
-});
-resetDaily();updateDot();scheduleDaily();rHome();
+// ─── INIT ────────────────────────────────────────────────────
+resetDaily();updateDot();rHome();
+
 </script>
 </body>
 </html>
