@@ -686,6 +686,133 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);ove
 .stars span{font-size:11px}
 
 /* Plus one animation */
+.fab{
+  position:fixed;
+  bottom:calc(var(--sab) + 72px);
+  right:18px;
+  width:52px;height:52px;
+  border-radius:50%;
+  background:var(--brand);
+  color:#fff;
+  font-size:26px;
+  border:none;cursor:pointer;
+  box-shadow:0 4px 20px rgba(27,44,193,0.35);
+  display:flex;align-items:center;justify-content:center;
+  z-index:100;
+  transition:transform .15s,box-shadow .15s;
+  line-height:1;
+}
+.fab:active{transform:scale(.92);box-shadow:0 2px 8px rgba(27,44,193,0.3)}
+
+.qc-sheet{
+  position:fixed;inset:0;z-index:200;
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+.qc-backdrop{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+}
+.qc-panel{
+  position:relative;
+  background:var(--bg2);
+  border-radius:24px 24px 0 0;
+  padding:20px 20px calc(20px + var(--sab));
+  box-shadow:0 -8px 40px rgba(0,0,0,0.2);
+  animation:slideUp .25s ease;
+}
+@keyframes slideUp{
+  from{transform:translateY(100%)}
+  to{transform:translateY(0)}
+}
+.qc-handle{
+  width:36px;height:4px;
+  background:var(--border2);border-radius:99px;
+  margin:0 auto 18px;
+}
+.qc-title{
+  font-size:17px;font-weight:800;
+  margin-bottom:16px;letter-spacing:-.3px;
+}
+.qc-dir-row{
+  display:flex;gap:8px;margin-bottom:14px;
+}
+.qc-dir-btn{
+  flex:1;border:1.5px solid var(--border2);
+  border-radius:var(--rsm);padding:9px;
+  font-size:13px;font-weight:700;
+  background:var(--bg3);color:var(--text2);
+  cursor:pointer;text-align:center;
+  transition:all .15s;
+}
+.qc-dir-btn.active{
+  background:var(--brand-light);
+  border-color:var(--brand);
+  color:var(--brand);
+}
+.qc-field{
+  width:100%;font-size:16px;
+  padding:13px 14px;
+  background:var(--bg);
+  border:1.5px solid var(--border2);
+  border-radius:var(--rsm);
+  color:var(--text);outline:none;
+  font-family:inherit;
+  margin-bottom:10px;
+  transition:border-color .15s;
+}
+.qc-field:focus{border-color:var(--brand)}
+.qc-trans-result{
+  font-size:13px;color:var(--brand);
+  font-weight:600;padding:8px 12px;
+  background:var(--brand-light);
+  border-radius:var(--rsm);
+  margin-bottom:12px;
+  display:none;
+}
+.qc-actions{display:flex;gap:8px}
+.qc-btn-add{
+  flex:1;background:var(--brand);color:#fff;
+  border:none;border-radius:var(--rsm);
+  padding:14px;font-size:15px;font-weight:700;
+  cursor:pointer;
+  transition:transform .1s;
+}
+.qc-btn-add:active{transform:scale(.97)}
+.qc-btn-cancel{
+  background:var(--bg3);color:var(--text2);
+  border:none;border-radius:var(--rsm);
+  padding:14px 18px;font-size:14px;font-weight:600;
+  cursor:pointer;
+}
+.composed-card{
+  background:linear-gradient(135deg,var(--brand-light) 0%,rgba(245,158,11,0.08) 100%);
+  border:1.5px solid var(--brand);
+  border-radius:var(--r);padding:20px;margin-bottom:14px;
+}
+.composed-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--brand);color:#fff;
+  border-radius:99px;padding:3px 10px;
+  font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;
+  margin-bottom:10px;
+}
+.composed-scenario{
+  font-size:15px;line-height:1.7;color:var(--text);
+  font-weight:500;margin-bottom:12px;
+}
+.composed-words{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.composed-word-chip{
+  background:var(--bg2);border:0.5px solid var(--border2);
+  border-radius:99px;padding:3px 10px;
+  font-size:11px;font-weight:600;color:var(--text2);
+}
+@keyframes dotPulse{
+  0%,100%{opacity:.3;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.2)}
+}
 .plus-one{
   position:fixed;font-size:18px;font-weight:800;
   color:var(--brand);pointer-events:none;z-index:9999;
@@ -722,7 +849,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);ove
     <div id="s-explore" class="screen"></div>
     <div id="s-words" class="screen"></div>
   </div>
-  <nav class="nav">
+  <button class="fab" onclick="openQC()" id="fab">＋</button>
+<div id="qc-overlay" style="display:none"></div>
+<nav class="nav">
     <button class="nb active" onclick="T('home')" id="n-home">
       <div class="nb-icon">🏠</div>
       <span>Accueil</span>
@@ -3682,27 +3811,27 @@ function rTrain(){
     <div class="page-title">S'entraîner</div>
     <div class="mode-grid">
       <div class="mode-card ${trainMode==='review'?'active':''}" onclick="setTrainMode('review')">
-        <div class="mode-card-icon">🔁</div>
+        <div class="mode-card-icon">&#128257;</div>
         <div class="mode-card-name">Révision</div>
         <div class="mode-card-desc">Répétition espacée · ${due} fiche${due!==1?'s':''} due${due!==1?'s':''}</div>
         ${due>0?'<div class="mode-card-badge">'+due+'</div>':''}
       </div>
-      <div class="mode-card ${trainMode==='listen'?'active':''}" onclick="setTrainMode('listen')">
-        <div class="mode-card-icon">👂</div>
+      <div class="mode-card ${trainMode==='composed'?'active':''}" onclick="setTrainMode('composed')">
+        <div class="mode-card-icon">&#129302;</div>
+        <div class="mode-card-name">Défi IA</div>
+        <div class="mode-card-desc">${getComposedDesc()}</div>
+        ${getComposedBadge()}
+      </div>
+      <div class="mode-card disabled">
+        <div class="mode-card-icon">&#128066;</div>
         <div class="mode-card-name">Écoute</div>
         <div class="mode-card-desc">Entends et transcris</div>
         <div class="mode-coming">Bientôt</div>
       </div>
-      <div class="mode-card ${trainMode==='speed'?'active':''}" onclick="setTrainMode('speed')">
-        <div class="mode-card-icon">⚡</div>
+      <div class="mode-card disabled">
+        <div class="mode-card-icon">&#9889;</div>
         <div class="mode-card-name">Vitesse</div>
         <div class="mode-card-desc">10 mots · 60 secondes</div>
-        <div class="mode-coming">Bientôt</div>
-      </div>
-      <div class="mode-card ${trainMode==='oral'?'active':''}" onclick="setTrainMode('oral')">
-        <div class="mode-card-icon">🎤</div>
-        <div class="mode-card-name">Oral</div>
-        <div class="mode-card-desc">Parle sans taper</div>
         <div class="mode-coming">Bientôt</div>
       </div>
     </div>
@@ -3710,6 +3839,31 @@ function rTrain(){
     <div id="qa"></div>
   </div>`;
   startSession();
+}
+function getEligiblePool(){
+  const now_=now();
+  return D.cards.filter(c=>{
+    if(!c.totalRatings||c.totalRatings<3)return false;
+    if(c.score<3)return false;
+    if(c.due<now_-7*86400000)return false;
+    return true;
+  });
+}
+function getComposedDesc(){
+  const pool=getEligiblePool();
+  if(pool.length<2)return 'Valide plus de mots pour débloquer';
+  const due=getComposedDue().length;
+  const pending=(D.composed||[]).filter(c=>c.due>now()).length;
+  if(due>0)return due+' défi'+( due>1?'s':'')+' disponible'+(due>1?'s':'');
+  if(pending>0)return pending+' défi'+(pending>1?'s':'')+' en attente';
+  return 'Génération au démarrage';
+}
+function getComposedBadge(){
+  const pool=getEligiblePool();
+  if(pool.length<2)return '<div class="mode-coming">Pool insuffisant</div>';
+  const due=getComposedDue().length;
+  if(due>0)return '<div class="mode-card-badge">'+due+'</div>';
+  return '';
 }
 function setTrainMode(m){trainMode=m;rTrain();}
 function setQMode(m){qMode=m;if(m!=='themes')qDeck=null;if(m!=='explore')qExploreCat=null;rTrain();}
@@ -3737,13 +3891,43 @@ function getQuizCards(){
   return D.cards;
 }
 
-function startSession(){
+let composedQueue=[];
+let composedGenPending=false;
+async function startSession(){
+  // Composed-only mode
+  if(trainMode==='composed'){
+    qCards=[];qIdx=0;qScores=[];
+    composedQueue=getComposedDue();
+    if(composedQueue.length===0&&shouldGenerateComposed()){
+      // Show loading state
+      const qa=document.getElementById('qa');
+      if(qa)qa.innerHTML='<div class="composed-loader"><div style="font-size:32px;margin-bottom:8px">&#129302;</div><div>Génération de ton Défi IA...</div><div class="composed-loader-dots"><span></span><span></span><span></span></div></div>';
+      composedGenPending=true;
+      await generateComposed();
+      composedGenPending=false;
+      composedQueue=getComposedDue();
+    }
+    if(composedQueue.length===0){
+      const qa=document.getElementById('qa');
+      if(qa)qa.innerHTML='<div class="empty"><div class="empty-icon">&#129302;</div>Aucun Défi IA disponible.<br><br>Valide plus de fiches en révision pour générer des défis !</div>';
+      return;
+    }
+    rQCard();
+    return;
+  }
+  // Normal revision mode
   const all=getQuizCards();
-  if(!all.length){document.getElementById('qa').innerHTML='<div class="empty"><div class="empty-icon">📭</div>Aucune fiche dans cette sélection.</div>';return;}
+  if(!all.length){document.getElementById('qa').innerHTML='<div class="empty"><div class="empty-icon">&#128219;</div>Aucune fiche dans cette sélection.</div>';return;}
   const due=all.filter(c=>c.due<=now()).sort(()=>Math.random()-.5);
   const nd=all.filter(c=>c.due>now()).sort((a,b)=>a.score-b.score);
   qCards=[...due,...nd.slice(0,Math.max(3,10-due.length))];
-  qIdx=0;qScores=[];rQCard();
+  qIdx=0;qScores=[];
+  composedQueue=getComposedDue();
+  if(shouldGenerateComposed()&&!composedGenPending){
+    composedGenPending=true;
+    generateComposed().then(()=>{composedGenPending=false;composedQueue=getComposedDue();});
+  }
+  rQCard();
 }
 function enTxt(c){return c.dir==='fr-en'?c.b:c.a;}
 
@@ -3764,7 +3948,20 @@ function getCatBadge(card){
 }
 function rQCard(){
   const area=document.getElementById('qa');if(!area)return;
+  if(trainMode==='composed'){
+    if(composedQueue.length>0){const cp=composedQueue.shift();rComposedCard(area,cp);return;}
+    // All composed done - show result
+    const avg=qScores.length?(qScores.reduce((a,b)=>a+b,0)/qScores.length).toFixed(1):'0';
+    const emoji=parseFloat(avg)>=4?'&#127942;':parseFloat(avg)>=3?'&#128170;':'&#129302;';
+    area.innerHTML='<div class="result"><div class="result-emoji">'+emoji+'</div><div class="result-score">'+avg+'<span style="font-size:28px;font-weight:500">/5</span></div><div class="result-sub">'+qScores.length+' Défi'+(qScores.length!==1?'s':'')+' IA relevé'+(qScores.length!==1?'s':'')+'</div><button class="btn-primary" onclick="startSession()">Recommencer</button></div>';
+    return;
+  }
+  if(qIdx>0&&qIdx%5===0&&composedQueue.length>0){
+    const cp=composedQueue.shift();
+    rComposedCard(area,cp);return;
+  }
   if(qIdx>=qCards.length){
+    if(composedQueue.length>0){const cp=composedQueue.shift();rComposedCard(area,cp);return;}
     const avg=qScores.length?(qScores.reduce((a,b)=>a+b,0)/qScores.length).toFixed(1):'—';
     const t=tod(),last=new Date(D.lastSession||0).toDateString(),yest=new Date(now()-86400000).toDateString();
     if(last!==t){D.streak=last===yest?(D.streak||0)+1:1;D.lastSession=now();sv();}
@@ -3813,6 +4010,45 @@ function rQCard(){
   document.getElementById('wa')?.addEventListener('keydown',e=>{if(e.key==='Enter')rvl();});
 }
 
+function rComposedCard(area,cp){
+  const lvIcon='&#129302;';
+  const lvLabel=cp.level===1?'IA Mix':cp.level===2?'IA Mix+':'IA Mix Pro';
+  const chips=cp.words.map(w=>'<span class="composed-word-chip">'+w.en+'</span>').join('');
+  const cpId=cp.id;
+  area.innerHTML='<div class="quiz-stats"><div class="qs"><div class="qs-n">'+qIdx+'</div><div class="qs-l">Vues</div></div><div class="qs"><div class="qs-n" style="color:var(--gold)">'+getEligiblePool().length+'</div><div class="qs-l">Pool</div></div><div class="qs"><div class="qs-n">'+cp.level+'</div><div class="qs-l">Niveau</div></div></div>'
+    +'<div class="composed-card"><div class="composed-badge">'+lvIcon+' '+lvLabel+'</div>'
+    +'<div class="composed-scenario">'+cp.fr+'</div>'
+    +'<div class="composed-words">'+chips+'</div></div>'
+    +'<div class="write-wrap" style="margin-bottom:10px">'
+    +'<input class="write-input" id="wa" type="text" placeholder="Traduis en anglais..." autocomplete="off" autocapitalize="sentences"/>'
+    +'</div>'
+    +'<div id="qb" style="text-align:center">'
+    +'<button class="btn-primary" style="max-width:240px;margin:0 auto" id="btn-rvl-cp">Voir la réponse</button>'
+    +'</div>';
+  setTimeout(()=>{
+    document.getElementById('wa')?.focus();
+    document.getElementById('btn-rvl-cp')?.addEventListener('click',()=>rvlComposed(cpId));
+  },100);
+  document.getElementById('wa')?.addEventListener('keydown',e=>{if(e.key==='Enter')rvlComposed(cpId);});
+}
+function rvlComposed(id){
+  const cp=(D.composed||[]).find(x=>x.id===id);if(!cp)return;
+  const typed=document.getElementById('wa')?.value||'';
+  const scoreGrid=[1,2,3,4,5].map(s=>'<button class="score-btn sc'+s+'" id="cpsc'+s+'"><span>'+s+'</span></button>').join('');
+  document.getElementById('qb').innerHTML='<div class="quiz-card" style="min-height:auto;padding:18px 20px;gap:10px">'
+    +'<div class="composed-badge">Reference</div>'
+    +'<div class="quiz-ans">'+cp.en+'</div>'
+    +'<div class="compare-box">'
+    +'<div class="compare-yours">Ta version : <em style="color:var(--text)">'+(typed||'-')+'</em></div>'
+    +'<div class="compare-correct">Reference : '+cp.en+'</div>'
+    +'</div></div>'
+    +'<p class="score-hint" style="margin-top:14px">Comment tu ten es sorti ?</p>'
+    +'<div class="score-grid">'+scoreGrid+'</div>';
+  [1,2,3,4,5].forEach(s=>{
+    document.getElementById('cpsc'+s)?.addEventListener('click',()=>rateComposedAndNext(id,s));
+  });
+}
+function rateComposedAndNext(id,s){rateComposed(id,s);qScores.push(s);rQCard();}
 function rvl(){
   const card=qCards[qIdx],isEF=card.dir!=='fr-en',ans=isEF?card.b:card.a;
   const typed=document.getElementById('wa')?.value||'';
@@ -4200,6 +4436,103 @@ function quickAddCtx(catKey,idx){
     type:c.en.split(' ').length<=3?'mot':'phrase',dir:'en-fr',score:0,mult:1,due:0,fromBank:true,exploreKey:bk});
   D.bankAdded[bk]=true;D.newToday++;sv();animatePlus();updateDot();
   rExplore();
+}
+
+// ─── QUICK CAPTURE ───────────────────────────────────────────
+let qcDir='fr-en'; // default FR→EN
+
+function openQC(){
+  const overlay=document.getElementById('qc-overlay');
+  overlay.style.display='block';
+  overlay.innerHTML=`<div class="qc-sheet">
+    <div class="qc-backdrop" onclick="closeQC()"></div>
+    <div class="qc-panel">
+      <div class="qc-handle"></div>
+      <div class="qc-title">Capture rapide ⚡</div>
+      <div class="qc-dir-row">
+        <button class="qc-dir-btn ${qcDir==='fr-en'?'active':''}" onclick="setQcDir('fr-en')">FR → EN</button>
+        <button class="qc-dir-btn ${qcDir==='en-fr'?'active':''}" onclick="setQcDir('en-fr')">EN → FR</button>
+      </div>
+      <input class="qc-field" id="qc-a" type="text"
+        placeholder="${qcDir==='fr-en'?'Ta phrase en français…':'Your phrase in English…'}"
+        autocapitalize="sentences" autocomplete="off"
+        oninput="qcClearTrans()"
+        onkeydown="if(event.key==='Enter')qcTranslate()"/>
+      <div class="qc-trans-result" id="qc-tr"></div>
+      <input class="qc-field" id="qc-b" type="text"
+        placeholder="${qcDir==='fr-en'?'Traduction anglaise…':'Traduction française…'}"
+        autocapitalize="sentences" autocomplete="off"/>
+      <div class="qc-actions">
+        <button class="qc-btn-cancel" onclick="closeQC()">Annuler</button>
+        <button class="qc-btn-add" onclick="qcTranslate()">🔄 Traduire</button>
+        <button class="qc-btn-add" onclick="qcSave()" style="background:var(--green)">✓ Ajouter</button>
+      </div>
+    </div>
+  </div>`;
+  setTimeout(()=>document.getElementById('qc-a')?.focus(),100);
+}
+
+function closeQC(){
+  const overlay=document.getElementById('qc-overlay');
+  overlay.style.display='none';
+  overlay.innerHTML='';
+}
+
+function setQcDir(dir){
+  qcDir=dir;openQC();
+}
+
+function qcClearTrans(){
+  const tr=document.getElementById('qc-tr');
+  if(tr){tr.style.display='none';tr.textContent='';}
+}
+
+async function qcTranslate(){
+  const a=document.getElementById('qc-a')?.value.trim();
+  if(!a)return;
+  const tr=document.getElementById('qc-tr');
+  if(tr){tr.style.display='block';tr.textContent='⏳ Traduction…';}
+  const langpair=qcDir==='fr-en'?'fr|en':'en|fr';
+  try{
+    const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(a)}&langpair=${langpair}&de=myenglish@app.fr`);
+    const d=await r.json();
+    const t=d.responseData?.translatedText;
+    if(t&&t!=='NO QUERY SPECIFIED'){
+      if(tr){tr.style.display='block';tr.textContent='→ '+t;}
+      const b=document.getElementById('qc-b');
+      if(b&&!b.value)b.value=t;
+    } else if(tr)tr.style.display='none';
+  }catch(e){if(tr)tr.style.display='none';}
+}
+
+function qcSave(){
+  resetDaily();
+  const mx=D.maxNew||20;
+  if(D.newToday>=mx){alert('Limite de '+mx+' nouvelles fiches atteinte.');return;}
+  const a=document.getElementById('qc-a')?.value.trim();
+  const b=document.getElementById('qc-b')?.value.trim();
+  if(!a||!b){alert('Remplis les deux champs.');return;}
+  // Find or create "Capture" deck
+  let deck=D.decks.find(d=>d.name==='Capture' && !d.isExplore);
+  if(!deck){
+    deck={id:D.nextDeckId++,name:'Capture',dir:'both',type:'mixed'};
+    D.decks.push(deck);
+  }
+  D.cards.push({
+    id:D.nextCardId++,
+    deckId:deck.id,
+    a:qcDir==='fr-en'?b:a,   // always store EN as 'a'
+    b:qcDir==='fr-en'?a:b,   // always store FR as 'b'
+    ctx:'',type:'phrase',
+    dir:qcDir,
+    score:0,mult:1,due:0,
+    captured:true
+  });
+  D.newToday++;sv();
+  animatePlus();updateDot();
+  closeQC();
+  // Refresh current tab
+  if(curTab==='home')rHome();
 }
 
 // ─── INIT ─────────────────────────────────────────────────────
