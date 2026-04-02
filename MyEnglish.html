@@ -115,7 +115,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);ove
 .section-label::after{content:'';flex:1;height:0.5px;background:var(--border2)}
 
 /* ─── HOME SCREEN ─────────────────────────────────────────── */
-.home-wrap{padding:20px 16px 0;overflow-x:hidden;max-width:100%;box-sizing:border-box;}
+.home-wrap{padding:20px 18px 0;overflow-x:hidden;max-width:100%;box-sizing:border-box;}
 
 .home-header{
   display:flex;align-items:center;justify-content:space-between;
@@ -3597,7 +3597,7 @@ function rHome(){
         <div class="streak-l">de streak</div>
         <div class="streak-dots">${dots}</div>
       </div>
-      <div style="text-align:right;flex-shrink:0;width:70px;overflow:hidden">
+      <div style="text-align:right;flex-shrink:0;width:72px;padding-right:4px;overflow:hidden">
         <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-bottom:3px">Auj.</div>
         <div style="font-size:22px;font-weight:800;color:${D.reviewedToday>=dg?'var(--green)':'var(--brand)'};letter-spacing:-.5px">${Math.min(D.reviewedToday,dg)}<span style="font-size:11px;color:var(--text3);font-weight:500">/${dg}</span></div>
         <div class="prog-bar" style="width:64px;margin-top:4px"><div class="prog-fill" style="width:${revPct}%"></div></div>
