@@ -473,8 +473,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);ove
 }
 .add-btn:active{background:var(--brand-deep)}
 .add-btn.done{background:var(--bg3);color:var(--text3);cursor:default}
-.cat-card-wrap{position:relative}
-.cat-quick-add{
+.cat-card-wrap{}
+.cat-quick-add-old{
   position:absolute;bottom:0;left:0;right:0;
   background:var(--bg3);border:none;border-top:0.5px solid var(--border);
   padding:6px;font-size:10px;font-weight:700;cursor:pointer;
@@ -496,6 +496,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);ove
   transition:background .15s;
 }
 .cat-quick-add-ctx:active{background:var(--brand);color:#fff}
+.cat-quick-add-inline{
+  background:none;border:none;cursor:pointer;
+  font-size:16px;font-weight:800;padding:0 2px;
+  line-height:1;transition:transform .1s;
+}
+.cat-quick-add-inline:active{transform:scale(.85)}
 .locked-item{filter:blur(3px);pointer-events:none;user-select:none;opacity:.5}
 .locked-section{
   text-align:center;padding:16px;background:var(--bg2);
@@ -3591,10 +3597,10 @@ function rHome(){
         <div class="streak-l">de streak</div>
         <div class="streak-dots">${dots}</div>
       </div>
-      <div style="text-align:right;flex-shrink:0;min-width:88px">
+      <div style="text-align:right;flex-shrink:0;width:70px;overflow:hidden">
         <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-bottom:3px">Aujourd'hui</div>
-        <div style="font-size:22px;font-weight:800;color:${D.reviewedToday>=dg?'var(--green)':'var(--brand)'};letter-spacing:-.5px">${Math.min(D.reviewedToday,dg)}<span style="font-size:13px;color:var(--text3);font-weight:500"> / ${dg}</span></div>
-        <div class="prog-bar" style="width:80px;margin-top:5px"><div class="prog-fill" style="width:${revPct}%"></div></div>
+        <div style="font-size:22px;font-weight:800;color:${D.reviewedToday>=dg?'var(--green)':'var(--brand)'};letter-spacing:-.5px">${Math.min(D.reviewedToday,dg)}<span style="font-size:11px;color:var(--text3);font-weight:500">/${dg}</span></div>
+        <div class="prog-bar" style="width:64px;margin-top:4px"><div class="prog-fill" style="width:${revPct}%"></div></div>
       </div>
     </div>
     <div class="prog-card">
@@ -3669,7 +3675,7 @@ function rTrain(){
       <button class="pill ${qMode==='themes'?'active':''}" onclick="setQMode('themes')">📚 Thèmes</button>
       <button class="pill ${qMode==='explore'?'active':''}" onclick="setQMode('explore')">🗺️ Explore</button>
     </div>
-    ${qMode==='themes'?'<div class="pill-row">'+D.decks.filter(d=>!d.isExplore).map(d=>`<button class="pill ${qDeck===d.id?'active':''}" onclick="setQTheme(${d.id})">${d.name}</button>`).join('')+'</div>':''}
+
     ${qMode==='explore'?renderExplorePills():''}
   `
   el.innerHTML=`<div class="train-wrap">
@@ -3741,14 +3747,20 @@ function startSession(){
 }
 function enTxt(c){return c.dir==='fr-en'?c.b:c.a;}
 
-function getCatIcon(card){
-  if(!card.exploreKey)return'';
-  if(card.exploreKey.startsWith('ox_')){
-    const k=card.exploreKey.split('-')[0].slice(3);
-    return OXFORD[k]?.icon||'';
+function getCatBadge(card){
+  // Oxford or Contexte explore card — show category icon
+  if(card.exploreKey){
+    if(card.exploreKey.startsWith('ox_')){
+      const k=card.exploreKey.split('-')[0].slice(3);
+      return{type:'icon',val:OXFORD[k]?.icon||''};
+    }
+    const k=card.exploreKey.split('-')[0];
+    return{type:'icon',val:BANK[k]?.icon||''};
   }
-  const k=card.exploreKey.split('-')[0];
-  return BANK[k]?.icon||'';
+  // Personal theme card — show theme name
+  const deck=D.decks.find(d=>d.id===card.deckId);
+  if(deck&&!deck.isExplore)return{type:'name',val:deck.name};
+  return{type:'',val:''};
 }
 function rQCard(){
   const area=document.getElementById('qa');if(!area)return;
@@ -3772,9 +3784,10 @@ function rQCard(){
   const safe=enTxt(card).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
   const tp=card.fromBank?'tc-explore':card.type==='mot'?'tc-mot':'tc-phrase';
   const tpLabel=card.fromBank?'Explore':card.type;
-  const discBadge=card.isHard?`<div class="disc-badge" style="background:var(--redbg);color:var(--red)">🔁 Difficile</div>`:(!card.totalRatings?`<div class="disc-badge">✨ Nouveau</div>`:'');
+  const discBadge=card.isHard?`<div class="disc-badge" style="background:var(--redbg);color:var(--red)">🔁 Difficile</div>`:'';
 
-  const catIcon=getCatIcon(card);
+  const catBadge=getCatBadge(card);
+  const catBadgeHTML=catBadge.type==='icon'&&catBadge.val?`<span style="font-size:18px;opacity:.75">${catBadge.val}</span>`:catBadge.type==='name'&&catBadge.val?`<span style="font-size:10px;font-weight:700;color:var(--text3);background:var(--bg3);padding:2px 7px;border-radius:99px">${catBadge.val}</span>`:'';
   area.innerHTML=`<div class="quiz-stats">
     <div class="qs"><div class="qs-n">${qIdx}</div><div class="qs-l">Vues</div></div>
     <div class="qs"><div class="qs-n">${qCards.length-qIdx}</div><div class="qs-l">Restantes</div></div>
@@ -3784,7 +3797,7 @@ function rQCard(){
   <div class="quiz-card">
     <div class="quiz-dir" style="display:flex;align-items:center;justify-content:space-between;width:100%">
       <span>${isEF?'EN → FR':'FR → EN'} · <span class="type-chip ${tp}">${tpLabel}</span></span>
-      <span style="display:flex;align-items:center;gap:5px">${discBadge}${catIcon?`<span style="font-size:18px;opacity:.8">${catIcon}</span>`:''}</span>
+      <span style="display:flex;align-items:center;gap:5px">${discBadge}${catBadgeHTML}</span>
     </div>
     <div class="quiz-q">${q}</div>
     <button class="audio-btn" onclick="spk('${safe}')">🔊 Écouter</button>
@@ -3931,13 +3944,15 @@ function renderOxTab(added,totalOx){
     const nextIdx=cat.cards.findIndex((_,i)=>!D.bankAdded['ox_'+key+'-'+i]&&i<u);
     const hasNext=nextIdx>=0;
     return`<div class="cat-card-wrap">
-      <div class="cat-card" style="padding-bottom:${hasNext?'38px':'14px'}" onclick="bankCat='${key}';rExplore()">
+      <div class="cat-card" onclick="bankCat='${key}';rExplore()">
         <div style="position:absolute;top:0;left:0;bottom:0;width:3px;background:${cat.tc};border-radius:3px 0 0 3px"></div>
         <div class="cat-icon">${cat.icon}</div>
         <div class="cat-name">${cat.label}</div>
-        <div class="cat-sub">${a}/${cat.cards.length}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px">
+          <span class="cat-sub">${a}/${cat.cards.length}</span>
+          ${hasNext?`<button class="cat-quick-add-inline" style="color:${cat.tc}" onclick="event.stopPropagation();quickAddOx('${key}')">+</button>`:`<span style="font-size:10px;color:var(--green);font-weight:700">✓</span>`}
+        </div>
       </div>
-      ${hasNext?`<button class="cat-quick-add" style="color:${cat.tc}" onclick="event.stopPropagation();quickAddOx('${key}')">+ Ajouter</button>`:`<div class="cat-done-badge">✓</div>`}
     </div>`;
   }).join('');
   return`<div class="cat-grid">${html}</div><p style="font-size:12px;color:var(--text3);text-align:center;margin-top:4px">${added} / ${totalOx} mots Oxford ajoutés</p>`;
@@ -4188,6 +4203,10 @@ function quickAddCtx(catKey,idx){
 }
 
 // ─── INIT ─────────────────────────────────────────────────────
+// Force clean init — fix display bug on reopen
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden){resetDaily();updateDot();if(curTab==='home')rHome();}
+});
 resetDaily();updateDot();scheduleDaily();rHome();
 </script>
 </body>
