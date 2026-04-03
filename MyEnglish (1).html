@@ -42,7 +42,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
 
 /* NAV */
 .nav{display:flex;background:var(--bg2);border-top:0.5px solid var(--border2);
-  padding-bottom:var(--sab);box-shadow:0 -4px 20px rgba(27,44,193,0.06)}
+  padding-bottom:calc(var(--sab) * 0.5);box-shadow:0 -4px 20px rgba(27,44,193,0.06)}
 .nb{flex:1;background:none;border:none;padding:10px 0 8px;
   display:flex;flex-direction:column;align-items:center;gap:4px;
   cursor:pointer;color:var(--text3);font-size:10px;font-weight:500;
@@ -3054,7 +3054,7 @@ const OXFORD_KEYS=Object.keys(OXFORD)
 const SK='myenglish_v4';
 const DAILY_GOAL=20;
 const EXPLORE_DECK_ID=9999;
-const ANTHROPIC_KEY='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';
+// API key stored in localStorage - set in Paramètres
 
 // SM-2 intervals
 const BASE_IV={1:5*60000,2:30*60000,3:12*3600000,4:86400000,5:3*86400000};
@@ -3319,13 +3319,28 @@ function showSettings(){
       +'<div><div style="font-size:14px;font-weight:600">Importer des données</div></div>'
       +'<button class="btn-sm" id="btn-import">Importer</button>'
     +'</div>'
-    +'<input type="file" id="imp-file" accept=".json" style="display:none"/>'
+    +'<div style="background:var(--bg2);border-radius:var(--rsm);padding:13px 15px;margin-bottom:6px;border:0.5px solid var(--border)">'
+    +'<div style="font-size:14px;font-weight:600;margin-bottom:8px">Clé API Anthropic</div>'
+    +'<div style="font-size:12px;color:var(--text3);margin-bottom:8px">Nécessaire pour le Défi IA. Disponible sur console.anthropic.com</div>'
+    +'<div style="display:flex;gap:8px">'
+      +'<input type="password" id="api-key-input" placeholder="sk-ant-api03-..." value="'+(D.anthropicKey||'')+'" style="flex:1;font-size:13px;padding:9px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--rsm);color:var(--text);outline:none;font-family:inherit"/>'
+      +'<button class="btn-sm" style="background:var(--brand);color:#fff" id="btn-save-key">Sauver</button>'
+    +'</div>'
+    +'<div id="key-status" style="font-size:11px;margin-top:6px;color:var(--green)">'+(D.anthropicKey?'✓ Clé enregistrée':'')+'</div>'
+  +'</div>'
+  +'<input type="file" id="imp-file" accept=".json" style="display:none"/>'
     +'<div style="height:20px"></div>'
   +'</div>';
   document.getElementById('btn-back-settings').onclick=function(){rHome();};
   document.getElementById('range-max').oninput=function(){document.getElementById('range-val').textContent=this.value;D.maxNew=parseInt(this.value);sv();};
   document.getElementById('btn-export').onclick=exportData;
   document.getElementById('btn-import').onclick=function(){document.getElementById('imp-file').click();};
+  document.getElementById('btn-save-key').onclick=function(){
+    var key=document.getElementById('api-key-input').value.trim();
+    D.anthropicKey=key;sv();
+    var status=document.getElementById('key-status');
+    if(status)status.textContent=key?'✓ Clé enregistrée':'Clé supprimée';
+  };
   document.getElementById('imp-file').onchange=importData;
 }
 
@@ -3376,6 +3391,7 @@ function shouldGenerateComposed(){
 }
 function getComposedDesc(){
   var pool=getEligiblePool();
+  if(!getApiKey())return 'Configure ta clé API dans Paramètres';
   if(pool.length<2)return 'Valide plus de mots pour débloquer';
   var due=getComposedDue().length;
   var pending=D.composed.filter(function(c){return c.due>now();}).length;
@@ -3391,7 +3407,10 @@ function getComposedBadge(){
   return '';
 }
 
+function getApiKey(){return D.anthropicKey||'';}
+
 async function generateComposed(){
+  if(!getApiKey()){console.log('No API key');return null;}
   var pool=getEligiblePool();
   if(pool.length<2)return null;
   var level=pool.length>=50?3:pool.length>=20?2:1;
@@ -3416,7 +3435,7 @@ async function generateComposed(){
   try{
     var resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,messages:[{role:'user',content:prompt}]})
     });
     var data=await resp.json();
