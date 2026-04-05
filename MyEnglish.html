@@ -42,8 +42,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
 
 /* NAV */
 .nav{display:flex;background:var(--bg2);border-top:0.5px solid var(--border2);
-  padding-bottom:var(--sab);box-shadow:0 -4px 20px rgba(27,44,193,0.06)}
-.nb{flex:1;background:none;border:none;padding:10px 0 8px;
+  padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -4px 20px rgba(27,44,193,0.06)}
+.nb{flex:1;background:none;border:none;padding:8px 0 6px;
   display:flex;flex-direction:column;align-items:center;gap:4px;
   cursor:pointer;color:var(--text3);font-size:10px;font-weight:500;
   letter-spacing:.02em;position:relative;transition:color .2s}
@@ -990,7 +990,7 @@ finance:{label:'Finance & investissement',icon:'📈',color:'#EDFDF0',tc:'#0a4a1
 ]},
 nuances:{label:'Nuances & registres',icon:'🎭',color:'#F9EAFB',tc:'#5a1a7a',cards:[
 // LV1 — désaccord et formulations de base
-{en:'I disagree.',fr:'Je ne suis pas d\'accord.',ctx:'Direct. Correct mais peut sembler abrupt en contexte pro.',lv:1},
+{en:'I disagree.',fr:'Je ne suis pas d\'accord.',ctx:'Direct. Correct mais peut sembler abrupt en expressions pro.',lv:1},
 {en:'I\'m not sure I agree.',fr:'Je ne suis pas sûr d\'être d\'accord.',ctx:'Plus doux — ouvre le débat sans confronter.',lv:1},
 {en:'I see your point, but…',fr:'Je vois ce que tu veux dire, mais…',ctx:'Reconnaît l\'argument avant de le nuancer.',lv:1},
 {en:'Can you?',fr:'Tu peux ?',ctx:'Très informel. Réservé aux collègues proches.',lv:1},
@@ -1323,7 +1323,7 @@ emotions:{label:'Émotions & caractère',icon:'💭',color:'#FFF0F8',tc:'#6a1a4a
 {en:'condition',fr:'Condition / état / situation',ctx:'"Market conditions are improving."',lv:1},
 {en:'conflict',fr:'Conflit / désaccord',ctx:'"Resolve the conflict before it escalates."',lv:2},
 {en:'consequence',fr:'Conséquence / résultat',ctx:'"Consider the consequences before deciding."',lv:2},
-{en:'context',fr:'Contexte',ctx:'"Understand the context before acting."',lv:2},
+{en:'context',fr:'Expressions',ctx:'"Understand the context before acting."',lv:2},
 {en:'culture',fr:'Culture',ctx:'"Company culture affects performance."',lv:1},
 {en:'democracy',fr:'Démocratie',ctx:'"A democratic process involves all voices."',lv:2},
 {en:'development',fr:'Développement / évolution',ctx:'"Professional development is essential."',lv:1},
@@ -3054,7 +3054,7 @@ const OXFORD_KEYS=Object.keys(OXFORD)
 const SK='myenglish_v4';
 const DAILY_GOAL=20;
 const EXPLORE_DECK_ID=9999;
-const ANTHROPIC_KEY='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';
+// API key stored in localStorage - set in Paramètres
 
 // SM-2 intervals
 const BASE_IV={1:5*60000,2:30*60000,3:12*3600000,4:86400000,5:3*86400000};
@@ -3118,6 +3118,7 @@ let ficheSearch='';
 let aDeck=null;
 let newDeckForm=false;
 let qcDir='fr-en';
+let qcDeck=null;
 let recognition=null;
 let EV=null;
 
@@ -3167,8 +3168,13 @@ function stars(s){
 // ─── AUDIO ───────────────────────────────────────────────────
 function iV(){
   if(!window.speechSynthesis)return;
-  function p(){const vs=window.speechSynthesis.getVoices();
-    EV=vs.find(v=>v.lang==='en-US'&&v.name.includes('Samantha'))||vs.find(v=>v.lang==='en-US')||vs.find(v=>v.lang.startsWith('en'));}
+  function p(){
+    var vs=window.speechSynthesis.getVoices();
+    EV=vs.find(function(v){return v.lang==='en-US'&&v.name.includes('Samantha');})
+      ||vs.find(function(v){return v.lang==='en-GB'&&v.name.includes('Daniel');})
+      ||vs.find(function(v){return v.lang==='en-US'&&!v.name.includes('(');})
+      ||vs.find(function(v){return v.lang.startsWith('en');});
+  }
   p();
   if(window.speechSynthesis.onvoiceschanged!==undefined)window.speechSynthesis.onvoiceschanged=p;
 }
@@ -3287,7 +3293,7 @@ function rHome(){
       +'<div class="prog-top"><span class="prog-label">Progression globale</span><span class="prog-val">'+globalPct+'%</span></div>'
       +'<div class="prog-bar"><div class="prog-fill" style="width:'+globalPct+'%"></div></div>'
       +'<div style="display:flex;justify-content:space-between;margin-top:8px">'
-        +'<span style="font-size:11px;color:var(--text3)">Contexte <strong style="color:var(--text2)">'+addedCtx+'/'+totalCtxN+'</strong></span>'
+        +'<span style="font-size:11px;color:var(--text3)">Expressions <strong style="color:var(--text2)">'+addedCtx+'/'+totalCtxN+'</strong></span>'
         +'<span style="font-size:11px;color:var(--text3)">Oxford <strong style="color:var(--text2)">'+addedOx+'/'+totalOxN+'</strong></span>'
       +'</div>'
     +'</div>'
@@ -3319,13 +3325,28 @@ function showSettings(){
       +'<div><div style="font-size:14px;font-weight:600">Importer des données</div></div>'
       +'<button class="btn-sm" id="btn-import">Importer</button>'
     +'</div>'
-    +'<input type="file" id="imp-file" accept=".json" style="display:none"/>'
+    +'<div style="background:var(--bg2);border-radius:var(--rsm);padding:13px 15px;margin-bottom:6px;border:0.5px solid var(--border)">'
+    +'<div style="font-size:14px;font-weight:600;margin-bottom:8px">Clé API Anthropic</div>'
+    +'<div style="font-size:12px;color:var(--text3);margin-bottom:8px">Nécessaire pour le Défi IA. Disponible sur console.anthropic.com</div>'
+    +'<div style="display:flex;gap:8px">'
+      +'<input type="password" id="api-key-input" placeholder="sk-ant-api03-..." value="'+(D.anthropicKey||'')+'" style="flex:1;font-size:13px;padding:9px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--rsm);color:var(--text);outline:none;font-family:inherit"/>'
+      +'<button class="btn-sm" style="background:var(--brand);color:#fff" id="btn-save-key">Sauver</button>'
+    +'</div>'
+    +'<div id="key-status" style="font-size:11px;margin-top:6px;color:var(--green)">'+(D.anthropicKey?'✓ Clé enregistrée':'')+'</div>'
+  +'</div>'
+  +'<input type="file" id="imp-file" accept=".json" style="display:none"/>'
     +'<div style="height:20px"></div>'
   +'</div>';
   document.getElementById('btn-back-settings').onclick=function(){rHome();};
   document.getElementById('range-max').oninput=function(){document.getElementById('range-val').textContent=this.value;D.maxNew=parseInt(this.value);sv();};
   document.getElementById('btn-export').onclick=exportData;
   document.getElementById('btn-import').onclick=function(){document.getElementById('imp-file').click();};
+  document.getElementById('btn-save-key').onclick=function(){
+    var key=document.getElementById('api-key-input').value.trim();
+    D.anthropicKey=key;sv();
+    var status=document.getElementById('key-status');
+    if(status)status.textContent=key?'✓ Clé enregistrée':'Clé supprimée';
+  };
   document.getElementById('imp-file').onchange=importData;
 }
 
@@ -3359,9 +3380,12 @@ function enableNotifs(){
 function getEligiblePool(){
   var now_=now();
   return D.cards.filter(function(c){
-    if(!c.totalRatings||c.totalRatings<3)return false;
-    if(c.score<3)return false;
-    if(c.due<now_-7*86400000)return false;
+    // Accept cards with score>=4 OR reviewed 3+ times with score>=3
+    var goodScore=c.score>=4;
+    var reviewed=(c.totalRatings||0)>=3&&c.score>=3;
+    if(!goodScore&&!reviewed)return false;
+    // Not forgotten (overdue by more than 14 days)
+    if(c.due>0&&c.due<now_-14*86400000)return false;
     return true;
   });
 }
@@ -3376,6 +3400,7 @@ function shouldGenerateComposed(){
 }
 function getComposedDesc(){
   var pool=getEligiblePool();
+  if(!getApiKey())return 'Configure ta clé API dans Paramètres';
   if(pool.length<2)return 'Valide plus de mots pour débloquer';
   var due=getComposedDue().length;
   var pending=D.composed.filter(function(c){return c.due>now();}).length;
@@ -3391,7 +3416,10 @@ function getComposedBadge(){
   return '';
 }
 
+function getApiKey(){return D.anthropicKey||'';}
+
 async function generateComposed(){
+  if(!getApiKey()){console.log('No API key');return null;}
   var pool=getEligiblePool();
   if(pool.length<2)return null;
   var level=pool.length>=50?3:pool.length>=20?2:1;
@@ -3412,11 +3440,11 @@ async function generateComposed(){
   }
   var wordList=picked.map(function(c){return '- "'+c.a+'" ('+c.b+')';}).join('\n');
   var levelStr=level===1?'une phrase courte (1-2 propositions)':level===2?'une phrase professionnelle (2-3 propositions)':'un mini-scénario professionnel (3-4 propositions)';
-  var prompt='Tu es un assistant pour apprendre l anglais professionnel.\n\nMots a utiliser :\n'+wordList+'\n\nGenere '+levelStr+' ENTIEREMENT EN FRANCAIS que l utilisateur devra traduire en anglais. La traduction doit naturellement utiliser ces mots. Contexte professionnel.\n\nReponds UNIQUEMENT en JSON sans markdown :\n{"fr":"phrase en francais","en":"traduction anglaise"}';
+  var prompt='Tu es un assistant pour apprendre l anglais professionnel.\n\nMots a utiliser :\n'+wordList+'\n\nGenere '+levelStr+' ENTIEREMENT EN FRANCAIS que l utilisateur devra traduire en anglais. La traduction doit naturellement utiliser ces mots. Expressions professionnel.\n\nReponds UNIQUEMENT en JSON sans markdown :\n{"fr":"phrase en francais","en":"traduction anglaise"}';
   try{
     var resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,messages:[{role:'user',content:prompt}]})
     });
     var data=await resp.json();
@@ -3641,7 +3669,7 @@ function rvl(){
 
   document.getElementById('qb').innerHTML='<div class="quiz-card" style="min-height:auto;padding:18px 20px;gap:10px">'
     +'<div class="quiz-ans">'+ans+' <button class="audio-btn" id="btn-audio2" style="font-size:12px;padding:4px 10px">🔊</button></div>'
-    +(card.ctx?'<div class="quiz-ctx">'+card.ctx+'</div>':'')
+    +(card.ctx?'<div class="quiz-ctx">'+card.ctx+' <button class="audio-btn" id="btn-audio-ctx" style="font-size:11px;padding:3px 9px;margin-top:4px">🔊</button></div>':'')
     +'<div class="compare-box">'
       +'<div class="compare-yours">Ta réponse : <em style="color:var(--text)">'+(typed||'—')+'</em></div>'
       +'<div class="compare-correct">Correct : '+ans+'</div>'
@@ -3653,6 +3681,11 @@ function rvl(){
     +'</div>';
 
   document.getElementById('btn-audio2').onclick=function(){spk(safe2);};
+  var ctxBtn=document.getElementById('btn-audio-ctx');
+  if(ctxBtn&&card.ctx){
+    var ctxSafe=card.ctx.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    ctxBtn.onclick=function(){spk(ctxSafe);};
+  }
   for(var i=1;i<=5;i++){
     (function(score){document.getElementById('sc'+score).onclick=function(){rate(score);};})(i);
   }
@@ -3774,7 +3807,7 @@ function rExplore(){
   el.innerHTML='<div class="explore-wrap">'
     +'<div class="page-title">Explorer</div>'
     +'<div class="exp-tabs">'
-      +'<button class="exp-tab'+(ctxTab?' active':'')+'" id="tab-ctx">Contexte</button>'
+      +'<button class="exp-tab'+(ctxTab?' active':'')+'" id="tab-ctx">Expressions</button>'
       +'<button class="exp-tab'+(!ctxTab?' active':'')+'" id="tab-ox">Oxford 3000</button>'
     +'</div>'
     +(ctxTab?renderCtxTab(addedCtx):renderOxTab(addedOx,totalOx))
@@ -3983,10 +4016,38 @@ function quickAddMeta(mk){
 }
 
 // ─── MY WORDS ─────────────────────────────────────────────────
+function rExploreDeckView(el,type){
+  var cards=type==='ox'
+    ?D.cards.filter(function(c){return c.fromBank&&c.exploreKey&&c.exploreKey.startsWith('ox_');})
+    :D.cards.filter(function(c){return c.fromBank&&c.exploreKey&&!c.exploreKey.startsWith('ox_');});
+  var title=type==='ox'?'Oxford 3000':'Expressions';
+  var due=cards.filter(function(c){return c.due<=now();}).length;
+  var mastered=cards.filter(function(c){return c.score>=4;}).length;
+  function cHTML(c){
+    return '<div class="card-item">'
+      +'<div class="card-texts"><div class="card-a">'+c.a+'</div><div class="card-b">'+c.b+'</div><div class="card-due">'+fdue(c.due)+'</div></div>'
+      +'<div>'+stars(c.score)+'</div>'
+    +'</div>';
+  }
+  el.innerHTML='<div class="words-wrap">'
+    +'<button class="back-btn" id="btn-back-expl">← Mes mots</button>'
+    +'<div style="font-size:20px;font-weight:800;margin-bottom:6px">'+title+'</div>'
+    +'<div class="sum-row">'
+      +'<span class="sum-chip" style="background:var(--redbg);color:var(--red)">'+due+' à revoir</span>'
+      +'<span class="sum-chip" style="background:var(--greenbg);color:var(--green)">'+mastered+' maitrisées</span>'
+      +'<span class="sum-chip" style="background:var(--bg3);color:var(--text3)">'+cards.length+' total</span>'
+    +'</div>'
+    +'<div class="card-list">'+(cards.length?cards.map(cHTML).join(''):'<div style="font-size:13px;color:var(--text3);padding:8px 0">Aucune fiche.</div>')+'</div>'
+    +'<div style="height:20px"></div>'
+  +'</div>';
+  document.getElementById('btn-back-expl').onclick=function(){aDeck=null;rWords();};
+}
 var ICONS=['📺','🗓️','📖','💼','🎵','🎬','📝','🌍','🎭','🏋️'];
 
 function rWords(){
   var el=document.getElementById('s-words');
+  if(aDeck==='explore-exp'){rExploreDeckView(el,'exp');return;}
+  if(aDeck==='explore-ox'){rExploreDeckView(el,'ox');return;}
   if(aDeck!==null){rDeckView(el,aDeck);return;}
   var html='';
   D.decks.filter(function(d){return !d.isExplore;}).forEach(function(d,i){
@@ -4009,6 +4070,24 @@ function rWords(){
   el.innerHTML='<div class="words-wrap">'
     +'<div class="page-title">Mes thèmes</div>'
     +'<div class="theme-list">'+html+'<div class="add-theme-btn" id="btn-add-theme">+ Nouveau thème</div></div>'
+    +(function(){
+      var oxCards=D.cards.filter(function(c){return c.fromBank&&c.exploreKey&&c.exploreKey.startsWith('ox_');});
+      var exCards=D.cards.filter(function(c){return c.fromBank&&c.exploreKey&&!c.exploreKey.startsWith('ox_');});
+      if(!oxCards.length&&!exCards.length)return '';
+      return '<div class="section-label" style="margin-top:20px">Explorer</div>'
+        +'<div style="display:flex;gap:8px;margin-bottom:8px">'
+          +(exCards.length?'<div style="flex:1;background:var(--bg2);border-radius:var(--rsm);padding:12px;border:0.5px solid var(--border);cursor:pointer" id="btn-explore-exp">'
+            +'<div style="font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Expressions</div>'
+            +'<div style="font-size:20px;font-weight:800;color:var(--brand)">'+exCards.length+'</div>'
+            +'<div style="font-size:11px;color:var(--text3)">fiches</div>'
+          +'</div>':'')
+          +(oxCards.length?'<div style="flex:1;background:var(--bg2);border-radius:var(--rsm);padding:12px;border:0.5px solid var(--border);cursor:pointer" id="btn-explore-ox">'
+            +'<div style="font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Oxford 3000</div>'
+            +'<div style="font-size:20px;font-weight:800;color:var(--gold)">'+oxCards.length+'</div>'
+            +'<div style="font-size:11px;color:var(--text3)">mots</div>'
+          +'</div>':'')
+        +'</div>';
+    })()
     +formHTML
     +'<div style="height:20px"></div></div>';
 
@@ -4017,6 +4096,10 @@ function rWords(){
     if(el2)el2.onclick=function(){aDeck=d.id;rWords();};
   });
   document.getElementById('btn-add-theme').onclick=function(){newDeckForm=true;rWords();};
+  var btnExp=document.getElementById('btn-explore-exp');
+  var btnOx=document.getElementById('btn-explore-ox');
+  if(btnExp)btnExp.onclick=function(){aDeck='explore-exp';rWords();};
+  if(btnOx)btnOx.onclick=function(){aDeck='explore-ox';rWords();};
   if(newDeckForm){
     document.getElementById('btn-cancel-deck').onclick=function(){newDeckForm=false;rWords();};
     document.getElementById('btn-mk-deck').onclick=mkDeck;
@@ -4067,7 +4150,7 @@ function rDeckView(el,deckId){
         +'<div class="trans-result" id="trans-result"></div>'
       +'</div>'
       +'<div class="form-row"><label id="lb-lbl">Français</label><input type="text" id="ib" placeholder="ex. Écrasant"/></div>'
-      +'<div class="form-row"><label>Contexte</label><textarea id="ictx" placeholder="Optionnel…"></textarea></div>'
+      +'<div class="form-row"><label>Expressions</label><textarea id="ictx" placeholder="Optionnel…"></textarea></div>'
       +'<div class="form-row"><label>Direction</label><select id="idir">'+dirOpts+'</select></div>'
       +'<div class="form-row"><label>Type</label><select id="ityp">'+typeOpts+'</select></div>'
       +'<div class="form-actions"><button class="btn-sm" style="background:var(--brand);color:#fff" id="btn-add-card">Ajouter</button></div>'
@@ -4125,6 +4208,8 @@ function addCard(deckId){
 function openQC(){
   var overlay=document.getElementById('qc-overlay');
   overlay.style.display='block';
+  var userDecks=D.decks.filter(function(d){return !d.isExplore;});
+  var deckOptions=userDecks.map(function(d){return '<option value="'+d.id+'"'+(qcDeck===d.id?' selected':'')+'>'+d.name+'</option>';}).join('');
   overlay.innerHTML='<div class="qc-sheet">'
     +'<div class="qc-backdrop" id="qc-back"></div>'
     +'<div class="qc-panel">'
@@ -4137,6 +4222,14 @@ function openQC(){
       +'<input class="qc-field" id="qc-a" type="text" placeholder="'+(qcDir==='fr-en'?'Ta phrase en français…':'Your phrase in English…')+'" autocapitalize="sentences" autocomplete="off"/>'
       +'<div class="qc-trans-result" id="qc-tr"></div>'
       +'<input class="qc-field" id="qc-b" type="text" placeholder="'+(qcDir==='fr-en'?'Traduction anglaise…':'Traduction française…')+'" autocapitalize="sentences" autocomplete="off"/>'
+      +'<input class="qc-field" id="qc-note" type="text" placeholder="Titre / contexte optionnel (ex: Breaking Bad)" autocapitalize="sentences" autocomplete="off" style="margin-bottom:10px"/>'
+      +'<div style="margin-bottom:12px">'
+        +'<select id="qc-deck" style="width:100%;font-size:14px;padding:11px 13px;background:var(--bg);border:1.5px solid var(--border2);border-radius:var(--rsm);color:var(--text);outline:none;-webkit-appearance:none;font-family:inherit">'
+          +deckOptions
+          +'<option value="new">+ Nouveau thème…</option>'
+        +'</select>'
+      +'</div>'
+      +'<input class="qc-field" id="qc-new-deck" type="text" placeholder="Nom du nouveau thème" autocapitalize="words" style="display:none"/>'
       +'<div class="qc-actions">'
         +'<button class="qc-btn-cancel" id="qc-cancel">Annuler</button>'
         +'<button class="qc-btn-add" id="qc-trans" style="background:var(--brand-mid)">Traduire</button>'
@@ -4150,6 +4243,13 @@ function openQC(){
   document.getElementById('qc-en').onclick=function(){qcDir='en-fr';openQC();};
   document.getElementById('qc-trans').onclick=qcTranslate;
   document.getElementById('qc-save').onclick=qcSave;
+  document.getElementById('qc-deck').onchange=function(){
+    var nf=document.getElementById('qc-new-deck');
+    if(this.value==='new'){nf.style.display='block';setTimeout(function(){nf.focus();},50);}
+    else{nf.style.display='none';qcDeck=parseInt(this.value);}
+  };
+  // Set initial deck selection
+  if(!qcDeck&&userDecks.length)qcDeck=userDecks[0].id;
   setTimeout(function(){var el=document.getElementById('qc-a');if(el)el.focus();},100);
 }
 
@@ -4180,11 +4280,21 @@ function qcSave(){
   var a=document.getElementById('qc-a').value.trim();
   var b=document.getElementById('qc-b').value.trim();
   if(!a||!b){alert('Remplis les deux champs.');return;}
-  var deck=D.decks.find(function(d){return d.name==='Capture'&&!d.isExplore;});
-  if(!deck){deck={id:D.nextDeckId++,name:'Capture',dir:'both',type:'mixed'};D.decks.push(deck);}
+  var note=document.getElementById('qc-note').value.trim();
+  var deckSel=document.getElementById('qc-deck').value;
+  var deck;
+  if(deckSel==='new'){
+    var newName=document.getElementById('qc-new-deck').value.trim();
+    if(!newName){alert('Entre un nom pour le nouveau thème.');return;}
+    deck={id:D.nextDeckId++,name:newName,dir:'both',type:'mixed'};
+    D.decks.push(deck);qcDeck=deck.id;
+  } else {
+    deck=D.decks.find(function(d){return d.id===parseInt(deckSel);});
+    if(!deck){alert('Thème introuvable.');return;}
+  }
   D.cards.push({id:D.nextCardId++,deckId:deck.id,
     a:qcDir==='fr-en'?b:a,b:qcDir==='fr-en'?a:b,
-    ctx:'',type:'phrase',dir:qcDir,score:0,mult:1,due:0,captured:true});
+    ctx:note,type:'phrase',dir:qcDir,score:0,mult:1,due:0,captured:true});
   D.newToday++;sv();animatePlus();updateDot();closeQC();
   if(curTab==='home')rHome();
 }
