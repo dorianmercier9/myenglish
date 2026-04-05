@@ -3095,6 +3095,7 @@ if(!D.lastReviewDay)D.lastReviewDay='';
 if(!D.totalReviewed)D.totalReviewed=0;
 if(!D.maxNew)D.maxNew=20;
 if(!D.composed)D.composed=[];
+if(!D.anthropicKey)D.anthropicKey='';
 if(!D.notifDismissed)D.notifDismissed=false;
 if(!D.decks.find(d=>d.id===EXPLORE_DECK_ID))
   {D.decks.push({id:EXPLORE_DECK_ID,name:'Explore',dir:'en-fr',type:'mixed',isExplore:true});sv();}
@@ -3380,12 +3381,15 @@ function enableNotifs(){
 function getEligiblePool(){
   var now_=now();
   return D.cards.filter(function(c){
-    // Accept cards with score>=4 OR reviewed 3+ times with score>=3
     var goodScore=c.score>=4;
     var reviewed=(c.totalRatings||0)>=3&&c.score>=3;
     if(!goodScore&&!reviewed)return false;
-    // Not forgotten (overdue by more than 14 days)
     if(c.due>0&&c.due<now_-14*86400000)return false;
+    // Max 3 composed phrases per word
+    var usedCount=D.composed.filter(function(cp){
+      return cp.words&&cp.words.some(function(w){return w.en===c.a;});
+    }).length;
+    if(usedCount>=3)return false;
     return true;
   });
 }
@@ -3393,10 +3397,19 @@ function getComposedDue(){
   return D.composed.filter(function(c){return c.due<=now();});
 }
 function shouldGenerateComposed(){
+  if(!getApiKey())return false;
   var pool=getEligiblePool();
   if(pool.length<2)return false;
+  // Max 3 pending at any time
   var pending=D.composed.filter(function(c){return c.due>now();}).length;
-  return pending<3;
+  if(pending>=3)return false;
+  // Max 3 generated per day
+  var today=new Date().toDateString();
+  var generatedToday=D.composed.filter(function(c){
+    return c.generatedOn===today;
+  }).length;
+  if(generatedToday>=3)return false;
+  return true;
 }
 function getComposedDesc(){
   var pool=getEligiblePool();
@@ -3417,11 +3430,20 @@ function getComposedBadge(){
   return '';
 }
 
-function getApiKey(){return D.anthropicKey||'';}
+function getApiKey(){
+  if(D.anthropicKey)return D.anthropicKey;
+  // Fallback: read directly from localStorage in case D migration missed it
+  try{
+    var stored=JSON.parse(localStorage.getItem(SK));
+    if(stored&&stored.anthropicKey){D.anthropicKey=stored.anthropicKey;return stored.anthropicKey;}
+  }catch(e){}
+  return '';
+}
 
 async function generateComposed(){
-  if(!getApiKey()){console.log('No API key');return null;}
+  if(!getApiKey()){console.log('Defi IA: no API key');return null;}
   var pool=getEligiblePool();
+  console.log('Defi IA: pool size='+pool.length+', pending='+D.composed.filter(function(c){return c.due>now();}).length);
   if(pool.length<2)return null;
   var level=pool.length>=50?3:pool.length>=20?2:1;
   var count=level===1?2:level===2?3:4;
@@ -3453,10 +3475,10 @@ async function generateComposed(){
     var clean=text.replace(/```json|```/g,'').trim();
     var parsed=JSON.parse(clean);
     if(!parsed.fr||!parsed.en)return null;
-    var cp={id:'cp_'+Date.now(),fr:parsed.fr,en:parsed.en,words:picked.map(function(c){return {en:c.a,fr:c.b};}),level:level,score:0,mult:1,due:0,totalRatings:0};
+    var cp={id:'cp_'+Date.now(),fr:parsed.fr,en:parsed.en,words:picked.map(function(c){return {en:c.a,fr:c.b};}),level:level,score:0,mult:1,due:0,totalRatings:0,generatedOn:new Date().toDateString()};
     D.composed.push(cp);sv();
     return cp;
-  }catch(e){console.error('Composed error:',e);return null;}
+  }catch(e){console.error('Composed error:',e);composedGenPending=false;return null;}
 }
 
 function rateComposed(id,s){
@@ -3574,7 +3596,7 @@ async function startSession(){
   composedQueue=getComposedDue();
   if(shouldGenerateComposed()&&!composedGenPending){
     composedGenPending=true;
-    generateComposed().then(function(){composedGenPending=false;composedQueue=getComposedDue();});
+    generateComposed().then(function(){composedGenPending=false;composedQueue=getComposedDue();}).catch(function(){composedGenPending=false;});
   }
   rQCard();
 }
