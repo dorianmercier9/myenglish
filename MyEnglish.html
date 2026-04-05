@@ -3095,6 +3095,8 @@ if(!D.lastReviewDay)D.lastReviewDay='';
 if(!D.totalReviewed)D.totalReviewed=0;
 if(!D.maxNew)D.maxNew=20;
 if(!D.composed)D.composed=[];
+// Clear composed generated before prompt fix (v2 prompt)
+if(!D.composedPromptV){D.composed=[];D.composedPromptV=2;sv();}
 if(!D.anthropicKey)D.anthropicKey='';
 if(!D.notifDismissed)D.notifDismissed=false;
 if(!D.decks.find(d=>d.id===EXPLORE_DECK_ID))
@@ -3181,13 +3183,7 @@ function iV(){
 }
 iV();
 
-function dbgToast(msg){
-  var d=document.createElement('div');
-  d.style.cssText='position:fixed;top:60px;left:10px;right:10px;background:#1a1a2e;color:#fff;padding:10px 14px;border-radius:8px;font-size:11px;z-index:9999;word-break:break-all;border:1px solid #4A5FE0;white-space:pre-wrap;max-height:200px;overflow-y:auto';
-  d.textContent=msg;
-  document.body.appendChild(d);
-  setTimeout(function(){d.remove();},8000);
-}
+
 function spk(t){
   if(!window.speechSynthesis)return;
   window.speechSynthesis.cancel();
@@ -3348,6 +3344,15 @@ function showSettings(){
   document.getElementById('btn-back-settings').onclick=function(){rHome();};
   document.getElementById('range-max').oninput=function(){document.getElementById('range-val').textContent=this.value;D.maxNew=parseInt(this.value);sv();};
   document.getElementById('btn-export').onclick=exportData;
+  document.getElementById('btn-reset-composed').onclick=function(){
+    if(confirm('Vider tous les Défis IA ?')){D.composed=[];D.composedPromptV=2;sv();alert('Réinitialisé.');}
+  };
+  document.getElementById('btn-reset-composed').onclick=function(){
+    if(confirm('Vider tous les Défis IA en cache ?')){
+      D.composed=[];sv();
+      alert('Défis IA réinitialisés. De nouvelles phrases seront générées à la prochaine session.');
+    }
+  };
   document.getElementById('btn-import').onclick=function(){document.getElementById('imp-file').click();};
   document.getElementById('btn-save-key').onclick=function(){
     var key=document.getElementById('api-key-input').value.trim();
@@ -3421,7 +3426,7 @@ function shouldGenerateComposed(){
 function getComposedDesc(){
   var pool=getEligiblePool();
   if(!getApiKey())return 'Configure ta clé API dans Paramètres';
-  if(pool.length<2)return pool.length+' mot dans le pool (min. 2 requis)';
+  if(pool.length<10)return pool.length+'/10 mots pour débloquer';
   var due=getComposedDue().length;
   var pending=D.composed.filter(function(c){return c.due>now();}).length;
   var poolInfo=' · '+pool.length+' mots dans le pool';
@@ -3431,7 +3436,7 @@ function getComposedDesc(){
 }
 function getComposedBadge(){
   var pool=getEligiblePool();
-  if(pool.length<2)return '<div class="mode-coming">Pool insuffisant</div>';
+  if(pool.length<10)return '<div class="mode-coming">'+pool.length+'/10</div>';
   var due=getComposedDue().length;
   if(due>0)return '<div class="mode-card-badge">'+due+'</div>';
   return '';
@@ -3448,58 +3453,82 @@ function getApiKey(){
 }
 
 async function generateComposed(){
-  if(!getApiKey()){dbgToast('no API key');return null;}
+  if(!getApiKey())return null;
   var pool=getEligiblePool();
-  dbgToast('Defi IA: pool size='+pool.length+', pending='+D.composed.filter(function(c){return c.due>now();}).length);
-  if(pool.length<2)return null;
+  if(pool.length<10)return null;
   var level=pool.length>=50?3:pool.length>=20?2:1;
-  var count=level===1?2:level===2?3:4;
-  // Pick items mixing Oxford and Contexte
-  var ox=pool.filter(function(c){return c.exploreKey&&c.exploreKey.startsWith('ox_');});
-  var ctx=pool.filter(function(c){return c.exploreKey&&!c.exploreKey.startsWith('ox_');});
-  var pers=pool.filter(function(c){return !c.exploreKey;});
-  var picked=[];
-  if(ox.length&&ctx.length){
-    picked.push(ox[Math.floor(Math.random()*ox.length)]);
-    picked.push(ctx[Math.floor(Math.random()*ctx.length)]);
-    var rest=ox.concat(ctx).concat(pers).filter(function(c){return picked.indexOf(c)<0;});
-    while(picked.length<count&&rest.length){var i=Math.floor(Math.random()*rest.length);picked.push(rest.splice(i,1)[0]);}
-  } else {
-    var sh=pool.slice().sort(function(){return Math.random()-.5;});
-    picked=sh.slice(0,count);
-  }
-  var wordList=picked.map(function(c){return '- "'+c.a+'" ('+c.b+')';}).join('\n');
-  var levelStr=level===1?'une phrase courte (1-2 propositions)':level===2?'une phrase professionnelle (2-3 propositions)':'un mini-scénario professionnel (3-4 propositions)';
-  var prompt='Task: write a natural French sentence and its English translation. The English translation must naturally contain these English words/expressions: '+wordList+'\n\nCritical rules:\n1. The French sentence must be 100% correct French - no English words inserted\n2. The French sentence must make complete logical sense\n3. The English translation must feel natural and use the listed vocabulary\n4. Professional or everyday context\n5. Maximum 20 words per sentence\n\nRespond with ONLY this JSON:\n{"fr": "natural French sentence", "en": "natural English translation"}';
+
+  // Shuffle pool, send up to 25 words - Claude chooses freely what fits
+  var shuffled=pool.slice().sort(function(){return Math.random()-.5;});
+  var sample=shuffled.slice(0,25);
+  var wordList=sample.map(function(c){return c.a+' ('+c.b+')';}).join(', ');
+
+  var ctx=level===1
+    ?'a simple everyday or professional sentence'
+    :level===2
+    ?'a professional situation (email, meeting, or report)'
+    :'a short realistic professional scenario (2-3 sentences max)';
+
+  var prompt='You are creating a French-to-English translation exercise for a French professional learning English.\n\n'
+    +'The learner knows these English words/expressions:\n'+wordList+'\n\n'
+    +'Your task:\n'
+    +'1. Choose 2 to 4 words from the list that naturally fit together in one sentence\n'
+    +'2. Write a natural, grammatically correct French sentence a French professional would actually say\n'
+    +'3. Write the English translation that naturally uses your chosen words\n\n'
+    +'Critical rules:\n'
+    +'- French sentence: 100% correct French, zero English words, must make logical sense\n'
+    +'- Context: '+ctx+'\n'
+    +'- Maximum 25 words per sentence\n'
+    +'- Only choose words that fit naturally together - never force incompatible words\n'
+    +'- The English must sound like something a native speaker would actually say\n\n'
+    +'Respond ONLY with this exact JSON, no markdown, no explanation:\n'
+    +'{"fr": "the French sentence", "en": "the English translation", "used": ["chosen_word1", "chosen_word2"]}';
+
   try{
-    dbgToast('Defi IA: calling API with key='+getApiKey().substring(0,20)+'...');
     var resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':getApiKey(),
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
       body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:prompt}]})
     });
-    dbgToast('Defi IA: HTTP status='+resp.status);
     var data=await resp.json();
-    dbgToast('Defi IA: response='+JSON.stringify(data).substring(0,200));
+    if(data.error){console.log('Defi IA API error:',data.error);composedGenPending=false;return null;}
     var text=(data.content&&data.content[0]&&data.content[0].text)||'';
-    dbgToast('Defi IA: text='+text.substring(0,100));
     var clean=text.replace(/```json|```/g,'').trim();
+    var m=clean.match(/\{[\s\S]*\}/);
+    if(!m){composedGenPending=false;return null;}
     var parsed;
-    try{parsed=JSON.parse(clean);}catch(pe){
-      var m=clean.match(/\{[\s\S]*\}/);
-      if(m){try{parsed=JSON.parse(m[0]);}catch(e2){dbgToast('Defi IA: parse fail');composedGenPending=false;return null;}}
-      else{dbgToast('Defi IA: no JSON');composedGenPending=false;return null;}
-    }
-    // Accept multiple key formats
-    var frText=parsed.fr||parsed.french||parsed.scenario||parsed.phrase||'';
-    var enText=parsed.en||parsed.english||parsed.answer||parsed.traduction||parsed.translation||'';
-    if(!frText||!enText){dbgToast('Defi IA: keys='+Object.keys(parsed).join(','));composedGenPending=false;return null;}
-    parsed.fr=frText;parsed.en=enText;
-    var cp={id:'cp_'+Date.now(),fr:parsed.fr,en:parsed.en,words:picked.map(function(c){return {en:c.a,fr:c.b};}),level:level,score:0,mult:1,due:0,totalRatings:0,generatedOn:new Date().toDateString()};
+    try{parsed=JSON.parse(m[0]);}catch(e){composedGenPending=false;return null;}
+    var frText=parsed.fr||'';
+    var enText=parsed.en||'';
+    if(!frText||!enText){composedGenPending=false;return null;}
+
+    // Map used words back to pool cards for chips display
+    var usedWords=(parsed.used||[]).map(function(w){return w.toLowerCase();});
+    var usedCards=sample.filter(function(c){
+      return usedWords.indexOf(c.a.toLowerCase())>=0;
+    });
+    if(!usedCards.length)usedCards=sample.slice(0,2); // fallback
+
+    var cp={
+      id:'cp_'+Date.now(),
+      fr:frText,
+      en:enText,
+      words:usedCards.map(function(c){return {en:c.a,fr:c.b};}),
+      level:level,
+      score:0,mult:1,due:0,
+      totalRatings:0,
+      generatedOn:new Date().toDateString()
+    };
     D.composed.push(cp);sv();
     return cp;
-  }catch(e){console.error('Composed error:',e);composedGenPending=false;return null;}
+  }catch(e){console.log('Defi IA error:',e);composedGenPending=false;return null;}
 }
+
 
 function rateComposed(id,s){
   var c=D.composed.find(function(x){return x.id===id;});
