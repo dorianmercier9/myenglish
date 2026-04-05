@@ -3329,6 +3329,10 @@ function showSettings(){
       +'<div><div style="font-size:14px;font-weight:600">Importer des données</div></div>'
       +'<button class="btn-sm" id="btn-import">Importer</button>'
     +'</div>'
+    +'<div style="background:var(--bg2);border-radius:var(--rsm);padding:13px 15px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;border:0.5px solid var(--border)">'
+      +'<div><div style="font-size:14px;font-weight:600">Réinitialiser Défis IA</div><div style="font-size:12px;color:var(--text3);margin-top:2px">Efface les phrases en cache</div></div>'
+      +'<button class="btn-sm" style="background:var(--redbg);color:var(--red)" id="btn-reset-composed">Vider</button>'
+    +'</div>'
     +'<div style="background:var(--bg2);border-radius:var(--rsm);padding:13px 15px;margin-bottom:6px;border:0.5px solid var(--border)">'
     +'<div style="font-size:14px;font-weight:600;margin-bottom:8px">Clé API Anthropic</div>'
     +'<div style="font-size:12px;color:var(--text3);margin-bottom:8px">Nécessaire pour le Défi IA. Disponible sur console.anthropic.com</div>'
@@ -3346,12 +3350,6 @@ function showSettings(){
   document.getElementById('btn-export').onclick=exportData;
   document.getElementById('btn-reset-composed').onclick=function(){
     if(confirm('Vider tous les Défis IA ?')){D.composed=[];D.composedPromptV=2;sv();alert('Réinitialisé.');}
-  };
-  document.getElementById('btn-reset-composed').onclick=function(){
-    if(confirm('Vider tous les Défis IA en cache ?')){
-      D.composed=[];sv();
-      alert('Défis IA réinitialisés. De nouvelles phrases seront générées à la prochaine session.');
-    }
   };
   document.getElementById('btn-import').onclick=function(){document.getElementById('imp-file').click();};
   document.getElementById('btn-save-key').onclick=function(){
@@ -3507,18 +3505,20 @@ async function generateComposed(){
     var enText=parsed.en||'';
     if(!frText||!enText){composedGenPending=false;return null;}
 
-    // Map used words back to pool cards for chips display
-    var usedWords=(parsed.used||[]).map(function(w){return w.toLowerCase();});
-    var usedCards=sample.filter(function(c){
-      return usedWords.indexOf(c.a.toLowerCase())>=0;
+    // Use the words Claude says it used - display as chips
+    var usedRaw=parsed.used||[];
+    // Try to match back to pool for fr translation, otherwise use as-is
+    var usedWords=usedRaw.map(function(w){
+      var match=sample.find(function(c){return c.a.toLowerCase()===w.toLowerCase();});
+      return match?{en:match.a,fr:match.b}:{en:w,fr:''};
     });
-    if(!usedCards.length)usedCards=sample.slice(0,2); // fallback
+    if(!usedWords.length)usedWords=[{en:'—',fr:''}];
 
     var cp={
       id:'cp_'+Date.now(),
       fr:frText,
       en:enText,
-      words:usedCards.map(function(c){return {en:c.a,fr:c.b};}),
+      words:usedWords,
       level:level,
       score:0,mult:1,due:0,
       totalRatings:0,
@@ -3810,9 +3810,10 @@ function rComposedCard(cp){
 
 function rvlComposed(cp){
   var typed=(document.getElementById('wa-c')&&document.getElementById('wa-c').value)||'';
+  var enSafe=cp.en.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
   document.getElementById('qb-c').innerHTML='<div class="quiz-card" style="min-height:auto;padding:18px 20px;gap:10px">'
     +'<div class="composed-badge">Référence</div>'
-    +'<div class="quiz-ans">'+cp.en+'</div>'
+    +'<div class="quiz-ans">'+cp.en+' <button class="audio-btn" id="btn-audio-comp" style="font-size:12px;padding:4px 10px">🔊</button></div>'
     +'<div class="compare-box">'
       +'<div class="compare-yours">Ta version : <em style="color:var(--text)">'+(typed||'—')+'</em></div>'
       +'<div class="compare-correct">Référence : '+cp.en+'</div>'
@@ -3825,6 +3826,8 @@ function rvlComposed(cp){
   for(var i=1;i<=5;i++){
     (function(score){document.getElementById('scc'+score).onclick=function(){rateComposed(cp.id,score);qScores.push(score);rQCard();};})(i);
   }
+  var btnAC=document.getElementById('btn-audio-comp');
+  if(btnAC)btnAC.onclick=function(){spk(enSafe);};
 }
 
 // MIC
