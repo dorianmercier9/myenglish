@@ -3401,12 +3401,13 @@ function shouldGenerateComposed(){
 function getComposedDesc(){
   var pool=getEligiblePool();
   if(!getApiKey())return 'Configure ta clé API dans Paramètres';
-  if(pool.length<2)return 'Valide plus de mots pour débloquer';
+  if(pool.length<2)return pool.length+' mot dans le pool (min. 2 requis)';
   var due=getComposedDue().length;
   var pending=D.composed.filter(function(c){return c.due>now();}).length;
-  if(due>0)return due+' défi'+(due>1?'s':'')+' disponible'+(due>1?'s':'');
-  if(pending>0)return pending+' défi'+(pending>1?'s':'')+' en attente';
-  return 'Génération au démarrage';
+  var poolInfo=' · '+pool.length+' mots dans le pool';
+  if(due>0)return due+' défi'+(due>1?'s':'')+' disponible'+(due>1?'s':'')+poolInfo;
+  if(pending>0)return pending+' défi'+(pending>1?'s':'')+' en attente'+poolInfo;
+  return 'Génération au démarrage'+poolInfo;
 }
 function getComposedBadge(){
   var pool=getEligiblePool();
