@@ -3470,7 +3470,7 @@ async function generateComposed(){
   }
   var wordList=picked.map(function(c){return '- "'+c.a+'" ('+c.b+')';}).join('\n');
   var levelStr=level===1?'une phrase courte (1-2 propositions)':level===2?'une phrase professionnelle (2-3 propositions)':'un mini-scénario professionnel (3-4 propositions)';
-  var prompt='You are helping someone learn English. Create a SHORT sentence (max 15 words) in French to translate into English.\n\nVocabulary to include: '+wordList+'\n\nRules:\n- Write ONLY in French\n- Keep it SHORT (under 15 words)\n- The English translation must use the vocabulary words\n\nRespond with ONLY this JSON, nothing else:\n{"fr": "short French sentence here", "en": "English translation here"}';
+  var prompt='Task: write a natural French sentence and its English translation. The English translation must naturally contain these English words/expressions: '+wordList+'\n\nCritical rules:\n1. The French sentence must be 100% correct French - no English words inserted\n2. The French sentence must make complete logical sense\n3. The English translation must feel natural and use the listed vocabulary\n4. Professional or everyday context\n5. Maximum 20 words per sentence\n\nRespond with ONLY this JSON:\n{"fr": "natural French sentence", "en": "natural English translation"}';
   try{
     dbgToast('Defi IA: calling API with key='+getApiKey().substring(0,20)+'...');
     var resp=await fetch('https://api.anthropic.com/v1/messages',{
