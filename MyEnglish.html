@@ -3470,7 +3470,7 @@ async function generateComposed(){
   }
   var wordList=picked.map(function(c){return '- "'+c.a+'" ('+c.b+')';}).join('\n');
   var levelStr=level===1?'une phrase courte (1-2 propositions)':level===2?'une phrase professionnelle (2-3 propositions)':'un mini-scénario professionnel (3-4 propositions)';
-  var prompt='Tu es un assistant pour apprendre l anglais professionnel.\n\nMots a utiliser :\n'+wordList+'\n\nGenere '+levelStr+' ENTIEREMENT EN FRANCAIS que l utilisateur devra traduire en anglais. La traduction doit naturellement utiliser ces mots. Expressions professionnel.\n\nReponds UNIQUEMENT en JSON sans markdown :\n{"fr":"phrase en francais","en":"traduction anglaise"}';
+  var prompt='Generate a sentence in French for an English learner to translate.\n\nWords to use: '+wordList+'\n\nWrite '+levelStr+' ENTIRELY IN FRENCH. The English translation must naturally use these words.\n\nRespond ONLY with this exact JSON format, no markdown, no explanation:\n{"fr": "the French sentence", "en": "the English translation"}';
   try{
     dbgToast('Defi IA: calling API with key='+getApiKey().substring(0,20)+'...');
     var resp=await fetch('https://api.anthropic.com/v1/messages',{
@@ -3484,8 +3484,17 @@ async function generateComposed(){
     var text=(data.content&&data.content[0]&&data.content[0].text)||'';
     dbgToast('Defi IA: text='+text.substring(0,100));
     var clean=text.replace(/```json|```/g,'').trim();
-    var parsed=JSON.parse(clean);
-    if(!parsed.fr||!parsed.en){dbgToast('bad parse');return null;}
+    var parsed;
+    try{parsed=JSON.parse(clean);}catch(pe){
+      var m=clean.match(/\{[\s\S]*\}/);
+      if(m){try{parsed=JSON.parse(m[0]);}catch(e2){dbgToast('Defi IA: parse fail');composedGenPending=false;return null;}}
+      else{dbgToast('Defi IA: no JSON');composedGenPending=false;return null;}
+    }
+    // Accept multiple key formats
+    var frText=parsed.fr||parsed.french||parsed.scenario||parsed.phrase||'';
+    var enText=parsed.en||parsed.english||parsed.answer||parsed.traduction||parsed.translation||'';
+    if(!frText||!enText){dbgToast('Defi IA: keys='+Object.keys(parsed).join(','));composedGenPending=false;return null;}
+    parsed.fr=frText;parsed.en=enText;
     var cp={id:'cp_'+Date.now(),fr:parsed.fr,en:parsed.en,words:picked.map(function(c){return {en:c.a,fr:c.b};}),level:level,score:0,mult:1,due:0,totalRatings:0,generatedOn:new Date().toDateString()};
     D.composed.push(cp);sv();
     return cp;
