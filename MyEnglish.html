@@ -3470,13 +3470,13 @@ async function generateComposed(){
   }
   var wordList=picked.map(function(c){return '- "'+c.a+'" ('+c.b+')';}).join('\n');
   var levelStr=level===1?'une phrase courte (1-2 propositions)':level===2?'une phrase professionnelle (2-3 propositions)':'un mini-scénario professionnel (3-4 propositions)';
-  var prompt='Generate a sentence in French for an English learner to translate.\n\nWords to use: '+wordList+'\n\nWrite '+levelStr+' ENTIRELY IN FRENCH. The English translation must naturally use these words.\n\nRespond ONLY with this exact JSON format, no markdown, no explanation:\n{"fr": "the French sentence", "en": "the English translation"}';
+  var prompt='You are helping someone learn English. Create a SHORT sentence (max 15 words) in French to translate into English.\n\nVocabulary to include: '+wordList+'\n\nRules:\n- Write ONLY in French\n- Keep it SHORT (under 15 words)\n- The English translation must use the vocabulary words\n\nRespond with ONLY this JSON, nothing else:\n{"fr": "short French sentence here", "en": "English translation here"}';
   try{
     dbgToast('Defi IA: calling API with key='+getApiKey().substring(0,20)+'...');
     var resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,messages:[{role:'user',content:prompt}]})
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:prompt}]})
     });
     dbgToast('Defi IA: HTTP status='+resp.status);
     var data=await resp.json();
