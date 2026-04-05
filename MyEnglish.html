@@ -3181,6 +3181,13 @@ function iV(){
 }
 iV();
 
+function dbgToast(msg){
+  var d=document.createElement('div');
+  d.style.cssText='position:fixed;top:60px;left:10px;right:10px;background:#1a1a2e;color:#fff;padding:10px 14px;border-radius:8px;font-size:11px;z-index:9999;word-break:break-all;border:1px solid #4A5FE0;white-space:pre-wrap;max-height:200px;overflow-y:auto';
+  d.textContent=msg;
+  document.body.appendChild(d);
+  setTimeout(function(){d.remove();},8000);
+}
 function spk(t){
   if(!window.speechSynthesis)return;
   window.speechSynthesis.cancel();
@@ -3441,9 +3448,9 @@ function getApiKey(){
 }
 
 async function generateComposed(){
-  if(!getApiKey()){console.log('Defi IA: no API key');return null;}
+  if(!getApiKey()){dbgToast('no API key');return null;}
   var pool=getEligiblePool();
-  console.log('Defi IA: pool size='+pool.length+', pending='+D.composed.filter(function(c){return c.due>now();}).length);
+  dbgToast('Defi IA: pool size='+pool.length+', pending='+D.composed.filter(function(c){return c.due>now();}).length);
   if(pool.length<2)return null;
   var level=pool.length>=50?3:pool.length>=20?2:1;
   var count=level===1?2:level===2?3:4;
@@ -3465,16 +3472,20 @@ async function generateComposed(){
   var levelStr=level===1?'une phrase courte (1-2 propositions)':level===2?'une phrase professionnelle (2-3 propositions)':'un mini-scénario professionnel (3-4 propositions)';
   var prompt='Tu es un assistant pour apprendre l anglais professionnel.\n\nMots a utiliser :\n'+wordList+'\n\nGenere '+levelStr+' ENTIEREMENT EN FRANCAIS que l utilisateur devra traduire en anglais. La traduction doit naturellement utiliser ces mots. Expressions professionnel.\n\nReponds UNIQUEMENT en JSON sans markdown :\n{"fr":"phrase en francais","en":"traduction anglaise"}';
   try{
+    dbgToast('Defi IA: calling API with key='+getApiKey().substring(0,20)+'...');
     var resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,messages:[{role:'user',content:prompt}]})
     });
+    dbgToast('Defi IA: HTTP status='+resp.status);
     var data=await resp.json();
+    dbgToast('Defi IA: response='+JSON.stringify(data).substring(0,200));
     var text=(data.content&&data.content[0]&&data.content[0].text)||'';
+    dbgToast('Defi IA: text='+text.substring(0,100));
     var clean=text.replace(/```json|```/g,'').trim();
     var parsed=JSON.parse(clean);
-    if(!parsed.fr||!parsed.en)return null;
+    if(!parsed.fr||!parsed.en){dbgToast('bad parse');return null;}
     var cp={id:'cp_'+Date.now(),fr:parsed.fr,en:parsed.en,words:picked.map(function(c){return {en:c.a,fr:c.b};}),level:level,score:0,mult:1,due:0,totalRatings:0,generatedOn:new Date().toDateString()};
     D.composed.push(cp);sv();
     return cp;
