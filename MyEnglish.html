@@ -6334,6 +6334,8 @@ function T(tab){
     document.getElementById('n-'+t).classList.toggle('active',t===tab);
   });
   updateDot();
+  var fab=document.getElementById('fab-btn');
+  if(fab)fab.style.display=tab==='train'?'none':'flex';
   if(tab==='home')rHome();
   if(tab==='train'){trainMode='review';rTrain();}
   if(tab==='explore'){bankCat=null;exploreMeta=null;rExplore();}
@@ -6747,6 +6749,8 @@ function getQuizCards(){
 async function startSession(){
   var qa=document.getElementById('qa');
   if(!qa)return;
+  var fab=document.getElementById('fab-btn');
+  if(fab)fab.style.display='none';
 
   if(trainMode==='composed'){
     qCards=[];qIdx=0;qScores=[];
