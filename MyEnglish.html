@@ -6545,13 +6545,13 @@ function shouldGenerateComposed(){
   if(pool.length<2)return false;
   // Max 3 pending at any time
   var pending=D.composed.filter(function(c){return c.due>now();}).length;
-  if(pending>=3)return false;
+  if(pending>=10)return false;
   // Max 3 generated per day
   var today=new Date().toDateString();
   var generatedToday=D.composed.filter(function(c){
     return c.generatedOn===today;
   }).length;
-  if(generatedToday>=3)return false;
+  if(generatedToday>=5)return false;
   return true;
 }
 function getComposedDesc(){
@@ -6605,15 +6605,17 @@ async function generateComposed(){
     +'Your task:\n'
     +'1. Choose 2 to 4 words from the list that naturally fit together in one sentence\n'
     +'2. Write a natural, grammatically correct French sentence a French professional would actually say\n'
-    +'3. Write the English translation that naturally uses your chosen words\n\n'
+    +'3. Write the English translation - it MUST be a faithful, accurate translation of the French sentence\n\n'
     +'Critical rules:\n'
     +'- French sentence: 100% correct French, zero English words, must make logical sense\n'
     +'- Context: '+ctx+'\n'
     +'- Maximum 25 words per sentence\n'
     +'- Only choose words that fit naturally together - never force incompatible words\n'
-    +'- The English must sound like something a native speaker would actually say\n\n'
+    +'- The English translation must be FAITHFUL to the French meaning - do not add nuances, modals or meanings not present in the original\n'
+    +'- If the French says "we cannot", the English must say "we cannot" - not "we might not be able to"\n'
+    +'- The "used" array must contain ONLY words that actually appear in the English translation\n\n'
     +'Respond ONLY with this exact JSON, no markdown, no explanation:\n'
-    +'{"fr": "the French sentence", "en": "the English translation", "used": ["chosen_word1", "chosen_word2"]}';
+    +'{"fr": "the French sentence", "en": "the faithful English translation", "used": ["word1", "word2"]}';
 
   try{
     var resp=await fetch('https://api.anthropic.com/v1/messages',{
@@ -6757,7 +6759,17 @@ async function startSession(){
       composedQueue=getComposedDue();
     }
     if(composedQueue.length===0){
-      qa.innerHTML='<div class="empty"><div class="empty-icon">&#129302;</div>Pas encore de Défi IA.<br><br>Valide plus de fiches en révision pour en générer !</div>';
+      var pending=D.composed.filter(function(c){return c.due>now();});
+      if(pending.length){
+        var nextDue=Math.min.apply(null,pending.map(function(c){return c.due;}));
+        var diffMs=nextDue-now();
+        var diffH=Math.floor(diffMs/3600000);
+        var diffM=Math.floor((diffMs%3600000)/60000);
+        var timeStr=diffH>0?(diffH+'h '+diffM+'min'):(diffM+' min');
+        qa.innerHTML='<div class="empty"><div class="empty-icon">⏳</div>'+pending.length+' défi'+(pending.length>1?'s':'')+' en attente.<br><br>Prochain disponible dans '+timeStr+'.</div>';
+      } else {
+        qa.innerHTML='<div class="empty"><div class="empty-icon">&#129302;</div>Pas encore de Défi IA.<br><br>Valide plus de fiches en révision pour en générer !</div>';
+      }
       return;
     }
     rQCard();
