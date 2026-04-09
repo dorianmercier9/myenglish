@@ -6728,7 +6728,15 @@ function rateComposed(id,s){
 
 // ─── MODE ÉCOUTE ─────────────────────────────────────────────
 
-function getOpenAIKey(){return D.openaiKey||'';}
+function getOpenAIKey(){
+  if(D.openaiKey)return D.openaiKey;
+  // Fallback: read directly from localStorage in case D migration missed it
+  try{
+    var stored=JSON.parse(localStorage.getItem(SK));
+    if(stored&&stored.openaiKey)return stored.openaiKey;
+  }catch(e){}
+  return '';
+}
 
 function getListenPool(){
   // Cards with 2 consecutive scores >= 4 (mastered) - both oxford and expressions
