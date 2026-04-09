@@ -6238,6 +6238,8 @@ if(!D.composed)D.composed=[];
 // Clear composed generated before prompt fix (v2 prompt)
 if(!D.composedPromptV){D.composed=[];D.composedPromptV=2;sv();}
 if(!D.anthropicKey)D.anthropicKey='';
+if(!D.openaiKey)D.openaiKey='';
+if(!D.listenCards)D.listenCards={};
 if(!D.notifDismissed)D.notifDismissed=false;
 if(!D.decks.find(d=>d.id===EXPLORE_DECK_ID))
   {D.decks.push({id:EXPLORE_DECK_ID,name:'Explore',dir:'en-fr',type:'mixed',isExplore:true});sv();}
@@ -6820,12 +6822,21 @@ function rTrain(){
         +'<div class="mode-card-desc">'+cd+'</div>'
         +cb
       +'</div>'
-      +'<div class="mode-card'+(getOpenAIKey()&&getListenPool().length>=10?' active-card':' disabled')+'" id="m-listen">'
-        +getListenBadge()
-        +'<div class="mode-card-icon">&#128066;</div>'
-        +'<div class="mode-card-name" style="color:'+(getOpenAIKey()&&getListenPool().length>=10?'var(--brand)':'inherit')+'"">Écoute</div>'
-        +'<div class="mode-card-desc">'+getListenDesc()+'</div>'
-      +'</div>'
+      +(function(){
+        try{
+          var lPool=getListenPool();
+          var lKey=getOpenAIKey();
+          var lActive=lKey&&lPool.length>=10;
+          return '<div class="mode-card'+(lActive?' active-card':' disabled')+'" id="m-listen">'
+            +(lActive?getListenBadge():'')
+            +'<div class="mode-card-icon">&#128066;</div>'
+            +'<div class="mode-card-name" style="color:'+(lActive?'var(--brand)':'inherit')+'">Écoute</div>'
+            +'<div class="mode-card-desc">'+getListenDesc()+'</div>'
+            +'</div>';
+        }catch(e){
+          return '<div class="mode-card disabled"><div class="mode-card-icon">&#128066;</div><div class="mode-card-name">Écoute</div><div class="mode-card-desc">Configure ta clé OpenAI dans Paramètres</div></div>';
+        }
+      })()
       +'<div class="mode-card disabled">'
         +'<div class="mode-card-icon">&#9889;</div>'
         +'<div class="mode-card-name">Vitesse</div>'
