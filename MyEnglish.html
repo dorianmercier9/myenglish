@@ -6381,7 +6381,8 @@ function rHome(){
   var revPct=Math.min(100,Math.round((Math.min(D.reviewedToday,dg)/dg)*100));
   var addedOx=OXFORD_KEYS.reduce(function(s,k){return s+OXFORD[k].cards.filter(function(_,i){return D.bankAdded['ox_'+k+'-'+i];}).length;},0);
   var addedCtx=CAT_KEYS.reduce(function(s,k){return s+BANK[k].cards.filter(function(_,i){return D.bankAdded[k+'-'+i];}).length;},0);
-  var globalPct=Math.round(((addedOx+addedCtx)/totalEntries)*100);
+  var mastered=D.cards.filter(function(c){return c.score>=4;}).length;
+  var globalPct=D.cards.length>0?Math.round((mastered/totalEntries)*100):0;
   var totalCtxN=CAT_KEYS.reduce(function(s,k){return s+BANK[k].cards.length;},0);
   var totalOxN=OXFORD_KEYS.reduce(function(s,k){return s+OXFORD[k].cards.length;},0);
 
