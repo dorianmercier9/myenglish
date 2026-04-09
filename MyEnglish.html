@@ -6501,6 +6501,15 @@ function showSettings(){
     +'</div>'
     +'<div id="key-status" style="font-size:11px;margin-top:6px;color:var(--green)">'+(D.anthropicKey?'✓ Clé enregistrée':'')+'</div>'
   +'</div>'
+  +'<div style="background:var(--bg2);border-radius:var(--rsm);padding:13px 15px;margin-bottom:6px;border:0.5px solid var(--border)">'
+    +'<div style="font-size:14px;font-weight:600;margin-bottom:8px">Clé API OpenAI</div>'
+    +'<div style="font-size:12px;color:var(--text3);margin-bottom:8px">Nécessaire pour le Mode Écoute. Disponible sur platform.openai.com</div>'
+    +'<div style="display:flex;gap:8px">'
+      +'<input type="password" id="openai-key-input" placeholder="sk-..." value="'+(D.openaiKey||'')+'\" style="flex:1;font-size:13px;padding:9px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--rsm);color:var(--text);outline:none;font-family:inherit"/>'
+      +'<button class="btn-sm" style="background:var(--brand);color:#fff" id="btn-save-openai-key">Sauver</button>'
+    +'</div>'
+    +'<div id="openai-key-status" style="font-size:11px;margin-top:6px;color:var(--green)">'+(D.openaiKey?'✓ Clé enregistrée':'')+' </div>'
+  +'</div>'
   +'<input type="file" id="imp-file" accept=".json" style="display:none"/>'
     +'<div style="height:20px"></div>'
   +'</div>';
@@ -6515,6 +6524,12 @@ function showSettings(){
     var key=document.getElementById('api-key-input').value.trim();
     D.anthropicKey=key;sv();
     var status=document.getElementById('key-status');
+    if(status)status.textContent=key?'✓ Clé enregistrée':'Clé supprimée';
+  };
+  document.getElementById('btn-save-openai-key').onclick=function(){
+    var key=document.getElementById('openai-key-input').value.trim();
+    D.openaiKey=key;sv();
+    var status=document.getElementById('openai-key-status');
     if(status)status.textContent=key?'✓ Clé enregistrée':'Clé supprimée';
   };
   document.getElementById('imp-file').onchange=importData;
@@ -6708,6 +6723,79 @@ function rateComposed(id,s){
   sv();updateDot();
 }
 
+
+// ─── MODE ÉCOUTE ─────────────────────────────────────────────
+
+function getOpenAIKey(){return D.openaiKey||'';}
+
+function getListenPool(){
+  // Cards with 2 consecutive scores >= 4 (mastered) - both oxford and expressions
+  return D.cards.filter(function(c){
+    return c.score>=4&&(c.totalRatings||0)>=2;
+  });
+}
+
+function getListenDue(){
+  var n=now();
+  return getListenPool().filter(function(c){
+    var ls=D.listenCards[c.id];
+    if(!ls)return true; // never done in listen mode
+    return ls.due<=n;
+  });
+}
+
+function getListenDesc(){
+  if(!getOpenAIKey())return 'Configure ta clé OpenAI dans Paramètres';
+  var pool=getListenPool();
+  if(pool.length<10)return pool.length+'/10 mots maîtrisés pour débloquer';
+  var due=getListenDue().length;
+  return due>0?(due+' fiche'+(due>1?'s':'')+' à écouter · '+pool.length+' mots'):'À jour · '+pool.length+' mots';
+}
+
+function getListenBadge(){
+  if(!getOpenAIKey())return '';
+  var pool=getListenPool();
+  if(pool.length<10)return '<div class="mode-coming">'+pool.length+'/10</div>';
+  var due=getListenDue().length;
+  if(due>0)return '<div class="mode-card-badge">'+due+'</div>';
+  return '';
+}
+
+function rateListenCard(cardId, score){
+  var intervals=[0,5*60000,30*60000,12*3600000,2*86400000,4*86400000];
+  var ls=D.listenCards[cardId]||{score:0,mult:1,due:0};
+  if(score>=4){
+    ls.mult=(ls.mult||1)*1.5;
+    ls.due=now()+intervals[score]*(ls.mult||1);
+  } else {
+    ls.mult=1;
+    ls.due=now()+intervals[score];
+  }
+  ls.score=score;
+  D.listenCards[cardId]=ls;
+  sv();
+}
+
+var listenVoices=['nova','shimmer','alloy','echo','onyx'];
+
+async function speakOpenAI(text){
+  if(!getOpenAIKey())return null;
+  var voice=listenVoices[Math.floor(Math.random()*listenVoices.length)];
+  try{
+    var resp=await fetch('https://api.openai.com/v1/audio/speech',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+getOpenAIKey()
+      },
+      body:JSON.stringify({model:'tts-1',input:text,voice:voice})
+    });
+    if(!resp.ok){console.log('TTS error:',resp.status);return null;}
+    var blob=await resp.blob();
+    return URL.createObjectURL(blob);
+  }catch(e){console.log('TTS error:',e);return null;}
+}
+
 // ─── TRAIN ───────────────────────────────────────────────────
 function rTrain(){
   var el=document.getElementById('s-train');
@@ -6732,11 +6820,11 @@ function rTrain(){
         +'<div class="mode-card-desc">'+cd+'</div>'
         +cb
       +'</div>'
-      +'<div class="mode-card disabled">'
+      +'<div class="mode-card'+(getOpenAIKey()&&getListenPool().length>=10?' active-card':' disabled')+'" id="m-listen">'
+        +getListenBadge()
         +'<div class="mode-card-icon">&#128066;</div>'
-        +'<div class="mode-card-name">Écoute</div>'
-        +'<div class="mode-card-desc">Entends et transcris</div>'
-        +'<div class="mode-coming">Bientôt</div>'
+        +'<div class="mode-card-name" style="color:'+(getOpenAIKey()&&getListenPool().length>=10?'var(--brand)':'inherit')+'"">Écoute</div>'
+        +'<div class="mode-card-desc">'+getListenDesc()+'</div>'
       +'</div>'
       +'<div class="mode-card disabled">'
         +'<div class="mode-card-icon">&#9889;</div>'
@@ -6757,6 +6845,10 @@ function rTrain(){
 
   document.getElementById('m-review').onclick=function(){trainMode='review';rTrain();};
   document.getElementById('m-composed').onclick=function(){trainMode='composed';rTrain();};
+  var mListen=document.getElementById('m-listen');
+  if(mListen)mListen.onclick=function(){
+    if(getOpenAIKey()&&getListenPool().length>=10){trainMode='listen';rTrain();}
+  };
   document.getElementById('pq-all').onclick=function(){qMode='all';qDeck=null;qExploreCat=null;rTrain();};
   document.getElementById('pq-themes').onclick=function(){qMode='themes';qExploreCat=null;rTrain();};
   document.getElementById('pq-explore').onclick=function(){qMode='explore';qDeck=null;rTrain();};
@@ -6770,11 +6862,133 @@ function getQuizCards(){
   return D.cards;
 }
 
-async function startSession(){
+// ─── LISTEN SESSION ──────────────────────────────────────────
+
+var listenQueue=[];
+var listenIdx=0;
+var currentAudioUrl=null;
+var currentAudioEl=null;
+
+function startListenSession(){
+  listenQueue=getListenDue().sort(function(){return Math.random()-0.5;});
+  listenIdx=0;
+  if(!listenQueue.length){
+    var qa=document.getElementById('qa');
+    if(qa)qa.innerHTML='<div class="empty"><div class="empty-icon">👂</div>Tout est à jour !<br><br>Reviens plus tard pour de nouvelles fiches.</div>';
+    return;
+  }
+  rListenCard();
+}
+
+function rListenCard(){
+  var qa=document.getElementById('qa');
+  if(!qa)return;
+  if(listenIdx>=listenQueue.length){
+    qa.innerHTML='<div class="empty"><div class="empty-icon">🎉</div>Session terminée !<br><br>'+listenQueue.length+' fiche'+(listenQueue.length>1?'s':'')+' écoutée'+(listenQueue.length>1?'s':'')+' aujourd\'hui.</div>';
+    return;
+  }
+  var card=listenQueue[listenIdx];
+  currentAudioUrl=null;
+  currentAudioEl=null;
+
+  qa.innerHTML=
+    '<div class="quiz-card" style="gap:16px">'    +'<div style="display:flex;align-items:center;justify-content:space-between">'      +'<span style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">👂 Écoute · '+(listenIdx+1)+'/'+listenQueue.length+'</span>'      +'<span style="font-size:11px;color:var(--text3)">'+card.type+'</span>'    +'</div>'    +'<div style="text-align:center;padding:10px 0">'      +'<button class="btn-primary" id="btn-listen-play" style="font-size:16px;padding:14px 32px;border-radius:50px">🔊 Écouter</button>'      +'<div id="listen-loading" style="display:none;color:var(--text3);font-size:13px;margin-top:8px">Génération audio...</div>'    +'</div>'    +'<div style="display:flex;flex-direction:column;gap:10px">'      +'<div>'        +'<div style="font-size:12px;color:var(--text3);margin-bottom:6px">Ce que tu as entendu (anglais) :</div>'        +'<input id="listen-input-en" type="text" placeholder="Écris ce que tu as entendu..." style="width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--rsm);color:var(--text);font-size:15px;font-family:inherit;box-sizing:border-box"/>'      +'</div>'      +'<div>'        +'<div style="font-size:12px;color:var(--text3);margin-bottom:6px">Traduction française :</div>'        +'<input id="listen-input-fr" type="text" placeholder="Traduis en français..." style="width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--rsm);color:var(--text);font-size:15px;font-family:inherit;box-sizing:border-box"/>'      +'</div>'    +'</div>'    +'<button class="btn-primary" id="btn-listen-check" style="width:100%">Vérifier</button>'    +'</div>';
+
+  document.getElementById('btn-listen-play').onclick=function(){playListenAudio(card);};
+  document.getElementById('btn-listen-check').onclick=function(){revealListenCard(card);};
+  document.getElementById('listen-input-fr').onkeydown=function(e){if(e.key==='Enter')revealListenCard(card);};
+}
+
+async function playListenAudio(card){
+  var btn=document.getElementById('btn-listen-play');
+  var loading=document.getElementById('listen-loading');
+  if(!btn)return;
+
+  // If already generated this session, reuse
+  if(currentAudioEl){currentAudioEl.currentTime=0;currentAudioEl.play();return;}
+
+  btn.disabled=true;
+  btn.textContent='⏳';
+  if(loading)loading.style.display='block';
+
+  var url=await speakOpenAI(card.a);
+  if(loading)loading.style.display='none';
+
+  if(!url){
+    btn.disabled=false;
+    btn.textContent='⚠️ Erreur audio';
+    return;
+  }
+  currentAudioUrl=url;
+  currentAudioEl=new Audio(url);
+  currentAudioEl.play();
+  btn.disabled=false;
+  btn.textContent='🔊 Réécouter';
+}
+
+function normalizeText(s){
+  return s.toLowerCase().trim()
+    .replace(/['']/g,"'")
+    .replace(/[^a-z0-9àâäéèêëîïôùûüç' ]/g,'')
+    .replace(/\s+/g,' ');
+}
+
+function fuzzyMatch(input, reference){
+  var a=normalizeText(input);
+  var b=normalizeText(reference);
+  if(a===b)return true;
+  // Allow 1-2 char difference (typos)
+  if(Math.abs(a.length-b.length)>4)return false;
+  var errors=0;
+  var shorter=a.length<b.length?a:b;
+  var longer=a.length>=b.length?a:b;
+  for(var i=0;i<shorter.length;i++){if(shorter[i]!==longer[i])errors++;}
+  errors+=longer.length-shorter.length;
+  return errors<=2;
+}
+
+function revealListenCard(card){
+  var inputEn=(document.getElementById('listen-input-en').value||'').trim();
+  var inputFr=(document.getElementById('listen-input-fr').value||'').trim();
+  var correctEn=fuzzyMatch(inputEn,card.a);
+  var correctFr=fuzzyMatch(inputFr,card.b);
+
+  var qa=document.getElementById('qa');
+  if(!qa)return;
+
+  var enStatus=correctEn?'✅':'❌';
+  var frStatus=correctFr?'✅':'❌';
+
+  qa.innerHTML=
+    '<div class="quiz-card" style="gap:14px">'    +'<div class="composed-badge">Référence</div>'    +'<div style="font-size:20px;font-weight:700;color:var(--brand);text-align:center;line-height:1.3">'+card.a+'</div>'    +'<div style="font-size:15px;color:var(--text3);text-align:center;font-style:italic">'+card.b+'</div>'    +(currentAudioUrl?'<div style="text-align:center"><button class="audio-btn" id="btn-listen-replay">🔊 Réécouter</button></div>':'')    +'<div style="background:var(--bg3);border-radius:var(--rsm);padding:12px;display:flex;flex-direction:column;gap:6px">'      +'<div style="font-size:13px">'+enStatus+' Anglais : <em>'+inputEn+'</em></div>'      +'<div style="font-size:13px">'+frStatus+' Français : <em>'+inputFr+'</em></div>'    +'</div>'    +'</div>'    +'<p class="score-hint" style="margin-top:14px">Comment tu t\'en es sorti ?</p>'    +'<div class="score-grid">'    +(function(){var s='';for(var i=1;i<=5;i++)s+='<button class="score-btn sc'+i+'" id="lsc'+i+'">'+i+'</button>';return s;}())    +'</div>';
+
+  if(currentAudioEl){
+    var replay=document.getElementById('btn-listen-replay');
+    if(replay)replay.onclick=function(){currentAudioEl.currentTime=0;currentAudioEl.play();};
+  }
+
+  for(var i=1;i<=5;i++){
+    (function(score){
+      var btn=document.getElementById('lsc'+score);
+      if(btn)btn.onclick=function(){
+        rateListenCard(card.id,score);
+        listenIdx++;
+        rListenCard();
+      };
+    })(i);
+  }
+}
+
+function startSession(){
   var qa=document.getElementById('qa');
   if(!qa)return;
   var fab=document.getElementById('fab-btn');
   if(fab)fab.style.display='none';
+
+  if(trainMode==='listen'){
+    startListenSession();
+    return;
+  }
 
   if(trainMode==='composed'){
     qCards=[];qIdx=0;qScores=[];
@@ -6782,9 +6996,13 @@ async function startSession(){
     if(composedQueue.length===0&&shouldGenerateComposed()&&!composedGenPending){
       qa.innerHTML='<div class="composed-loader"><div style="font-size:32px;margin-bottom:8px">&#129302;</div><div>Génération de ton Défi IA...</div><div class="dot-anim"><span></span><span></span><span></span></div></div>';
       composedGenPending=true;
-      await generateComposed();
-      composedGenPending=false;
-      composedQueue=getComposedDue();
+      (async function(){
+        await generateComposed();
+        composedGenPending=false;
+        composedQueue=getComposedDue();
+        if(composedQueue.length>0)rQCard();
+      })();
+      return;
     }
     if(composedQueue.length===0){
       var pending=D.composed.filter(function(c){return c.due>now();});
