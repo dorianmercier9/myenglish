@@ -101,6 +101,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
   box-shadow:var(--shadow-sm);white-space:nowrap}
 .stat-pill.clickable{cursor:pointer}
 .stat-pill-n{font-size:15px;font-weight:800;color:var(--text);margin-right:3px}
+.day-counter-card{background:var(--bg2);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;border:0.5px solid var(--border);display:flex;align-items:center;gap:14px}
+.day-counter-left{min-width:80px}
+.day-counter-n{font-size:28px;font-weight:800;color:var(--brand);line-height:1}
+.day-counter-of{font-size:13px;font-weight:500;color:var(--text3)}
+.day-counter-label{font-size:12px;color:var(--text3);margin-top:3px}
+.day-counter-bar-wrap{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.day-counter-bar{height:100%;background:linear-gradient(90deg,var(--brand),#7C3AED);border-radius:4px;transition:width 0.5s ease}
 .streak-card{background:var(--bg2);border-radius:var(--r);padding:14px 16px;
   margin-bottom:14px;border:0.5px solid var(--border);box-shadow:var(--shadow-sm);
   display:flex;align-items:center;gap:10px}
@@ -6364,6 +6371,13 @@ function rHome(){
   var mastered=D.cards.filter(function(c){return c.score>=4;}).length;
   var streak=D.streak||0;
   var dg=D.maxNew||20;
+  // Day counter - started April 1 2026
+  var startDate=new Date('2026-04-01');
+  var todayDate=new Date();
+  todayDate.setHours(0,0,0,0);
+  var dayNum=Math.min(365,Math.max(1,Math.floor((todayDate-startDate)/(86400000))+1));
+  var dayPct=Math.round((dayNum/365)*100);
+  var dayMsg=dayNum<=30?'Démarrage 🚀':dayNum<=90?'En route 💪':dayNum<=180?'Mi-parcours 🎯':dayNum<=300?'Dernière ligne droite 🔥':'Objectif atteint 🏆';
   var revPct=Math.min(100,Math.round((Math.min(D.reviewedToday,dg)/dg)*100));
   var addedOx=OXFORD_KEYS.reduce(function(s,k){return s+OXFORD[k].cards.filter(function(_,i){return D.bankAdded['ox_'+k+'-'+i];}).length;},0);
   var addedCtx=CAT_KEYS.reduce(function(s,k){return s+BANK[k].cards.filter(function(_,i){return D.bankAdded[k+'-'+i];}).length;},0);
@@ -6426,6 +6440,15 @@ function rHome(){
         +'<div class="streak-today-label">Auj.</div>'
         +'<div class="streak-today-n" style="color:'+(D.reviewedToday>=dg?'var(--green)':'var(--brand)')+'">'+Math.min(D.reviewedToday,dg)+'<span style="font-size:11px;color:var(--text3);font-weight:500">/'+dg+'</span></div>'
         +'<div class="prog-bar streak-today-bar"><div class="prog-fill" style="width:'+revPct+'%"></div></div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="day-counter-card">'
+      +'<div class="day-counter-left">'
+        +'<div class="day-counter-n">'+dayNum+'<span class="day-counter-of">/365</span></div>'
+        +'<div class="day-counter-label">'+dayMsg+'</div>'
+      +'</div>'
+      +'<div class="day-counter-bar-wrap">'
+        +'<div class="day-counter-bar" style="width:'+dayPct+'%"></div>'
       +'</div>'
     +'</div>'
     +'<div class="prog-card">'
