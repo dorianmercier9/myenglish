@@ -6238,6 +6238,21 @@ if(!D.composed)D.composed=[];
 // Clear composed generated before prompt fix (v2 prompt)
 if(!D.composedPromptV){D.composed=[];D.composedPromptV=2;sv();}
 if(!D.anthropicKey)D.anthropicKey='';
+if(!D.openaiKey)D.openaiKey='';
+if(!D.listenCards)D.listenCards={};
+if(!D.revScores)D.revScores={};
+// One-time: unlock FR->EN for all already mastered cards
+// Always scan for newly mastered cards that need FR->EN unlocked
+(function(){
+  var changed=false;
+  D.cards.forEach(function(c){
+    if(c.score>=4&&(c.goodStreak||0)>=2&&c.dir!=='fr-en'&&!D.revScores[c.id]){
+      D.revScores[c.id]={score:0,mult:1,due:0};
+      changed=true;
+    }
+  });
+  if(changed)sv();
+})();
 if(!D.notifDismissed)D.notifDismissed=false;
 if(!D.decks.find(d=>d.id===EXPLORE_DECK_ID))
   {D.decks.push({id:EXPLORE_DECK_ID,name:'Explore',dir:'en-fr',type:'mixed',isExplore:true});sv();}
@@ -6531,7 +6546,6 @@ function showSettings(){
     D.openaiKey=key;sv();
     var status=document.getElementById('openai-key-status');
     if(status)status.textContent=key?'✓ Clé enregistrée':'Clé supprimée';
-    if(key)alert('Clé OpenAI sauvegardée. Va sur S\'entraîner pour accéder au Mode Écoute.');
   };
   document.getElementById('imp-file').onchange=importData;
 }
@@ -6727,7 +6741,15 @@ function rateComposed(id,s){
 
 // ─── MODE ÉCOUTE ─────────────────────────────────────────────
 
-function getOpenAIKey(){return D.openaiKey||'';}
+function getOpenAIKey(){
+  if(D.openaiKey)return D.openaiKey;
+  // Fallback: read directly from localStorage in case D migration missed it
+  try{
+    var stored=JSON.parse(localStorage.getItem(SK));
+    if(stored&&stored.openaiKey)return stored.openaiKey;
+  }catch(e){}
+  return '';
+}
 
 function getListenPool(){
   // Cards with 2 consecutive scores >= 4 (mastered) - both oxford and expressions
@@ -6821,12 +6843,21 @@ function rTrain(){
         +'<div class="mode-card-desc">'+cd+'</div>'
         +cb
       +'</div>'
-      +'<div class="mode-card'+(getOpenAIKey()&&getListenPool().length>=10?' active-card':' disabled')+'" id="m-listen">'
-        +getListenBadge()
-        +'<div class="mode-card-icon">&#128066;</div>'
-        +'<div class="mode-card-name" style="color:'+(getOpenAIKey()&&getListenPool().length>=10?'var(--brand)':'inherit')+'"">Écoute</div>'
-        +'<div class="mode-card-desc">'+getListenDesc()+'</div>'
-      +'</div>'
+      +(function(){
+        try{
+          var lPool=getListenPool();
+          var lKey=getOpenAIKey();
+          var lActive=lKey&&lPool.length>=10;
+          return '<div class="mode-card'+(lActive?' active-card':' disabled')+'" id="m-listen">'
+            +(lActive?getListenBadge():'')
+            +'<div class="mode-card-icon">&#128066;</div>'
+            +'<div class="mode-card-name" style="color:'+(lActive?'var(--brand)':'inherit')+'">Écoute</div>'
+            +'<div class="mode-card-desc">'+getListenDesc()+'</div>'
+            +'</div>';
+        }catch(e){
+          return '<div class="mode-card disabled"><div class="mode-card-icon">&#128066;</div><div class="mode-card-name">Écoute</div><div class="mode-card-desc">Configure ta clé OpenAI dans Paramètres</div></div>';
+        }
+      })()
       +'<div class="mode-card disabled">'
         +'<div class="mode-card-icon">&#9889;</div>'
         +'<div class="mode-card-name">Vitesse</div>'
@@ -6855,6 +6886,56 @@ function rTrain(){
   document.getElementById('pq-explore').onclick=function(){qMode='explore';qDeck=null;rTrain();};
 
   startSession();
+}
+
+
+// ─── FR→EN REVERSE MODE ──────────────────────────────────────
+
+function getRevDueCards(){
+  var n=now();
+  // Get all EN->FR cards that are mastered (score>=4) and have a revScore entry
+  var result=[];
+  D.cards.forEach(function(c){
+    // Only EN->FR cards (dir != fr-en)
+    if(c.dir==='fr-en')return;
+    var rs=D.revScores[c.id];
+    if(!rs)return; // not yet unlocked for reverse
+    if(rs.due<=n){
+      // Create virtual reverse card
+      var revCard=Object.assign({},c,{
+        _isReverse:true,
+        _revId:c.id,
+        dir:'fr-en'
+      });
+      result.push(revCard);
+    }
+  });
+  return result;
+}
+
+function unlockReverseIfNeeded(card){
+  // Called after rating - if card just reached score>=4, unlock reverse
+  if(card.score>=4&&(card.goodStreak||0)>=2&&!card._isReverse&&card.dir!=='fr-en'){
+    if(!D.revScores[card.id]){
+      D.revScores[card.id]={score:0,mult:1,due:0}; // due=0 means available now
+      sv();
+    }
+  }
+}
+
+function rateReverseCard(cardId, score){
+  var intervals=[0,5*60000,30*60000,12*3600000,2*86400000,4*86400000];
+  var rs=D.revScores[cardId]||{score:0,mult:1,due:0};
+  if(score>=4){
+    rs.mult=(rs.mult||1)*1.5;
+    rs.due=now()+intervals[Math.min(score,5)]*(rs.mult);
+  } else {
+    rs.mult=1;
+    rs.due=now()+intervals[Math.min(score,5)];
+  }
+  rs.score=score;
+  D.revScores[cardId]=rs;
+  sv();
 }
 
 function getQuizCards(){
@@ -7031,7 +7112,9 @@ function startSession(){
   }
   var due=all.filter(function(c){return c.due<=now();}).sort(function(){return Math.random()-.5;});
   var nd=all.filter(function(c){return c.due>now();}).sort(function(a,b){return a.score-b.score;});
-  qCards=due.concat(nd.slice(0,Math.max(3,10-due.length)));
+  // Inject FR->EN reverse cards due
+  var revDue=getRevDueCards().sort(function(){return Math.random()-.5;});
+  qCards=due.concat(revDue).concat(nd.slice(0,Math.max(3,10-due.length-revDue.length)));
   qIdx=0;qScores=[];
 
   composedQueue=getComposedDue();
@@ -7089,6 +7172,8 @@ function rQCard(){
   var tp=card.fromBank?'tc-explore':card.type==='mot'?'tc-mot':'tc-phrase';
   var tpLabel=card.fromBank?'Explore':card.type;
   var discBadge=card.isHard?'<div class="disc-badge">&#128257; Difficile</div>':'';
+  var revBadge=card._isReverse?'<div class="disc-badge" style="background:var(--green-bg,#0f2a1a);color:var(--green)">🔄 FR→EN</div>':'';
+  discBadge=revBadge||discBadge;
   var badge=getCatBadge(card);
   var badgeHTML=badge.type==='icon'&&badge.val?'<span style="font-size:18px;opacity:.75">'+badge.val+'</span>':badge.type==='name'&&badge.val?'<span style="font-size:10px;font-weight:700;color:var(--text3);background:var(--bg3);padding:2px 7px;border-radius:99px">'+badge.val+'</span>':'';
 
@@ -7157,15 +7242,25 @@ function rvl(){
 
 function rate(s){
   var card=qCards[qIdx];
+  // Handle reverse FR->EN card
+  if(card._isReverse){
+    rateReverseCard(card._revId,s);
+    qScores.push(s);D.reviewedToday=(D.reviewedToday||0)+1;D.totalReviewed=(D.totalReviewed||0)+1;
+    sv();qIdx++;updateDot();rQCard();
+    return;
+  }
   var real=D.cards.find(function(c){return c.id===card.id;});
   if(real){
     real.totalRatings=(real.totalRatings||0)+1;
     real.score=s;
     real.due=now()+getIV(s,real);
-    if(s>=4)real.mult=Math.min((real.mult||1)*1.5,16);
-    else if(s<=2)real.mult=1;
+    if(s>=4){real.mult=Math.min((real.mult||1)*1.5,16);real.goodStreak=(real.goodStreak||0)+1;}
+    else if(s<=2){real.mult=1;real.goodStreak=0;}
+    else{real.goodStreak=0;}
     if(s<=2)real.hardStreak=(real.hardStreak||0)+1;else real.hardStreak=0;
     real.isHard=(real.hardStreak||0)>=3;
+    // Unlock FR->EN reverse if mastered EN->FR
+    unlockReverseIfNeeded(real);
   }
   qScores.push(s);D.reviewedToday=(D.reviewedToday||0)+1;D.totalReviewed=(D.totalReviewed||0)+1;
   sv();qIdx++;updateDot();rQCard();
