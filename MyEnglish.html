@@ -6240,6 +6240,19 @@ if(!D.composedPromptV){D.composed=[];D.composedPromptV=2;sv();}
 if(!D.anthropicKey)D.anthropicKey='';
 if(!D.openaiKey)D.openaiKey='';
 if(!D.listenCards)D.listenCards={};
+if(!D.revScores)D.revScores={};
+// One-time: unlock FR->EN for all already mastered cards
+// Always scan for newly mastered cards that need FR->EN unlocked
+(function(){
+  var changed=false;
+  D.cards.forEach(function(c){
+    if(c.score>=4&&(c.goodStreak||0)>=2&&c.dir!=='fr-en'&&!D.revScores[c.id]){
+      D.revScores[c.id]={score:0,mult:1,due:0};
+      changed=true;
+    }
+  });
+  if(changed)sv();
+})();
 if(!D.notifDismissed)D.notifDismissed=false;
 if(!D.decks.find(d=>d.id===EXPLORE_DECK_ID))
   {D.decks.push({id:EXPLORE_DECK_ID,name:'Explore',dir:'en-fr',type:'mixed',isExplore:true});sv();}
@@ -6633,8 +6646,20 @@ async function generateComposed(){
   var level=pool.length>=50?3:pool.length>=20?2:1;
 
   // Shuffle pool, send up to 25 words - Claude chooses freely what fits
+  // Track recently used words for diversity
+  var recentUsed={};
+  var last5=D.composed.slice(-5);
+  last5.forEach(function(cp){
+    (cp.words||[]).forEach(function(w){
+      recentUsed[w.en]=(recentUsed[w.en]||0)+1;
+    });
+  });
+  // Deprioritize words used 2+ times in last 5 défis
   var shuffled=pool.slice().sort(function(){return Math.random()-.5;});
-  var sample=shuffled.slice(0,25);
+  var fresh=shuffled.filter(function(c){return (recentUsed[c.a]||0)<2;});
+  var stale=shuffled.filter(function(c){return (recentUsed[c.a]||0)>=2;});
+  var prioritized=fresh.concat(stale);
+  var sample=prioritized.slice(0,25);
   var wordList=sample.map(function(c){return c.a+' ('+c.b+')';}).join(', ');
 
   var ctx=level===1
@@ -6807,6 +6832,37 @@ async function speakOpenAI(text){
 }
 
 // ─── TRAIN ───────────────────────────────────────────────────
+
+// ─── MODE PRODUCTION (FR→EN) ─────────────────────────────────
+
+function getProductionPool(){
+  return D.cards.filter(function(c){
+    return c.score>=4&&(c.goodStreak||0)>=2&&c.dir!=='fr-en';
+  });
+}
+
+function getProductionDue(){
+  var n=now();
+  return getProductionPool().filter(function(c){
+    var ps=D.revScores[c.id];
+    if(!ps)return true;
+    return ps.due<=n;
+  });
+}
+
+function getProductionDesc(){
+  var pool=getProductionPool();
+  if(!pool.length)return 'Valide des fiches en révision pour débloquer';
+  var due=getProductionDue().length;
+  return due>0?(due+' fiche'+(due>1?'s':'')+' à produire · '+pool.length+' mots'):'À jour · '+pool.length+' mots';
+}
+
+function getProductionBadge(){
+  var due=getProductionDue().length;
+  if(due>0)return '<div class="mode-card-badge">'+due+'</div>';
+  return '';
+}
+
 function rTrain(){
   var el=document.getElementById('s-train');
   if(!el)return;
@@ -6845,12 +6901,21 @@ function rTrain(){
           return '<div class="mode-card disabled"><div class="mode-card-icon">&#128066;</div><div class="mode-card-name">Écoute</div><div class="mode-card-desc">Configure ta clé OpenAI dans Paramètres</div></div>';
         }
       })()
-      +'<div class="mode-card disabled">'
-        +'<div class="mode-card-icon">&#9889;</div>'
-        +'<div class="mode-card-name">Vitesse</div>'
-        +'<div class="mode-card-desc">10 mots · 60 secondes</div>'
-        +'<div class="mode-coming">Bientôt</div>'
-      +'</div>'
+      +(function(){
+        try{
+          var pPool=getProductionPool();
+          var pDue=getProductionDue().length;
+          var pActive=pPool.length>0;
+          return '<div class="mode-card'+(pActive?' active-card':' disabled')+'" id="m-production">'
+            +(pActive?getProductionBadge():'')
+            +'<div class="mode-card-icon">✍️</div>'
+            +'<div class="mode-card-name" style="color:'+(pActive?'var(--brand)':'inherit')+'">Production</div>'
+            +'<div class="mode-card-desc">'+getProductionDesc()+'</div>'
+            +'</div>';
+        }catch(e){
+          return '<div class="mode-card disabled"><div class="mode-card-icon">✍️</div><div class="mode-card-name">Production</div><div class="mode-card-desc">Valide des fiches en révision pour débloquer</div></div>';
+        }
+      })()
     +'</div>'
     +'<div class="pill-row">'
       +'<button class="pill'+(qMode==='all'?' active':'')+'" id="pq-all">Toutes</button>'
@@ -6868,11 +6933,65 @@ function rTrain(){
   if(mListen)mListen.onclick=function(){
     if(getOpenAIKey()&&getListenPool().length>=10){trainMode='listen';rTrain();}
   };
+  var mProd=document.getElementById('m-production');
+  if(mProd)mProd.onclick=function(){
+    if(getProductionPool().length>0){trainMode='production';rTrain();}
+  };
   document.getElementById('pq-all').onclick=function(){qMode='all';qDeck=null;qExploreCat=null;rTrain();};
   document.getElementById('pq-themes').onclick=function(){qMode='themes';qExploreCat=null;rTrain();};
   document.getElementById('pq-explore').onclick=function(){qMode='explore';qDeck=null;rTrain();};
 
   startSession();
+}
+
+
+// ─── FR→EN REVERSE MODE ──────────────────────────────────────
+
+function getRevDueCards(){
+  var n=now();
+  // Get all EN->FR cards that are mastered (score>=4) and have a revScore entry
+  var result=[];
+  D.cards.forEach(function(c){
+    // Only EN->FR cards (dir != fr-en)
+    if(c.dir==='fr-en')return;
+    var rs=D.revScores[c.id];
+    if(!rs)return; // not yet unlocked for reverse
+    if(rs.due<=n){
+      // Create virtual reverse card
+      var revCard=Object.assign({},c,{
+        _isReverse:true,
+        _revId:c.id,
+        dir:'fr-en'
+      });
+      result.push(revCard);
+    }
+  });
+  return result;
+}
+
+function unlockReverseIfNeeded(card){
+  // Called after rating - if card just reached score>=4, unlock reverse
+  if(card.score>=4&&(card.goodStreak||0)>=2&&!card._isReverse&&card.dir!=='fr-en'){
+    if(!D.revScores[card.id]){
+      D.revScores[card.id]={score:0,mult:1,due:0}; // due=0 means available now
+      sv();
+    }
+  }
+}
+
+function rateReverseCard(cardId, score){
+  var intervals=[0,5*60000,30*60000,12*3600000,2*86400000,4*86400000];
+  var rs=D.revScores[cardId]||{score:0,mult:1,due:0};
+  if(score>=4){
+    rs.mult=(rs.mult||1)*1.5;
+    rs.due=now()+intervals[Math.min(score,5)]*(rs.mult);
+  } else {
+    rs.mult=1;
+    rs.due=now()+intervals[Math.min(score,5)];
+  }
+  rs.score=score;
+  D.revScores[cardId]=rs;
+  sv();
 }
 
 function getQuizCards(){
@@ -6998,6 +7117,60 @@ function revealListenCard(card){
   }
 }
 
+
+// ─── PRODUCTION SESSION (FR→EN) ──────────────────────────────
+
+var productionQueue=[];
+var productionIdx=0;
+
+function startProductionSession(){
+  productionQueue=getProductionDue().sort(function(){return Math.random()-0.5;});
+  productionIdx=0;
+  if(!productionQueue.length){
+    var qa=document.getElementById('qa');
+    if(qa)qa.innerHTML='<div class="empty"><div class="empty-icon">✍️</div>Tout est à jour !<br><br>Reviens plus tard pour de nouvelles fiches.</div>';
+    return;
+  }
+  rProductionCard();
+}
+
+function rProductionCard(){
+  var qa=document.getElementById('qa');
+  if(!qa)return;
+  if(productionIdx>=productionQueue.length){
+    qa.innerHTML='<div class="empty"><div class="empty-icon">🎉</div>Session terminée !<br><br>'+productionQueue.length+' fiche'+(productionQueue.length>1?'s':'')+' produite'+(productionQueue.length>1?'s':'')+' !</div>';
+    return;
+  }
+  var card=productionQueue[productionIdx];
+
+  qa.innerHTML=
+    '<div class="quiz-card" style="gap:16px">'    +'<div style="display:flex;align-items:center;justify-content:space-between">'      +'<span style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">✍️ Production · '+(productionIdx+1)+'/'+productionQueue.length+'</span>'    +'</div>'    +'<div style="font-size:22px;font-weight:700;text-align:center;padding:10px 0;line-height:1.3">'+card.b+'</div>'    +(card.ctx?'<div style="font-size:13px;color:var(--text3);text-align:center;font-style:italic">'+card.ctx+'</div>':'')    +'<input id="prod-input" type="text" placeholder="Traduis en anglais..." style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--rsm);color:var(--text);font-size:16px;font-family:inherit;box-sizing:border-box"/>'    +'<button class="btn-primary" id="btn-prod-check" style="width:100%">Vérifier</button>'    +'</div>';
+
+  document.getElementById('btn-prod-check').onclick=function(){revealProductionCard(card);};
+  document.getElementById('prod-input').onkeydown=function(e){if(e.key==='Enter')revealProductionCard(card);};
+  setTimeout(function(){var el=document.getElementById('prod-input');if(el)el.focus();},100);
+}
+
+function revealProductionCard(card){
+  var input=(document.getElementById('prod-input').value||'').trim();
+  var qa=document.getElementById('qa');
+  if(!qa)return;
+
+  qa.innerHTML=
+    '<div class="quiz-card" style="gap:14px">'    +'<div class="composed-badge">Référence</div>'    +'<div style="font-size:20px;font-weight:700;color:var(--brand);text-align:center;line-height:1.3">'+card.a+'</div>'    +(card.ctx?'<div style="font-size:13px;color:var(--text3);text-align:center;font-style:italic">'+card.ctx+'</div>':'')    +'<div style="background:var(--bg3);border-radius:var(--rsm);padding:12px">'      +'<div style="font-size:13px;color:var(--text3)">Ta version :</div>'      +'<div style="font-size:15px;margin-top:4px;font-style:italic">'+(input||'—')+'</div>'    +'</div>'    +'</div>'    +'<p class="score-hint" style="margin-top:14px">Comment tu t\'en es sorti ?</p>'    +'<div class="score-grid">'    +(function(){var s='';for(var i=1;i<=5;i++)s+='<button class="score-btn sc'+i+'" id="psc'+i+'">'+i+'</button>';return s;}())    +'</div>';
+
+  for(var i=1;i<=5;i++){
+    (function(score){
+      var btn=document.getElementById('psc'+score);
+      if(btn)btn.onclick=function(){
+        rateReverseCard(card.id,score);
+        productionIdx++;
+        rProductionCard();
+      };
+    })(i);
+  }
+}
+
 function startSession(){
   var qa=document.getElementById('qa');
   if(!qa)return;
@@ -7006,6 +7179,11 @@ function startSession(){
 
   if(trainMode==='listen'){
     startListenSession();
+    return;
+  }
+
+  if(trainMode==='production'){
+    startProductionSession();
     return;
   }
 
@@ -7049,7 +7227,9 @@ function startSession(){
   }
   var due=all.filter(function(c){return c.due<=now();}).sort(function(){return Math.random()-.5;});
   var nd=all.filter(function(c){return c.due>now();}).sort(function(a,b){return a.score-b.score;});
-  qCards=due.concat(nd.slice(0,Math.max(3,10-due.length)));
+  // Inject FR->EN reverse cards due
+  var revDue=getRevDueCards().sort(function(){return Math.random()-.5;});
+  qCards=due.concat(revDue).concat(nd.slice(0,Math.max(3,10-due.length-revDue.length)));
   qIdx=0;qScores=[];
 
   composedQueue=getComposedDue();
@@ -7107,6 +7287,8 @@ function rQCard(){
   var tp=card.fromBank?'tc-explore':card.type==='mot'?'tc-mot':'tc-phrase';
   var tpLabel=card.fromBank?'Explore':card.type;
   var discBadge=card.isHard?'<div class="disc-badge">&#128257; Difficile</div>':'';
+  var revBadge=card._isReverse?'<div class="disc-badge" style="background:var(--green-bg,#0f2a1a);color:var(--green)">🔄 FR→EN</div>':'';
+  discBadge=revBadge||discBadge;
   var badge=getCatBadge(card);
   var badgeHTML=badge.type==='icon'&&badge.val?'<span style="font-size:18px;opacity:.75">'+badge.val+'</span>':badge.type==='name'&&badge.val?'<span style="font-size:10px;font-weight:700;color:var(--text3);background:var(--bg3);padding:2px 7px;border-radius:99px">'+badge.val+'</span>':'';
 
@@ -7175,15 +7357,25 @@ function rvl(){
 
 function rate(s){
   var card=qCards[qIdx];
+  // Handle reverse FR->EN card
+  if(card._isReverse){
+    rateReverseCard(card._revId,s);
+    qScores.push(s);D.reviewedToday=(D.reviewedToday||0)+1;D.totalReviewed=(D.totalReviewed||0)+1;
+    sv();qIdx++;updateDot();rQCard();
+    return;
+  }
   var real=D.cards.find(function(c){return c.id===card.id;});
   if(real){
     real.totalRatings=(real.totalRatings||0)+1;
     real.score=s;
     real.due=now()+getIV(s,real);
-    if(s>=4)real.mult=Math.min((real.mult||1)*1.5,16);
-    else if(s<=2)real.mult=1;
+    if(s>=4){real.mult=Math.min((real.mult||1)*1.5,16);real.goodStreak=(real.goodStreak||0)+1;}
+    else if(s<=2){real.mult=1;real.goodStreak=0;}
+    else{real.goodStreak=0;}
     if(s<=2)real.hardStreak=(real.hardStreak||0)+1;else real.hardStreak=0;
     real.isHard=(real.hardStreak||0)>=3;
+    // Unlock FR->EN reverse if mastered EN->FR
+    unlockReverseIfNeeded(real);
   }
   qScores.push(s);D.reviewedToday=(D.reviewedToday||0)+1;D.totalReviewed=(D.totalReviewed||0)+1;
   sv();qIdx++;updateDot();rQCard();
