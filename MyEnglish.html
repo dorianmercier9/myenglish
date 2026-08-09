@@ -6598,17 +6598,14 @@ function getComposedDue(){
 function shouldGenerateComposed(){
   if(!getApiKey())return false;
   var pool=getEligiblePool();
-  if(pool.length<2)return false;
-  // Max 10 pending in next 24h - don't count cards due in days
-  var soon=now()+86400000; // 24h from now
-  var pending=D.composed.filter(function(c){return c.due>now()&&c.due<=soon;}).length;
-  if(pending>=10)return false;
-  // Max 3 generated per day
+  if(pool.length<10)return false;
+  // Only generate if fewer than 2 défis available RIGHT NOW
+  var availableNow=getComposedDue().length;
+  if(availableNow>=2)return false;
+  // Max 2 generated per day
   var today=new Date().toDateString();
-  var generatedToday=D.composed.filter(function(c){
-    return c.generatedOn===today;
-  }).length;
-  if(generatedToday>=5)return false;
+  var generatedToday=D.composed.filter(function(c){return c.generatedOn===today;}).length;
+  if(generatedToday>=2)return false;
   return true;
 }
 function getComposedDesc(){
@@ -6669,22 +6666,20 @@ async function generateComposed(){
     ?'a professional situation (email, meeting, or report)'
     :'a short realistic professional scenario (2-3 sentences max)';
 
-  var prompt='You are creating a French-to-English translation exercise for a French professional learning English.\n\n'
-    +'The learner knows these English words/expressions:\n'+wordList+'\n\n'
-    +'Your task:\n'
-    +'1. Choose 2 to 4 words from the list that naturally fit together in one sentence\n'
-    +'2. Write a natural, grammatically correct French sentence a French professional would actually say\n'
-    +'3. Write the English translation - it MUST be a faithful, accurate translation of the French sentence\n\n'
-    +'Critical rules:\n'
-    +'- French sentence: 100% correct French, zero English words, must make logical sense\n'
+  var prompt='You are a native English speaker working in an international professional environment.\n\n'
+    +'Write ONE short, natural sentence that a real professional would actually say or write at work.\n'
+    +'The sentence must feel completely natural — something you would hear in a real meeting, email, or conversation.\n\n'
+    +'Then check if any of these English words/expressions appear naturally in your sentence:\n'+wordList+'\n\n'
+    +'Rules:\n'
+    +'- Write the sentence in French first, then translate it faithfully to English\n'
+    +'- The sentence must be something a real person would actually say — not a textbook example\n'
+    +'- Maximum 20 words\n'
     +'- Context: '+ctx+'\n'
-    +'- Maximum 25 words per sentence\n'
-    +'- Only choose words that fit naturally together - never force incompatible words\n'
-    +'- The English translation must be FAITHFUL to the French meaning - do not add nuances, modals or meanings not present in the original\n'
-    +'- If the French says "we cannot", the English must say "we cannot" - not "we might not be able to"\n'
-    +'- The "used" array must contain ONLY words that actually appear in the English translation\n\n'
-    +'Respond ONLY with this exact JSON, no markdown, no explanation:\n'
-    +'{"fr": "the French sentence", "en": "the faithful English translation", "used": ["word1", "word2"]}';
+    +'- If some words from the list fit naturally in your sentence, great. If not, still write a good sentence.\n'
+    +'- The "used" field must only contain words that genuinely appear in the English sentence\n'
+    +'- Never force multiple complex expressions into one sentence\n\n'
+    +'Respond ONLY with this exact JSON, no markdown:\n'
+    +'{"fr": "natural French sentence", "en": "faithful English translation", "used": ["word1"]}';
 
   try{
     var resp=await fetch('https://api.anthropic.com/v1/messages',{
@@ -7268,7 +7263,7 @@ function rQCard(){
   if(qIdx>0&&qIdx%5===0&&composedQueue.length>0){rComposedCard(composedQueue.shift());return;}
 
   if(qIdx>=qCards.length){
-    if(composedQueue.length>0){rComposedCard(composedQueue.shift());return;}
+    // Don't inject Défi IA into review - it has its own dedicated mode
     var avg2=qScores.length?(qScores.reduce(function(a,b){return a+b;},0)/qScores.length).toFixed(1):'—';
     var t=tod(),last=new Date(D.lastSession||0).toDateString(),yest=new Date(now()-86400000).toDateString();
     if(last!==t){D.streak=last===yest?(D.streak||0)+1:1;D.lastSession=now();sv();}
